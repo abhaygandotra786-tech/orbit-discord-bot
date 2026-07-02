@@ -253,4 +253,26 @@ app.listen(config.WEB.PORT, () => {
             "Discord login disabled — set CLIENT_SECRET (and SESSION_SECRET) in .env to enable liking."
         );
     }
+    startKeepAlive();
 });
+
+/**
+ * Self keep-alive: on free hosts (e.g. Render) that sleep after ~15 min of
+ * no traffic, ping our own public URL periodically so the process — and the
+ * Discord bot running alongside it — stays online 24/7. No external service
+ * needed. Only runs when WEB_BASE_URL is a public https URL (not localhost).
+ */
+function startKeepAlive() {
+    const base = (config.WEB.BASE_URL || "").replace(/\/$/, "");
+    if (!/^https:\/\//i.test(base) || base.includes("localhost")) return;
+
+    const INTERVAL = 10 * 60 * 1000; // every 10 minutes (< Render's 15 min idle)
+    const ping = () => {
+        fetch(`${base}/api/stats`).catch(() => {
+            /* transient network blips are fine */
+        });
+    };
+    setInterval(ping, INTERVAL).unref();
+    logger.info("⏱️  Self keep-alive enabled (pings every 10 min).");
+}
+
