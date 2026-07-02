@@ -33,8 +33,8 @@ module.exports = {
     BANNER_URL: process.env.BANNER_URL || "", // wide banner (shown in embeds)
 
     // --- Links ---
-    WEBSITE: "https://example.com",
-    SUPPORT_SERVER: "https://discord.gg/your-invite",
+    WEBSITE: process.env.WEBSITE_URL || process.env.WEB_BASE_URL || "https://example.com",
+    SUPPORT_SERVER: process.env.SUPPORT_SERVER || "https://discord.gg/your-invite",
 
     // --- Website (public showcase) ---
     WEB: {
