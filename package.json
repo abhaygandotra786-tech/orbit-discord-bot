@@ -1,0 +1,37 @@
+{
+  "name": "community-hub",
+  "version": "1.0.0",
+  "description": "Community Hub - a modular Discord bot for networking, friends, gaming, freelancing, co-founders and dating.",
+  "main": "index.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "start:all": "node start.js",
+    "dev": "nodemon index.js",
+    "deploy": "node deploy-commands.js",
+    "web": "node web/server.js",
+    "web:dev": "nodemon web/server.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.26.4",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "libsql": "^0.5.29"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  },
+  "keywords": [
+    "discord",
+    "discord.js",
+    "bot",
+    "community",
+    "sqlite"
+  ],
+  "author": "",
+  "license": "ISC"
+}

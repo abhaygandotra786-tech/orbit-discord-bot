@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="home">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Orbit</title>
+    <meta name="description" content="Orbit — unlock the full potential of your community." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a class="brand" href="#" id="brandLink">
+                <img id="brandLogo" class="brand-logo hidden" alt="" />
+                <span class="brand-dot" id="brandDot"></span>
+                <span id="brandName">Orbit</span>
+            </a>
+            <nav class="nav-center">
+                <a href="#" id="navHome" class="active">Home</a>
+                <a href="#" id="navCommunities">Communities</a>
+                <a href="#" id="navPremium">Premium</a>
+                <a href="#" id="navAdmirers" class="hidden">Interest</a>
+            </nav>
+            <div class="nav-right">
+                <a class="pill" id="premiumPill" href="#">👑 Premium</a>
+                <span id="authArea"></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- HOME -->
+    <section id="view-home" class="view">
+        <!-- Premium hero banner -->
+        <div class="phero">
+            <div class="phero-art">
+                <img id="pheroLogo" alt="Orbit" />
+                <div class="phero-ring"></div>
+            </div>
+            <div class="phero-copy">
+                <span class="phero-label">Premium</span>
+                <h1>Unlock the full potential of your community</h1>
+                <p>
+                    Go Premium to boost your visibility, see who likes you,
+                    unlock AI matchmaking and stand out across every community.
+                </p>
+                <div class="phero-cta">
+                    <a class="btn light" id="addBtn" href="#" target="_blank" rel="noopener">
+                        <span class="dsc">✦</span> Add to Discord
+                    </a>
+                    <button class="btn glass" id="selectPlanBtn">Select plan</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pricing -->
+        <div class="block" id="pricingBlock">
+            <div class="pricing-head">
+                <h2>Your community, your rules</h2>
+                <p>Pick the plan that fits your needs best.</p>
+            </div>
+            <div class="pricing-grid" id="pricingGrid"></div>
+        </div>
+
+        <!-- Communities -->
+        <div class="block" id="communitiesBlock">
+            <div class="block-head">
+                <span class="kicker">Communities</span>
+                <h2>Find your people</h2>
+            </div>
+            <div class="category-grid" id="categoryGrid"></div>
+            <div class="hero-stats" id="heroStats"></div>
+        </div>
+    </section>
+
+    <!-- CATEGORY PROFILES -->
+    <section id="view-category" class="view hidden">
+        <div class="cat-header">
+            <button class="back-btn" id="backBtn">← All communities</button>
+            <h2 id="catTitle"></h2>
+            <p id="catSubtitle" class="cat-sub"></p>
+        </div>
+        <div class="profile-grid" id="profileGrid"></div>
+        <div id="emptyState" class="empty hidden"></div>
+    </section>
+
+    <!-- ADMIRERS -->
+    <section id="view-admirers" class="view hidden">
+        <div class="cat-header">
+            <button class="back-btn" id="backBtn2">← Back</button>
+            <h2>Interest received</h2>
+            <p class="cat-sub" id="admirersSub"></p>
+        </div>
+        <div class="profile-grid" id="admirersGrid"></div>
+    </section>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <div class="site-banner" id="siteBannerWrap">
+        <img id="siteBanner" class="site-banner-img" alt="Orbit" />
+    </div>
+
+    <footer class="footer">
+        <span id="footerName">Orbit</span> · Profiles managed via Discord ·
+        <a href="#" id="upgradeLink" target="_blank" rel="noopener">Get Premium</a>
+    </footer>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>

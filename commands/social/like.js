@@ -1,0 +1,68 @@
+/**
+ * /like - like another user. Creates a match if mutual.
+ */
+
+const { SlashCommandBuilder } = require("discord.js");
+
+const { getProfile } = require("../../database/profileQueries");
+const { like, canLike } = require("../../utils/likeService");
+const { successEmbed, errorEmbed, baseEmbed } = require("../../utils/embed");
+
+module.exports = {
+    data: new SlashCommandBuilder()
+        .setName("like")
+        .setDescription("Like another community member")
+        .addUserOption((o) =>
+            o
+                .setName("user")
+                .setDescription("The user you want to like")
+                .setRequired(true)
+        ),
+
+    async execute(interaction) {
+        const target = interaction.options.getUser("user");
+
+        if (!getProfile.get(target.id)) {
+            return interaction.reply({
+                embeds: [errorEmbed("That user does not have a profile yet.")],
+                ephemeral: true
+            });
+        }
+
+        const result = like(interaction.user.id, target.id);
+
+        if (!result.ok) {
+            return interaction.reply({
+                embeds: [errorEmbed(result.reason)],
+                ephemeral: true
+            });
+        }
+
+        if (result.matched) {
+            return interaction.reply({
+                embeds: [
+                    baseEmbed({
+                        title: "✨ It's a Match!",
+                        description: `You and <@${target.id}> liked each other. Use \`/matches\` to see all your matches!`
+                    })
+                ]
+            });
+        }
+
+        const quota = canLike(interaction.user.id);
+        const note =
+            quota.limit === Infinity
+                ? ""
+                : `\n\n🔋 You have **${quota.remaining}** free like(s) left today.`;
+
+        return interaction.reply({
+            embeds: [
+                successEmbed(
+                    `You liked **${target.username}**. They'll match with you if they like you back!${note}`,
+                    "❤️ Like Sent"
+                )
+            ],
+            ephemeral: true
+        });
+    }
+};
