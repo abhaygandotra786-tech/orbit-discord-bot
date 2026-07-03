@@ -351,3 +351,139 @@ a { color: inherit; text-decoration: none; }
     .topbar-inner { padding: 0 16px; }
     .view { padding: 24px 16px 70px; }
 }
+
+/* ============================================================
+   MEE6-style hero (Orbit edition)
+   ============================================================ */
+
+/* Announcement bar */
+.announce {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 9px 16px;
+    font-size: 13.5px;
+    color: var(--text-2);
+    background: linear-gradient(90deg, rgba(109,99,245,0.16), rgba(148,102,255,0.16));
+    border-bottom: 1px solid var(--line);
+    flex-wrap: wrap;
+}
+.announce-btn {
+    background: rgba(255,255,255,0.10);
+    border: 1px solid var(--line);
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 12.5px;
+    white-space: nowrap;
+}
+.announce-btn:hover { background: rgba(255,255,255,0.18); }
+
+/* Hero */
+.hero-wrap {
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--line);
+    background:
+        radial-gradient(90% 120% at 15% 0%, rgba(109,99,245,0.22), transparent 55%),
+        radial-gradient(70% 120% at 100% 100%, rgba(148,102,255,0.20), transparent 55%),
+        linear-gradient(180deg, #0d0d18 0%, #0b0b13 100%);
+}
+.hero-stars {
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(1.5px 1.5px at 20% 30%, rgba(255,255,255,0.7), transparent),
+        radial-gradient(1.5px 1.5px at 70% 20%, rgba(255,255,255,0.5), transparent),
+        radial-gradient(1px 1px at 40% 70%, rgba(255,255,255,0.6), transparent),
+        radial-gradient(1.5px 1.5px at 85% 60%, rgba(200,190,255,0.7), transparent),
+        radial-gradient(1px 1px at 55% 45%, rgba(255,255,255,0.5), transparent),
+        radial-gradient(1px 1px at 10% 80%, rgba(255,255,255,0.5), transparent),
+        radial-gradient(1.5px 1.5px at 90% 15%, rgba(255,255,255,0.6), transparent);
+    opacity: 0.6;
+    animation: twinkle 6s ease-in-out infinite alternate;
+}
+@keyframes twinkle { from { opacity: 0.35; } to { opacity: 0.75; } }
+
+.hero-inner {
+    position: relative;
+    z-index: 1;
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 72px 24px 84px;
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+.hero-left { flex: 1; min-width: 0; }
+.verified {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text-2);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--line);
+    padding: 5px 12px;
+    border-radius: 999px;
+    margin-bottom: 22px;
+}
+.hero-left h1 {
+    font-size: clamp(38px, 6vw, 68px);
+    font-weight: 800;
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    margin: 0 0 20px;
+    color: #fff;
+}
+.grad {
+    background: linear-gradient(120deg, #8b80ff, #c4b5fd);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.hero-sub {
+    color: var(--text-2);
+    font-size: 16.5px;
+    max-width: 46ch;
+    margin: 0 0 30px;
+}
+.hero-cta { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 26px; }
+.trust { display: flex; align-items: center; gap: 12px; font-size: 14px; color: var(--text-2); }
+.trust .stars { color: #ffc93c; letter-spacing: 2px; font-size: 16px; }
+
+.hero-right {
+    position: relative;
+    flex: none;
+    width: 380px;
+    display: grid;
+    place-items: center;
+}
+.planet {
+    width: 340px;
+    max-width: 100%;
+    object-fit: contain;
+    z-index: 1;
+    filter: drop-shadow(0 20px 60px rgba(109,99,245,0.5));
+    animation: floaty 6s ease-in-out infinite;
+}
+.planet-glow {
+    position: absolute;
+    width: 360px; height: 360px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(139,128,255,0.35), transparent 65%);
+    filter: blur(10px);
+}
+@keyframes floaty { 0%,100% { transform: translateY(-10px); } 50% { transform: translateY(10px); } }
+
+@media (max-width: 860px) {
+    .hero-inner { flex-direction: column-reverse; text-align: center; padding: 48px 20px 60px; }
+    .hero-sub { margin-left: auto; margin-right: auto; }
+    .hero-cta, .trust { justify-content: center; }
+    .hero-right { width: 240px; }
+    .planet { width: 220px; }
+    .planet-glow { width: 240px; height: 240px; }
+}

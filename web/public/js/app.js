@@ -123,6 +123,14 @@ async function loadHome() {
         <div><b>${stats.profiles}</b> Members</div>
         <div><b>${stats.likes}</b> Connections</div>
         <div><b>${cats.length}</b> Communities</div>`;
+
+    const tt = document.getElementById("trustText");
+    if (tt) {
+        tt.textContent =
+            stats.profiles > 0
+                ? `Trusted by ${stats.profiles} member${stats.profiles === 1 ? "" : "s"}`
+                : "Join the growing Orbit community";
+    }
 }
 
 function setActiveNav(activeId) {
@@ -285,6 +293,7 @@ async function boot() {
     document.title = `${state.config.botName} — Premium`;
     $("upgradeLink").href = state.config.upgradeUrl;
     $("premiumPill").href = state.config.upgradeUrl;
+    $("announceBtn").href = state.config.upgradeUrl;
     $("addBtn").href = state.config.inviteUrl;
 
     // logo (brand + hero)
@@ -317,7 +326,7 @@ async function boot() {
     $("navAdmirers").onclick = (e) => { e.preventDefault(); loadAdmirers(); };
     $("backBtn").onclick = () => loadHome();
     $("backBtn2").onclick = () => loadHome();
-    $("selectPlanBtn").onclick = () => { ensureHome(() => scrollToEl("pricingBlock")); setActiveNav("navPremium"); };
+    $("seeFeaturesBtn").onclick = () => { ensureHome(() => scrollToEl("pricingBlock")); setActiveNav("navPremium"); };
 
     const params = new URLSearchParams(window.location.search);
     if (params.get("login") === "ok") toast("Logged in with Discord");

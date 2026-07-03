@@ -4,13 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Orbit</title>
-    <meta name="description" content="Orbit — unlock the full potential of your community." />
+    <meta name="description" content="Orbit — one community bot for everything." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/css/styles.css" />
 </head>
 <body>
+    <!-- Announcement bar -->
+    <div class="announce">
+        <span>🪐 Grow, connect and monetise your community with Orbit</span>
+        <a class="announce-btn" id="announceBtn" href="#">Get Premium →</a>
+    </div>
+
     <header class="topbar">
         <div class="topbar-inner">
             <a class="brand" href="#" id="brandLink">
@@ -32,46 +38,55 @@
     </header>
 
     <!-- HOME -->
-    <section id="view-home" class="view">
-        <!-- Premium hero banner -->
-        <div class="phero">
-            <div class="phero-art">
-                <img id="pheroLogo" alt="Orbit" />
-                <div class="phero-ring"></div>
-            </div>
-            <div class="phero-copy">
-                <span class="phero-label">Premium</span>
-                <h1>Unlock the full potential of your community</h1>
-                <p>
-                    Go Premium to boost your visibility, see who likes you,
-                    unlock AI matchmaking and stand out across every community.
-                </p>
-                <div class="phero-cta">
-                    <a class="btn light" id="addBtn" href="#" target="_blank" rel="noopener">
-                        <span class="dsc">✦</span> Add to Discord
-                    </a>
-                    <button class="btn glass" id="selectPlanBtn">Select plan</button>
+    <section id="view-home">
+        <!-- MEE6-style hero -->
+        <div class="hero-wrap">
+            <div class="hero-stars" aria-hidden="true"></div>
+            <div class="hero-inner">
+                <div class="hero-left">
+                    <span class="verified">✓ Verified community bot</span>
+                    <h1>One community bot<br />for <span class="grad">everything</span></h1>
+                    <p class="hero-sub">
+                        Networking, founders, freelancing, friends, gaming and dating —
+                        Orbit helps your members connect, match and grow, right inside Discord.
+                    </p>
+                    <div class="hero-cta">
+                        <a class="btn lg" id="addBtn" href="#" target="_blank" rel="noopener">
+                            <span class="dsc">✦</span> Add to Discord
+                        </a>
+                        <button class="btn ghost lg" id="seeFeaturesBtn">See features</button>
+                    </div>
+                    <div class="trust" id="heroTrust">
+                        <span class="stars">★★★★★</span>
+                        <span id="trustText">Trusted by a growing community</span>
+                    </div>
+                </div>
+                <div class="hero-right">
+                    <div class="planet-glow"></div>
+                    <img id="pheroLogo" class="planet" alt="Orbit" />
                 </div>
             </div>
         </div>
 
-        <!-- Pricing -->
-        <div class="block" id="pricingBlock">
-            <div class="pricing-head">
-                <h2>Your community, your rules</h2>
-                <p>Pick the plan that fits your needs best.</p>
+        <div class="view">
+            <!-- Pricing -->
+            <div class="block" id="pricingBlock">
+                <div class="pricing-head">
+                    <h2>Your community, your rules</h2>
+                    <p>Pick the plan that fits your needs best.</p>
+                </div>
+                <div class="pricing-grid" id="pricingGrid"></div>
             </div>
-            <div class="pricing-grid" id="pricingGrid"></div>
-        </div>
 
-        <!-- Communities -->
-        <div class="block" id="communitiesBlock">
-            <div class="block-head">
-                <span class="kicker">Communities</span>
-                <h2>Find your people</h2>
+            <!-- Communities -->
+            <div class="block" id="communitiesBlock">
+                <div class="block-head">
+                    <span class="kicker">Communities</span>
+                    <h2>Find your people</h2>
+                </div>
+                <div class="category-grid" id="categoryGrid"></div>
+                <div class="hero-stats" id="heroStats"></div>
             </div>
-            <div class="category-grid" id="categoryGrid"></div>
-            <div class="hero-stats" id="heroStats"></div>
         </div>
     </section>
 
