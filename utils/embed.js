@@ -70,7 +70,7 @@ function baseEmbed({ title, description, color } = {}) {
 
 function successEmbed(message, title = "Success") {
     return baseEmbed({
-        title: `✓  ${title}`,
+        title: `✅ ${title}`,
         description: message,
         color: COLORS.SUCCESS
     });
@@ -78,7 +78,7 @@ function successEmbed(message, title = "Success") {
 
 function errorEmbed(message, title = "Error") {
     return baseEmbed({
-        title: `✕  ${title}`,
+        title: `❌ ${title}`,
         description: message,
         color: COLORS.ERROR
     });
@@ -138,7 +138,7 @@ function profileEmbed(profile, { headerNote } = {}) {
     }
 
     const embed = baseEmbed({
-        title: `${isFeatured ? "★ " : ""}${profile.name}${badge}`,
+        title: `${isFeatured ? "🌟 " : "👤 "}${profile.name}${badge}`,
         color
     });
 
@@ -158,29 +158,29 @@ function profileEmbed(profile, { headerNote } = {}) {
         }
     };
 
-    add("Age", profile.age, true);
-    add("Location", profile.location, true);
+    add("🎂 Age", profile.age, true);
+    add("📍 Location", profile.location, true);
     if (profile.category) {
-        const e = CATEGORY_EMOJI[profile.category] || "";
+        const e = CATEGORY_EMOJI[profile.category] || "🏷️";
         embed.addFields({
-            name: "Community",
+            name: "🏷️ Community",
             value: `${e} ${profile.category}`.trim(),
             inline: true
         });
     }
-    add("Gender", profile.gender, true);
-    add("Interested in", profile.interested_in, true);
-    add("Profession", profile.profession, true);
-    add("Skills", profile.skills);
-    add("Interests", profile.interests);
-    add("About", profile.bio);
-    add("Portfolio", profile.portfolio_projects);
+    add("🚻 Gender", profile.gender, true);
+    add("💘 Interested in", profile.interested_in, true);
+    add("💼 Profession", profile.profession, true);
+    add("🛠️ Skills", profile.skills);
+    add("🎯 Interests", profile.interests);
+    add("📝 About", profile.bio);
+    add("📂 Portfolio", profile.portfolio_projects);
 
     const links = [];
     if (profile.linkedin) links.push(`[LinkedIn](${safeUrl(profile.linkedin)})`);
     if (profile.github) links.push(`[GitHub](${safeUrl(profile.github)})`);
     if (profile.portfolio) links.push(`[Portfolio](${safeUrl(profile.portfolio)})`);
-    if (links.length) embed.addFields({ name: "Links", value: links.join("  ·  ") });
+    if (links.length) embed.addFields({ name: "🔗 Links", value: links.join("  ·  ") });
 
     return embed;
 }

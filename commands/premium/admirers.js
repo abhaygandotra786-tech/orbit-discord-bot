@@ -32,7 +32,7 @@ module.exports = {
         }
 
         const embed = baseEmbed({
-            title: "Your Admirers",
+            title: "💛 Your Admirers",
             description: `**${admirers.length}** member${admirers.length === 1 ? "" : "s"} liked you.`,
             color: config.COLORS.PREMIUM
         });

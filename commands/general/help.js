@@ -9,7 +9,7 @@ const config = require("../../config/config");
 
 const SECTIONS = [
     {
-        name: "Getting Started",
+        name: "🚀 Getting Started",
         lines: [
             "`/profile create` — build your profile",
             "`/profile view` — view & customise",
@@ -17,7 +17,7 @@ const SECTIONS = [
         ]
     },
     {
-        name: "Discover",
+        name: "🔭 Discover",
         lines: [
             "`/profile browse` — browse the community",
             "`/search` — filter by skills, location, profession…",
@@ -25,7 +25,7 @@ const SECTIONS = [
         ]
     },
     {
-        name: "Connect",
+        name: "💞 Connect",
         lines: [
             "`/like` — like a member (mutual = a match)",
             "`/matches` — your matches",
@@ -33,7 +33,7 @@ const SECTIONS = [
         ]
     },
     {
-        name: "Premium",
+        name: "👑 Premium",
         lines: [
             "`/premium plans` — membership tiers",
             "`/admirers` — see who liked you",
@@ -41,7 +41,7 @@ const SECTIONS = [
         ]
     },
     {
-        name: "Pro",
+        name: "✅ Pro",
         lines: [
             "`/match-ai` — AI compatibility matching",
             "`/recommend` — AI recommendations",
@@ -52,7 +52,7 @@ const SECTIONS = [
 ];
 
 const ADMIN_SECTION = {
-    name: "Admin",
+    name: "🛡️ Admin",
     lines: [
         "`/admin stats` · `/admin broadcast`",
         "`/admin grant-premium` · `/admin revoke-premium`",
@@ -73,9 +73,11 @@ module.exports = {
         const planLine = tier.badge || "Free";
 
         const { embed, files } = brandedEmbed({
-            title: `${config.BOT_NAME} — Commands`,
+            title: `🪐 ${config.BOT_NAME} — Commands`,
             description: `One community bot for everything.\n**Your plan:** ${planLine}`
         });
+
+        // (field emojis added below)
 
         for (const section of SECTIONS) {
             embed.addFields({ name: section.name, value: section.lines.join("\n") });
@@ -84,7 +86,7 @@ module.exports = {
             embed.addFields({ name: ADMIN_SECTION.name, value: ADMIN_SECTION.lines.join("\n") });
         }
         embed.addFields({
-            name: "Links",
+            name: "🔗 Links",
             value: `[Website](${config.WEBSITE})  ·  [Premium](${config.PREMIUM.PAYMENT_URL})`
         });
 

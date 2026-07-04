@@ -35,7 +35,7 @@ module.exports = {
 
         if (sub === "plans") {
             const { embed, files } = brandedEmbed({
-                title: `${config.BOT_NAME} Membership`,
+                title: `✨ ${config.BOT_NAME} Membership`,
                 description: "Pick the plan that fits how you want to grow.",
                 color: config.COLORS.PREMIUM,
                 banner: true

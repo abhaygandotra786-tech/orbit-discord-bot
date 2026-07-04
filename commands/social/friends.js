@@ -30,7 +30,7 @@ module.exports = {
         }
 
         const embed = baseEmbed({
-            title: "Your Friends",
+            title: "👥 Your Friends",
             description: `Connected with **${matches.length}** member${matches.length === 1 ? "" : "s"}. Use \`/friend-remove\` to remove one.`
         });
 

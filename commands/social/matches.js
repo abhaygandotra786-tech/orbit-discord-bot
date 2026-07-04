@@ -30,7 +30,7 @@ module.exports = {
         }
 
         const embed = baseEmbed({
-            title: "Your Matches",
+            title: "✨ Your Matches",
             description: `You have **${matches.length}** match${matches.length === 1 ? "" : "es"}.`
         });
 
