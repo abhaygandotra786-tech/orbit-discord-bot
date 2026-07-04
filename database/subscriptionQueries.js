@@ -5,15 +5,16 @@
 
 const db = require("./database");
 
-const upsertSubscription = db.prepare(`
-INSERT INTO subscriptions (user_id, tier, started_at, expires_at, granted_by)
-VALUES (@user_id, @tier, @started_at, @expires_at, @granted_by)
-ON CONFLICT(user_id) DO UPDATE SET
-    tier       = excluded.tier,
-    started_at = excluded.started_at,
-    expires_at = excluded.expires_at,
-    granted_by = excluded.granted_by
-`);
+const upsertSubscription = db.namedRun(
+    `INSERT INTO subscriptions (user_id, tier, started_at, expires_at, granted_by)
+     VALUES (?, ?, ?, ?, ?)
+     ON CONFLICT(user_id) DO UPDATE SET
+        tier = excluded.tier,
+        started_at = excluded.started_at,
+        expires_at = excluded.expires_at,
+        granted_by = excluded.granted_by`,
+    ["user_id", "tier", "started_at", "expires_at", "granted_by"]
+);
 
 const getSubscription = db.prepare(`SELECT * FROM subscriptions WHERE user_id = ?`);
 

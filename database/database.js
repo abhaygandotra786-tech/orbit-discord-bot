@@ -44,4 +44,21 @@ function safePragma(statement) {
 // Expose a helper so other modules can set pragmas safely too.
 db.safePragma = safePragma;
 
+/**
+ * libSQL's remote (Turso/Hrana) protocol does NOT bind @named parameters
+ * correctly — they come through as NULL. Positional (?) params work fine.
+ * This helper lets query modules keep their object-based call sites
+ * (`stmt.run({ a, b })`) while binding positionally under the hood.
+ *
+ * @param {string} sql   SQL using positional `?` placeholders
+ * @param {string[]} keys object keys in the same order as the `?`
+ * @returns {{ run: (obj?: object) => any }}
+ */
+db.namedRun = function namedRun(sql, keys) {
+    const stmt = db.prepare(sql);
+    return {
+        run: (obj = {}) => stmt.run(...keys.map((k) => obj[k]))
+    };
+};
+
 module.exports = db;

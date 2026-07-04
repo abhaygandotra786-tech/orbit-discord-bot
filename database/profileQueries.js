@@ -7,73 +7,65 @@ const db = require("./database");
 
 // --- Writes -------------------------------------------------------
 
-const createProfile = db.prepare(`
-INSERT INTO profiles (
-    user_id, name, age, gender, interested_in, location,
-    bio, skills, profession, linkedin, github, portfolio,
-    interests, category
-) VALUES (
-    @user_id, @name, @age, @gender, @interested_in, @location,
-    @bio, @skills, @profession, @linkedin, @github, @portfolio,
-    @interests, @category
-)
-`);
+const createProfile = db.namedRun(
+    `INSERT INTO profiles (
+        user_id, name, age, gender, interested_in, location,
+        bio, skills, profession, linkedin, github, portfolio,
+        interests, category
+    ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+    [
+        "user_id", "name", "age", "gender", "interested_in", "location",
+        "bio", "skills", "profession", "linkedin", "github", "portfolio",
+        "interests", "category"
+    ]
+);
 
-const updateProfile = db.prepare(`
-UPDATE profiles SET
-    name          = @name,
-    age           = @age,
-    location      = @location,
-    bio           = @bio,
-    skills        = @skills,
-    profession    = @profession,
-    linkedin      = @linkedin,
-    github        = @github,
-    portfolio     = @portfolio,
-    interests     = @interests,
-    updated_at    = CURRENT_TIMESTAMP
-WHERE user_id = @user_id
-`);
+const updateProfile = db.namedRun(
+    `UPDATE profiles SET
+        name = ?, age = ?, location = ?, bio = ?, skills = ?,
+        profession = ?, linkedin = ?, github = ?, portfolio = ?,
+        interests = ?, updated_at = CURRENT_TIMESTAMP
+     WHERE user_id = ?`,
+    [
+        "name", "age", "location", "bio", "skills", "profession",
+        "linkedin", "github", "portfolio", "interests", "user_id"
+    ]
+);
 
-const setCategory = db.prepare(`
-UPDATE profiles
-SET category = @category, updated_at = CURRENT_TIMESTAMP
-WHERE user_id = @user_id
-`);
+const setCategory = db.namedRun(
+    `UPDATE profiles SET category = ?, updated_at = CURRENT_TIMESTAMP WHERE user_id = ?`,
+    ["category", "user_id"]
+);
 
-const setGender = db.prepare(`
-UPDATE profiles
-SET gender = @gender, updated_at = CURRENT_TIMESTAMP
-WHERE user_id = @user_id
-`);
+const setGender = db.namedRun(
+    `UPDATE profiles SET gender = ?, updated_at = CURRENT_TIMESTAMP WHERE user_id = ?`,
+    ["gender", "user_id"]
+);
 
-const setInterestedIn = db.prepare(`
-UPDATE profiles
-SET interested_in = @interested_in, updated_at = CURRENT_TIMESTAMP
-WHERE user_id = @user_id
-`);
+const setInterestedIn = db.namedRun(
+    `UPDATE profiles SET interested_in = ?, updated_at = CURRENT_TIMESTAMP WHERE user_id = ?`,
+    ["interested_in", "user_id"]
+);
 
-const setTheme = db.prepare(`
-UPDATE profiles SET theme = @theme, updated_at = CURRENT_TIMESTAMP
-WHERE user_id = @user_id
-`);
+const setTheme = db.namedRun(
+    `UPDATE profiles SET theme = ?, updated_at = CURRENT_TIMESTAMP WHERE user_id = ?`,
+    ["theme", "user_id"]
+);
 
-const setFeatured = db.prepare(`
-UPDATE profiles SET featured = @featured, featured_until = @featured_until,
-    updated_at = CURRENT_TIMESTAMP
-WHERE user_id = @user_id
-`);
+const setFeatured = db.namedRun(
+    `UPDATE profiles SET featured = ?, featured_until = ?, updated_at = CURRENT_TIMESTAMP WHERE user_id = ?`,
+    ["featured", "featured_until", "user_id"]
+);
 
-const setInvestorRole = db.prepare(`
-UPDATE profiles SET investor_role = @investor_role, updated_at = CURRENT_TIMESTAMP
-WHERE user_id = @user_id
-`);
+const setInvestorRole = db.namedRun(
+    `UPDATE profiles SET investor_role = ?, updated_at = CURRENT_TIMESTAMP WHERE user_id = ?`,
+    ["investor_role", "user_id"]
+);
 
-const setPortfolioProjects = db.prepare(`
-UPDATE profiles SET portfolio_projects = @portfolio_projects,
-    portfolio = @portfolio, updated_at = CURRENT_TIMESTAMP
-WHERE user_id = @user_id
-`);
+const setPortfolioProjects = db.namedRun(
+    `UPDATE profiles SET portfolio_projects = ?, portfolio = ?, updated_at = CURRENT_TIMESTAMP WHERE user_id = ?`,
+    ["portfolio_projects", "portfolio", "user_id"]
+);
 
 const incrementSearchAppearance = db.prepare(`
 UPDATE profiles SET search_appearances = COALESCE(search_appearances, 0) + 1
