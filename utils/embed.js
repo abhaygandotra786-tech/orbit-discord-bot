@@ -70,16 +70,16 @@ function baseEmbed({ title, description, color } = {}) {
 
 function successEmbed(message, title = "Success") {
     return baseEmbed({
-        title: `✅ ${title}`,
-        description: `> ${message}`,
+        title: `✓  ${title}`,
+        description: message,
         color: COLORS.SUCCESS
     });
 }
 
 function errorEmbed(message, title = "Error") {
     return baseEmbed({
-        title: `❌ ${title}`,
-        description: `> ${message}`,
+        title: `✕  ${title}`,
+        description: message,
         color: COLORS.ERROR
     });
 }
@@ -87,12 +87,13 @@ function errorEmbed(message, title = "Error") {
 function infoEmbed(message, title) {
     return baseEmbed({
         title: title || undefined,
-        description: `> ${message}`,
+        description: message,
         color: COLORS.INFO
     });
 }
 
-const DIVIDER = "━━━━━━━━━━━━━━━━━━━━━━━━━━━━";
+// Thin separator, used sparingly.
+const DIVIDER = "─────────────────────";
 
 /**
  * Like baseEmbed, but adds the banner at the bottom and returns the files
@@ -122,10 +123,9 @@ function brandedEmbed({ title, description, color } = {}) {
  * @param {string} [opts.headerNote] extra line shown under the title
  */
 function profileEmbed(profile, { headerNote } = {}) {
-    const emoji = CATEGORY_EMOJI[profile.category] || "🏷️";
     const tier = premium.meta(profile.user_id);
-    const badgeLabel = premium.badgeLabel(profile.user_id);
-    const inlineBadge = tier.emoji ? ` ${tier.emoji}` : "";
+    const badge = tier.emoji ? ` ${tier.emoji}` : "";
+    const isFeatured = profile.featured && profile.featured_until > Date.now();
 
     // Theme color (Premium+), else tier color, else brand default.
     let color = tier.color;
@@ -137,100 +137,64 @@ function profileEmbed(profile, { headerNote } = {}) {
         color = config.PREMIUM.THEMES[profile.theme];
     }
 
-    const isFeatured =
-        profile.featured && profile.featured_until > Date.now();
-
     const embed = baseEmbed({
-        title: `${isFeatured ? "🌟 " : ""}👤 ${profile.name}${inlineBadge}`,
+        title: `${isFeatured ? "★ " : ""}${profile.name}${badge}`,
         color
     });
 
-    const noteLines = [];
-    if (badgeLabel) noteLines.push(`**${badgeLabel}**`);
-    if (isFeatured) noteLines.push("🌟 **Featured Profile**");
-    if (profile.investor_role) noteLines.push(`💰 *${profile.investor_role}*`);
-    if (headerNote) noteLines.push(`📖 *${headerNote}*`);
-    noteLines.push(DIVIDER);
-    embed.setDescription(noteLines.join("\n"));
+    // Compact subtitle: only the meaningful bits.
+    const sub = [];
+    if (premium.badgeLabel(profile.user_id))
+        sub.push(`**${premium.badgeLabel(profile.user_id)}**`);
+    if (isFeatured) sub.push("Featured");
+    if (profile.investor_role) sub.push(profile.investor_role);
+    if (headerNote) sub.push(`*${headerNote}*`);
+    if (sub.length) embed.setDescription(sub.join("  ·  "));
 
-    embed.addFields(
-        { name: "🎂 Age", value: codeline(profile.age), inline: true },
-        { name: "🚻 Gender", value: codeline(profile.gender), inline: true },
-        {
-            name: "💘 Interested In",
-            value: codeline(profile.interested_in),
-            inline: true
-        },
-        {
-            name: "📍 Location",
-            value: codeline(profile.location),
-            inline: true
-        },
-        {
-            name: "💼 Profession",
-            value: codeline(profile.profession),
-            inline: true
-        },
-        {
-            name: "🏷️ Category",
-            value: profile.category ? `${emoji} ${profile.category}` : "`N/A`",
-            inline: true
+    // Only show fields that actually have a value — keeps it clean.
+    const add = (name, value, inline = false) => {
+        if (value !== null && value !== undefined && String(value).trim() !== "") {
+            embed.addFields({ name, value: String(value).trim(), inline });
         }
-    );
+    };
 
-    embed.addFields(
-        { name: "🛠️ Skills", value: blockOrNa(profile.skills) },
-        { name: "🎯 Interests", value: blockOrNa(profile.interests) },
-        { name: "📝 Bio", value: profile.bio ? `> ${profile.bio}` : "`No bio provided.`" }
-    );
-
-    if (profile.portfolio_projects) {
+    add("Age", profile.age, true);
+    add("Location", profile.location, true);
+    if (profile.category) {
+        const e = CATEGORY_EMOJI[profile.category] || "";
         embed.addFields({
-            name: "📂 Portfolio Projects",
-            value: profile.portfolio_projects
+            name: "Community",
+            value: `${e} ${profile.category}`.trim(),
+            inline: true
         });
     }
+    add("Gender", profile.gender, true);
+    add("Interested in", profile.interested_in, true);
+    add("Profession", profile.profession, true);
+    add("Skills", profile.skills);
+    add("Interests", profile.interests);
+    add("About", profile.bio);
+    add("Portfolio", profile.portfolio_projects);
 
     const links = [];
     if (profile.linkedin) links.push(`[LinkedIn](${safeUrl(profile.linkedin)})`);
     if (profile.github) links.push(`[GitHub](${safeUrl(profile.github)})`);
-    if (profile.portfolio)
-        links.push(`[Portfolio](${safeUrl(profile.portfolio)})`);
-
-    if (links.length) {
-        embed.addFields({ name: "🔗 Links", value: links.join("  •  ") });
-    }
+    if (profile.portfolio) links.push(`[Portfolio](${safeUrl(profile.portfolio)})`);
+    if (links.length) embed.addFields({ name: "Links", value: links.join("  ·  ") });
 
     return embed;
 }
 
 // --- formatting helpers -------------------------------------------
 
-function codeline(value) {
-    return value === null || value === undefined || value === ""
-        ? "`N/A`"
-        : `\`${value}\``;
-}
-
-function blockOrNa(value) {
-    if (!value) return "`N/A`";
-    // Render comma lists as neat pills.
-    const items = String(value)
-        .split(",")
-        .map((s) => s.trim())
-        .filter(Boolean);
-    if (items.length <= 1) return value;
-    return items.map((i) => `\`${i}\``).join(" ");
-}
-
 function safeUrl(value) {
     if (/^https?:\/\//i.test(value)) return value;
     return `https://${value}`;
 }
 
-/** Compact "👤 Name 👑" header for list items, with tier badge. */
+/** Compact "Name 👑" label for list items, with tier badge. */
 function nameWithBadge(profile) {
-    return `👤 ${profile.name}${premium.badge(profile.user_id)}`;
+    return `${profile.name}${premium.badge(profile.user_id)}`;
 }
 
 module.exports = {

@@ -35,23 +35,26 @@ module.exports = {
 
         if (sub === "plans") {
             const { embed, files } = brandedEmbed({
-                title: `✨ ${config.BOT_NAME} Membership`,
-                description:
-                    "Choose the plan that fits your goals.\n" +
-                    "**Free** to explore • **👑 Premium** for visibility • **✅ Pro** for elite networking.\n" +
-                    DIVIDER,
+                title: `${config.BOT_NAME} Membership`,
+                description: "Pick the plan that fits how you want to grow.",
                 color: config.COLORS.PREMIUM,
                 banner: true
             });
 
+            const clean = (p) => p.replace(/^[^\w`]+/, "").trim();
+
             for (const tier of Object.values(config.PREMIUM.TIERS)) {
-                const heading =
+                const price =
                     tier.key === "free"
-                        ? "🆓 Free — $0"
-                        : `${tier.emoji} ${tier.name} — ${formatPrice(tier)}`;
+                        ? "Free"
+                        : `${config.PREMIUM.CURRENCY}${tier.price.toFixed(2)}/mo`;
+                const star = tier.key === "premium" ? "  ·  Most popular" : "";
+                const top = tier.perks.slice(0, 4).map((p) => `• ${clean(p)}`);
+                if (tier.perks.length > 4) top.push(`• +${tier.perks.length - 4} more`);
+
                 embed.addFields({
-                    name: heading,
-                    value: tier.perks.map((p) => `✅ ${p}`).join("\n")
+                    name: `${tier.emoji ? tier.emoji + " " : ""}${tier.name} — ${price}${star}`,
+                    value: top.join("\n")
                 });
             }
 
@@ -89,18 +92,19 @@ module.exports = {
             const tier = config.PREMIUM.TIERS[active.tier];
             const expires = Math.floor(active.expires_at / 1000);
 
+            const clean = (p) => p.replace(/^[^\w`]+/, "").trim();
             const { embed, files } = brandedEmbed({
                 title: `${tier.emoji} ${tier.name} Member`,
-                description: `Thanks for supporting ${config.BOT_NAME}! 💜\n${DIVIDER}`,
+                description: `Thanks for supporting ${config.BOT_NAME}.`,
                 color: tier.color,
                 banner: true
             });
             embed.addFields(
-                { name: "Tier", value: tier.badge || tier.name, inline: true },
-                { name: "Renews / Expires", value: `<t:${expires}:R>`, inline: true },
+                { name: "Plan", value: tier.name, inline: true },
+                { name: "Renews", value: `<t:${expires}:R>`, inline: true },
                 {
-                    name: "Perks",
-                    value: tier.perks.map((p) => `✅ ${p}`).join("\n")
+                    name: "Included",
+                    value: tier.perks.slice(0, 4).map((p) => `• ${clean(p)}`).join("\n")
                 }
             );
 

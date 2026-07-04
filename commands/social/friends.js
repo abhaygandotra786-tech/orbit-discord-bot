@@ -21,8 +21,8 @@ module.exports = {
             return interaction.reply({
                 embeds: [
                     infoEmbed(
-                        "You have no friends yet. Match with members to add them here!",
-                        "👥 No Friends Yet"
+                        "No friends yet. Match with members to add them here.",
+                        "No friends yet"
                     )
                 ],
                 ephemeral: true
@@ -30,19 +30,20 @@ module.exports = {
         }
 
         const embed = baseEmbed({
-            title: "👥 Your Friends",
-            description: `You are connected with **${matches.length}** member(s). Use \`/friend-remove\` to remove one.`
+            title: "Your Friends",
+            description: `Connected with **${matches.length}** member${matches.length === 1 ? "" : "s"}. Use \`/friend-remove\` to remove one.`
         });
 
         for (const match of matches) {
             const otherId = otherUser(match, userId);
             const profile = getProfile.get(otherId);
+            const details = profile
+                ? [profile.profession, profile.location].filter(Boolean).join(" · ")
+                : "";
 
             embed.addFields({
-                name: profile ? `👤 ${profile.name}` : "👤 Unknown User",
-                value: `📍 ${profile?.location || "N/A"} • 💼 ${
-                    profile?.profession || "N/A"
-                } • <@${otherId}>`
+                name: profile ? profile.name : "Unknown member",
+                value: `${details ? details + "\n" : ""}<@${otherId}>`
             });
         }
 

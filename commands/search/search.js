@@ -154,11 +154,14 @@ module.exports = {
         });
 
         for (const p of results) {
+            const line1 = [p.profession, p.location, p.category].filter(Boolean).join(" · ");
+            const parts = [];
+            if (line1) parts.push(line1);
+            if (p.skills) parts.push(p.skills);
+            parts.push(`<@${p.user_id}>`);
             embed.addFields({
-                name: `${nameWithBadge(p)} (${p.age ?? "N/A"})`,
-                value:
-                    `📍 ${p.location || "N/A"} • 💼 ${p.profession || "N/A"}\n` +
-                    `🛠️ ${p.skills || "N/A"}\n🏷️ ${p.category || "N/A"} • <@${p.user_id}>`
+                name: `${nameWithBadge(p)}${p.age ? ` · ${p.age}` : ""}`,
+                value: parts.join("\n")
             });
         }
 

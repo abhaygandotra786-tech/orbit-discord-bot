@@ -34,16 +34,15 @@ async function showCategoryMatches(interaction, category) {
     }
 
     const embed = baseEmbed({
-        title: `${emoji} Your ${category} Matches`,
-        description: `You have **${partners.length}** ${category} match(es).`
+        title: `${emoji} ${category} Matches`,
+        description: `You have **${partners.length}** ${category} match${partners.length === 1 ? "" : "es"}.`
     });
 
     for (const p of partners) {
+        const details = [p.profession, p.location].filter(Boolean).join(" · ");
         embed.addFields({
-            name: `👤 ${p.name}`,
-            value: `💼 ${p.profession || "N/A"} • 📍 ${
-                p.location || "N/A"
-            } • <@${p.user_id}>`
+            name: p.name,
+            value: `${details ? details + "\n" : ""}<@${p.user_id}>`
         });
     }
 

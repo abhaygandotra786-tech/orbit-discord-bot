@@ -56,9 +56,12 @@ module.exports = {
     },
 
     // --- Admins (Discord user IDs) ---
-    ADMIN_IDS: [
-        // "123456789012345678"
-    ],
+    // Set ADMIN_IDS in .env / Render as a comma-separated list, e.g.
+    // ADMIN_IDS=123456789012345678,987654321098765432
+    ADMIN_IDS: (process.env.ADMIN_IDS || "")
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean),
 
     // --- Premium / Subscriptions (monetization) ---
     PREMIUM: {

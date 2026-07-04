@@ -7,7 +7,6 @@ const { SlashCommandBuilder } = require("discord.js");
 const { getMatches, otherUser } = require("../../database/matchQueries");
 const { getProfile } = require("../../database/profileQueries");
 const { baseEmbed, infoEmbed } = require("../../utils/embed");
-const { CATEGORY_EMOJI } = require("../../utils/constants");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -22,8 +21,8 @@ module.exports = {
             return interaction.reply({
                 embeds: [
                     infoEmbed(
-                        "You have no matches yet. Like other members with `/like` or while browsing!",
-                        "💔 No Matches"
+                        "No matches yet. Like members with `/like` or while browsing.",
+                        "No matches yet"
                     )
                 ],
                 ephemeral: true
@@ -31,22 +30,22 @@ module.exports = {
         }
 
         const embed = baseEmbed({
-            title: "✨ Your Matches",
-            description: `You have **${matches.length}** match(es).`
+            title: "Your Matches",
+            description: `You have **${matches.length}** match${matches.length === 1 ? "" : "es"}.`
         });
 
         for (const match of matches) {
             const otherId = otherUser(match, userId);
             const profile = getProfile.get(otherId);
-            const emoji = profile ? CATEGORY_EMOJI[profile.category] || "🏷️" : "🏷️";
+            const details = profile
+                ? [profile.profession, profile.location, profile.category]
+                      .filter(Boolean)
+                      .join(" · ")
+                : "";
 
             embed.addFields({
-                name: profile ? `👤 ${profile.name}` : "👤 Unknown User",
-                value: profile
-                    ? `💼 ${profile.profession || "N/A"} • 📍 ${
-                          profile.location || "N/A"
-                      }\n${emoji} ${profile.category || "N/A"} • <@${otherId}>`
-                    : `<@${otherId}>`
+                name: profile ? profile.name : "Unknown member",
+                value: `${details ? details + "\n" : ""}<@${otherId}>`
             });
         }
 
