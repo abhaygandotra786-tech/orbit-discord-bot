@@ -3,7 +3,7 @@
  * The `adminOnly` flag is enforced centrally in interactionCreate.js.
  */
 
-const { SlashCommandBuilder } = require("discord.js");
+const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
 
 const {
     countProfiles,
@@ -33,6 +33,10 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName("admin")
         .setDescription("Administrative tools")
+        // Hidden from regular members in the UI; runtime check further
+        // restricts execution to ADMIN_IDS only.
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+        .setDMPermission(false)
         .addSubcommand((s) =>
             s.setName("stats").setDescription("View bot statistics")
         )

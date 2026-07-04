@@ -82,7 +82,7 @@ function renderPricing() {
 
         const btn =
             tier.price > 0
-                ? `<a class="pc-btn ${tier.recommended ? "primary" : ""}" href="${state.config.upgradeUrl}" target="_blank" rel="noopener">Get ${escape(tier.name)}</a>`
+                ? `<button class="pc-btn ${tier.recommended ? "primary" : ""}" data-tier="${tier.key}">Get ${escape(tier.name)}</button>`
                 : `<a class="pc-btn" href="${state.config.inviteUrl}" target="_blank" rel="noopener">Get started free</a>`;
 
         card.innerHTML = `
@@ -92,6 +92,33 @@ function renderPricing() {
             <ul class="pc-features">${features}</ul>
             ${btn}`;
         grid.appendChild(card);
+    }
+
+    // Wire the paid-tier buttons to the Dodo checkout flow.
+    for (const b of grid.querySelectorAll(".pc-btn[data-tier]")) {
+        b.onclick = () => startCheckout(b.dataset.tier);
+    }
+}
+
+async function startCheckout(tier) {
+    if (!state.me) {
+        toast("Sign in with Discord to upgrade");
+        setTimeout(() => (window.location.href = "/auth/login"), 900);
+        return;
+    }
+    if (!state.config.paymentsEnabled) {
+        toast("Payments aren't set up yet — check back soon");
+        return;
+    }
+    toast("Opening secure checkout…");
+    const { status, body } = await api("/api/checkout", {
+        method: "POST",
+        body: JSON.stringify({ tier })
+    });
+    if (status === 200 && body.url) {
+        window.location.href = body.url;
+    } else {
+        toast(body.error === "payments_unconfigured" ? "Payments not set up yet" : "Could not start checkout");
     }
 }
 
@@ -291,10 +318,15 @@ async function boot() {
     $("brandName").textContent = state.config.botName;
     $("footerName").textContent = state.config.botName;
     document.title = `${state.config.botName} — Premium`;
-    $("upgradeLink").href = state.config.upgradeUrl;
-    $("premiumPill").href = state.config.upgradeUrl;
-    $("announceBtn").href = state.config.upgradeUrl;
     $("addBtn").href = state.config.inviteUrl;
+    const toPricing = (e) => {
+        if (e) e.preventDefault();
+        ensureHome(() => scrollToEl("pricingBlock"));
+        setActiveNav("navPremium");
+    };
+    $("upgradeLink").onclick = toPricing;
+    $("premiumPill").onclick = toPricing;
+    $("announceBtn").onclick = toPricing;
 
     // logo (brand + hero)
     if (state.config.logo) {

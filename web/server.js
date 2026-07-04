@@ -36,8 +36,69 @@ const {
 } = require("../database/likesQueries");
 const discord = require("./lib/discord");
 
+const dodo = require("./lib/dodo");
+const { grant } = premium;
+
 const app = express();
 app.set("trust proxy", 1);
+
+// --- Dodo webhook: MUST be registered before express.json() so we can read
+// the raw body for signature verification. ---
+app.post(
+    "/api/dodo/webhook",
+    express.raw({ type: "*/*" }),
+    async (req, res) => {
+        const raw = Buffer.isBuffer(req.body)
+            ? req.body.toString("utf8")
+            : String(req.body || "");
+        const headers = {
+            "webhook-id": req.header("webhook-id"),
+            "webhook-signature": req.header("webhook-signature"),
+            "webhook-timestamp": req.header("webhook-timestamp")
+        };
+
+        let evt;
+        try {
+            evt = dodo.verifyWebhook(raw, headers);
+        } catch (err) {
+            logger.error("Dodo webhook signature verification failed", err);
+            return res.status(401).send("invalid signature");
+        }
+
+        try {
+            const type = evt.type || evt.event_type;
+            const data = evt.data || {};
+            const paid =
+                type === "payment.succeeded" ||
+                type === "subscription.active" ||
+                type === "subscription.renewed";
+
+            if (paid) {
+                const meta = data.metadata || {};
+                const discordId = meta.discord_id;
+                const tier =
+                    meta.tier ||
+                    dodo.tierFromProduct(
+                        data.product_id ||
+                            data.product_cart?.[0]?.product_id
+                    );
+                if (discordId && tier) {
+                    grant(discordId, tier, undefined, "dodo");
+                    logger.info(`[dodo] ${type} → granted ${tier} to ${discordId}`);
+                } else {
+                    logger.error(
+                        `[dodo] ${type} missing discord_id/tier in metadata`
+                    );
+                }
+            }
+        } catch (err) {
+            logger.error("Dodo webhook handler error", err);
+        }
+        // Always 200 so Dodo doesn't retry a handled event.
+        return res.status(200).send("ok");
+    }
+);
+
 app.use(express.json());
 app.use(
     session({
@@ -132,6 +193,8 @@ app.post("/auth/logout", (req, res) => {
 app.get("/api/config", (req, res) => {
     res.json({
         botName: config.BOT_NAME,
+        website: config.WEBSITE,
+        supportServer: config.SUPPORT_SERVER,
         logo: config.LOGO_URL || "/assets/logo.png",
         banner: config.BANNER_URL || "/assets/banner.png",
         categories: CATEGORIES.map((c) => ({
@@ -149,6 +212,7 @@ app.get("/api/config", (req, res) => {
         })),
         currency: config.PREMIUM.CURRENCY,
         oauthConfigured,
+        paymentsEnabled: dodo.isConfigured(),
         inviteUrl: process.env.CLIENT_ID
             ? `https://discord.com/oauth2/authorize?client_id=${process.env.CLIENT_ID}&scope=bot+applications.commands&permissions=277025508352`
             : "#",
@@ -189,6 +253,29 @@ app.get("/api/profiles", async (req, res) => {
     rows = rank(rows.filter((p) => p.category)); // only categorized profiles
     const profiles = await Promise.all(rows.map((p) => publicProfile(p, viewerId)));
     res.json({ category: category || "all", profiles });
+});
+
+app.post("/api/checkout", requireAuth, async (req, res) => {
+    const tier = String(req.body?.tier || "");
+    if (!["premium", "pro"].includes(tier)) {
+        return res.status(400).json({ error: "invalid_tier" });
+    }
+    if (!dodo.isConfigured()) {
+        return res.status(503).json({ error: "payments_unconfigured" });
+    }
+    try {
+        const base = config.WEB.BASE_URL.replace(/\/$/, "");
+        const url = await dodo.createCheckout({
+            tier,
+            discordId: req.session.user.id,
+            discordName: req.session.user.username,
+            returnUrl: `${base}/success.html`
+        });
+        return res.json({ url });
+    } catch (err) {
+        logger.error("Checkout creation failed", err);
+        return res.status(500).json({ error: "checkout_failed" });
+    }
 });
 
 app.post("/api/like", requireAuth, (req, res) => {

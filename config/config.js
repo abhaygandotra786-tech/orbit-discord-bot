@@ -67,8 +67,19 @@ module.exports = {
     PREMIUM: {
         CURRENCY: "$",
 
-        // Where users go to pay. Plug in Stripe / Ko-fi / Patreon / etc.
-        PAYMENT_URL: "https://example.com/upgrade",
+        // Legacy fallback link (used only if Dodo isn't configured).
+        PAYMENT_URL: process.env.PAYMENT_URL || "https://example.com/upgrade",
+
+        // Dodo Payments (checkout + webhook auto-grant).
+        DODO: {
+            API_KEY: process.env.DODO_PAYMENTS_API_KEY || "",
+            ENVIRONMENT: process.env.DODO_ENVIRONMENT || "test_mode", // or "live_mode"
+            WEBHOOK_SECRET: process.env.DODO_WEBHOOK_SECRET || "",
+            PRODUCTS: {
+                premium: process.env.DODO_PRODUCT_PREMIUM || "",
+                pro: process.env.DODO_PRODUCT_PRO || ""
+            }
+        },
 
         // Available profile themes (Premium+). Maps name -> embed color.
         THEMES: {
