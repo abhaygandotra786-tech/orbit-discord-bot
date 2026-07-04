@@ -1,9 +1,11 @@
 /**
  * Registers slash commands with Discord.
  *
- * Usage:
- *   - Guild deploy (instant, for development): set GUILD_ID in .env
- *   - Global deploy (up to 1h to propagate): leave GUILD_ID empty
+ * Default: GLOBAL deploy — commands work in every server the bot is in
+ * (can take up to ~1 hour to appear the first time).
+ *
+ * For fast local iteration only, run with DEPLOY_MODE=guild and a GUILD_ID
+ * set; that registers instantly but only in that one server.
  */
 
 require("dotenv").config();
@@ -46,7 +48,10 @@ const rest = new REST({ version: "10" }).setToken(process.env.TOKEN);
 
         console.log(`Deploying ${commands.length} command(s)...`);
 
-        if (process.env.GUILD_ID) {
+        const guildOnly =
+            process.env.DEPLOY_MODE === "guild" && process.env.GUILD_ID;
+
+        if (guildOnly) {
             await rest.put(
                 Routes.applicationGuildCommands(
                     process.env.CLIENT_ID,
@@ -54,13 +59,26 @@ const rest = new REST({ version: "10" }).setToken(process.env.TOKEN);
                 ),
                 { body: commands }
             );
-            console.log("Guild commands deployed successfully!");
+            console.log("Guild commands deployed (guild-only mode).");
         } else {
-            await rest.put(
-                Routes.applicationCommands(process.env.CLIENT_ID),
-                { body: commands }
-            );
+            // Global deploy — works in every server the bot joins.
+            await rest.put(Routes.applicationCommands(process.env.CLIENT_ID), {
+                body: commands
+            });
             console.log("Global commands deployed successfully!");
+
+            // Clear any leftover guild-scoped commands so they don't appear
+            // twice in the dev/test server.
+            if (process.env.GUILD_ID) {
+                await rest.put(
+                    Routes.applicationGuildCommands(
+                        process.env.CLIENT_ID,
+                        process.env.GUILD_ID
+                    ),
+                    { body: [] }
+                );
+                console.log("Cleared old guild-scoped commands.");
+            }
         }
     } catch (error) {
         console.error("Deployment failed:", error);
