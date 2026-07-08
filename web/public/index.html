@@ -18,12 +18,19 @@
                 <span id="brandName">Orbit</span>
             </a>
             <nav class="nav-center">
-                <a href="/networking" data-link>Networking</a>
-                <a href="/friends" data-link>Friends</a>
-                <a href="/gaming" data-link>Gaming</a>
-                <a href="/freelancing" data-link>Freelancing</a>
-                <a href="/co-founder" data-link>Co-Founder</a>
-                <a href="/dating" data-link>Dating</a>
+                <div class="dropdown" id="catDropdown">
+                    <button class="dropdown-btn" id="catBtn" aria-haspopup="true" aria-expanded="false">
+                        Categories <span class="caret">▾</span>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a href="/networking" data-link>🤝 Networking</a>
+                        <a href="/friends" data-link>👥 Friends</a>
+                        <a href="/gaming" data-link>🎮 Gaming</a>
+                        <a href="/freelancing" data-link>💼 Freelancing</a>
+                        <a href="/co-founder" data-link>🚀 Co-Founder</a>
+                        <a href="/dating" data-link>💖 Dating</a>
+                    </div>
+                </div>
                 <a href="/premium" data-link>Premium</a>
                 <a href="/interest" data-link id="navAdmirers" class="hidden">Interest</a>
             </nav>

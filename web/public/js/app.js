@@ -54,6 +54,13 @@ function setActiveByPath(path) {
     document.querySelectorAll(".nav-center a").forEach((a) => {
         a.classList.toggle("active", a.getAttribute("href") === path);
     });
+    const catBtn = $("catBtn");
+    if (catBtn) {
+        catBtn.classList.toggle(
+            "active",
+            CATS.some((n) => "/" + slugOf(n) === path)
+        );
+    }
 }
 function navigate(path, push = true) {
     if (push && location.pathname !== path) history.pushState({}, "", path);
@@ -313,6 +320,14 @@ async function boot() {
     renderAuth();
     renderPricing();
     route(location.pathname);
+
+    // Categories dropdown toggle
+    const dropdown = $("catDropdown");
+    $("catBtn").addEventListener("click", (e) => {
+        e.stopPropagation();
+        dropdown.classList.toggle("open");
+    });
+    document.addEventListener("click", () => dropdown.classList.remove("open"));
 
     const params = new URLSearchParams(window.location.search);
     if (params.get("login") === "ok") toast("Logged in");
