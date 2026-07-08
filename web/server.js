@@ -37,6 +37,7 @@ const {
     countLikes
 } = require("../database/likesQueries");
 const discord = require("./lib/discord");
+const db = require("../database/database");
 
 const dodo = require("./lib/dodo");
 const { grant } = premium;
@@ -289,6 +290,35 @@ app.get("/api/profiles", async (req, res) => {
     rows = rank(rows.filter((p) => p.category)); // only categorized profiles
     const profiles = await Promise.all(rows.map((p) => publicProfile(p, viewerId)));
     res.json({ category: category || "all", profiles });
+});
+
+// Keyword search across name, skills, profession, location and interests.
+app.get("/api/search", async (req, res) => {
+    const q = String(req.query.q || "").trim();
+    const category = req.query.category;
+    const viewerId = req.session.user?.id || null;
+
+    if (!q) return res.json({ q: "", profiles: [] });
+
+    const like = `%${q}%`;
+    const fields =
+        "(name LIKE ? OR skills LIKE ? OR profession LIKE ? OR location LIKE ? OR interests LIKE ?)";
+    const args = [like, like, like, like, like];
+
+    let rows;
+    if (category && CATEGORIES.includes(category)) {
+        rows = db
+            .prepare(`SELECT * FROM profiles WHERE category = ? AND ${fields} LIMIT 100`)
+            .all(category, ...args);
+    } else {
+        rows = db
+            .prepare(`SELECT * FROM profiles WHERE ${fields} LIMIT 100`)
+            .all(...args);
+    }
+
+    rows = rank(rows.filter((p) => p.category));
+    const profiles = await Promise.all(rows.map((p) => publicProfile(p, viewerId)));
+    res.json({ q, category: category || "all", profiles });
 });
 
 app.post("/api/checkout", requireAuth, async (req, res) => {

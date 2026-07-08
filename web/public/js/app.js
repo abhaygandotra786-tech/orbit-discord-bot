@@ -121,11 +121,14 @@ async function loadHome() {
 
 // ---- community page ----------------------------------------------
 async function loadCategory(category) {
+    state.currentCategory = category;
     setTheme(slugOf(category));
     setView("category");
     setActiveByPath("/" + slugOf(category));
     $("catTitle").textContent = category;
     $("catSubtitle").textContent = SUBTITLES[category] || "";
+    $("catSearchInput").value = "";
+    $("catSearchInput").placeholder = `Search ${category}…`;
     $("profileGrid").innerHTML = `<div class="empty">Loading…</div>`;
     $("emptyState").classList.add("hidden");
 
@@ -137,6 +140,33 @@ async function loadCategory(category) {
         const empty = $("emptyState");
         empty.textContent = `No members here yet. Join with /profile create in Discord.`;
         empty.classList.remove("hidden");
+    }
+}
+
+async function searchProfiles(q, category) {
+    q = (q || "").trim();
+    if (!q) return;
+    state.currentCategory = category || null;
+    setView("category");
+    setTheme(category ? slugOf(category) : "home");
+    setActiveByPath(category ? "/" + slugOf(category) : "/search");
+    $("catTitle").textContent = category || "Search";
+    $("catSubtitle").textContent = `Results for “${q}”`;
+    $("catSearchInput").value = q;
+    $("catSearchInput").placeholder = category ? `Search ${category}…` : "Search everyone…";
+    $("profileGrid").innerHTML = `<div class="empty">Searching…</div>`;
+    $("emptyState").classList.add("hidden");
+
+    const url =
+        `/api/search?q=${encodeURIComponent(q)}` +
+        (category ? `&category=${encodeURIComponent(category)}` : "");
+    const { body } = await api(url);
+    renderProfiles(body.profiles, "profileGrid");
+    if (!body.profiles.length) {
+        $("profileGrid").innerHTML = "";
+        const e = $("emptyState");
+        e.textContent = `No members matched “${q}”.`;
+        e.classList.remove("hidden");
     }
 }
 
@@ -328,6 +358,21 @@ async function boot() {
         dropdown.classList.toggle("open");
     });
     document.addEventListener("click", () => dropdown.classList.remove("open"));
+
+    // Search forms
+    $("heroSearch").addEventListener("submit", (e) => {
+        e.preventDefault();
+        searchProfiles($("heroSearchInput").value, null);
+    });
+    $("catSearch").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const q = $("catSearchInput").value.trim();
+        if (!q) {
+            if (state.currentCategory) loadCategory(state.currentCategory);
+            return;
+        }
+        searchProfiles(q, state.currentCategory);
+    });
 
     const params = new URLSearchParams(window.location.search);
     if (params.get("login") === "ok") toast("Logged in");
