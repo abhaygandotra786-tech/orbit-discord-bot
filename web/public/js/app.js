@@ -50,10 +50,10 @@ function setView(name) {
 function setTheme(theme) {
     document.documentElement.setAttribute("data-theme", theme);
 }
-function setActiveNav(id) {
-    for (const n of ["navHome", "navCommunities", "navPremium"]) {
-        $(n).classList.toggle("active", n === id);
-    }
+function setActiveByPath(path) {
+    document.querySelectorAll(".nav-center a").forEach((a) => {
+        a.classList.toggle("active", a.getAttribute("href") === path);
+    });
 }
 function navigate(path, push = true) {
     if (push && location.pathname !== path) history.pushState({}, "", path);
@@ -61,12 +61,10 @@ function navigate(path, push = true) {
 }
 function route(path) {
     const p = path || location.pathname;
-    if (p.startsWith("/c/")) {
-        const name = nameFromSlug(p.slice(3));
-        if (name) return loadCategory(name);
-    }
     if (p === "/premium") return showPremium();
     if (p === "/interest") return loadAdmirers();
+    const name = nameFromSlug(p.replace(/^\//, ""));
+    if (name) return loadCategory(name);
     return loadHome();
 }
 window.addEventListener("popstate", () => route(location.pathname));
@@ -105,41 +103,20 @@ function renderAuth() {
 async function loadHome() {
     setTheme("home");
     setView("home");
-    setActiveNav("navHome");
-
-    const cats = (await api("/api/categories")).body;
-    const grid = $("categoryGrid");
-    grid.innerHTML = "";
-    for (const c of cats) {
-        const a = document.createElement("a");
-        a.className = `category-card cc-${slugOf(c.name)}`;
-        a.href = `/c/${slugOf(c.name)}`;
-        a.setAttribute("data-link", "");
-        a.innerHTML = `
-            <div class="cc-icon">${c.emoji}</div>
-            <div class="cc-body">
-                <div class="cc-name">${escape(c.name)}</div>
-                <div class="cc-desc">${escape(SUBTITLES[c.name] || "")}</div>
-            </div>
-            <div class="cc-meta">
-                <span class="cc-count">${c.count}</span>
-                <span class="cc-arrow">→</span>
-            </div>`;
-        grid.appendChild(a);
-    }
+    setActiveByPath("/");
 
     const stats = (await api("/api/stats")).body;
     $("heroStats").innerHTML = `
         <div class="stat"><b>${stats.profiles}</b><span>Members</span></div>
         <div class="stat"><b>${stats.likes}</b><span>Connections</span></div>
-        <div class="stat"><b>${cats.length}</b><span>Communities</span></div>`;
+        <div class="stat"><b>${CATS.length}</b><span>Communities</span></div>`;
 }
 
 // ---- community page ----------------------------------------------
 async function loadCategory(category) {
     setTheme(slugOf(category));
     setView("category");
-    setActiveNav("navCommunities");
+    setActiveByPath("/" + slugOf(category));
     $("catTitle").textContent = category;
     $("catSubtitle").textContent = SUBTITLES[category] || "";
     $("profileGrid").innerHTML = `<div class="empty">Loading…</div>`;
@@ -225,7 +202,7 @@ async function handleLike(p, btn, count) {
 function showPremium() {
     setTheme("home");
     setView("premium");
-    setActiveNav("navPremium");
+    setActiveByPath("/premium");
 }
 
 function renderPricing() {
@@ -336,16 +313,6 @@ async function boot() {
     renderAuth();
     renderPricing();
     route(location.pathname);
-
-    // "Communities" nav → home + scroll to the grid
-    $("navCommunities").addEventListener("click", () => {
-        setTimeout(() => {
-            const el = document.querySelector(".section");
-            if (el && !$("view-home").classList.contains("hidden")) {
-                el.scrollIntoView({ behavior: "smooth" });
-            }
-        }, 60);
-    });
 
     const params = new URLSearchParams(window.location.search);
     if (params.get("login") === "ok") toast("Logged in");
