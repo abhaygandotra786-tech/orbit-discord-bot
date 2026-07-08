@@ -319,6 +319,11 @@ async function boot() {
     $("footerName").textContent = state.config.botName;
     document.title = `${state.config.botName} — Premium`;
     $("addBtn").href = state.config.inviteUrl;
+    if (state.config.manageUrl) {
+        const m = $("manageLink");
+        m.href = state.config.manageUrl;
+        m.classList.remove("hidden");
+    }
     const toPricing = (e) => {
         if (e) e.preventDefault();
         ensureHome(() => scrollToEl("pricingBlock"));

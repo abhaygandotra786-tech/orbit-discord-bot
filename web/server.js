@@ -16,6 +16,8 @@ const path = require("path");
 const crypto = require("crypto");
 const express = require("express");
 const session = require("express-session");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
 
 require("../database/schema"); // ensure tables exist
 
@@ -41,6 +43,18 @@ const { grant } = premium;
 
 const app = express();
 app.set("trust proxy", 1);
+
+// Security headers. CSP is disabled (the site uses inline styles/fonts);
+// CORP is set to cross-origin so Discord can fetch our /assets/logo.png.
+app.use(
+    helmet({
+        contentSecurityPolicy: false,
+        crossOriginEmbedderPolicy: false,
+        crossOriginResourcePolicy: { policy: "cross-origin" }
+    })
+);
+
+const isHttps = /^https:\/\//i.test(config.WEB.BASE_URL);
 
 // --- Dodo webhook: MUST be registered before express.json() so we can read
 // the raw body for signature verification. ---
@@ -73,23 +87,32 @@ app.post(
                 type === "subscription.active" ||
                 type === "subscription.renewed";
 
-            if (paid) {
-                const meta = data.metadata || {};
-                const discordId = meta.discord_id;
+            const revoked =
+                type === "subscription.cancelled" ||
+                type === "subscription.expired" ||
+                type === "subscription.on_hold" ||
+                type === "subscription.failed";
+
+            const meta = data.metadata || {};
+            const discordId = meta.discord_id;
+
+            if (paid && discordId) {
                 const tier =
                     meta.tier ||
                     dodo.tierFromProduct(
-                        data.product_id ||
-                            data.product_cart?.[0]?.product_id
+                        data.product_id || data.product_cart?.[0]?.product_id
                     );
-                if (discordId && tier) {
+                if (tier) {
                     grant(discordId, tier, undefined, "dodo");
                     logger.info(`[dodo] ${type} → granted ${tier} to ${discordId}`);
                 } else {
-                    logger.error(
-                        `[dodo] ${type} missing discord_id/tier in metadata`
-                    );
+                    logger.error(`[dodo] ${type} missing tier in metadata`);
                 }
+            } else if (revoked && discordId) {
+                premium.revoke(discordId);
+                logger.info(`[dodo] ${type} → revoked premium for ${discordId}`);
+            } else if (paid || revoked) {
+                logger.error(`[dodo] ${type} missing discord_id in metadata`);
             }
         } catch (err) {
             logger.error("Dodo webhook handler error", err);
@@ -99,18 +122,30 @@ app.post(
     }
 );
 
-app.use(express.json());
+app.use(express.json({ limit: "64kb" }));
 app.use(
     session({
         name: "ch.sid",
-        secret: process.env.SESSION_SECRET || "change-me-in-production",
+        secret: process.env.SESSION_SECRET || crypto.randomBytes(32).toString("hex"),
         resave: false,
         saveUninitialized: false,
         cookie: {
             httpOnly: true,
             sameSite: "lax",
+            secure: isHttps, // HTTPS-only cookie in production
             maxAge: 7 * 24 * 60 * 60 * 1000
         }
+    })
+);
+
+// Basic rate limiting to curb abuse of the API (login/like/checkout).
+app.use(
+    "/api",
+    rateLimit({
+        windowMs: 60 * 1000,
+        max: 60,
+        standardHeaders: true,
+        legacyHeaders: false
     })
 );
 
@@ -213,6 +248,7 @@ app.get("/api/config", (req, res) => {
         currency: config.PREMIUM.CURRENCY,
         oauthConfigured,
         paymentsEnabled: dodo.isConfigured(),
+        manageUrl: process.env.DODO_PORTAL_URL || "",
         inviteUrl: process.env.CLIENT_ID
             ? `https://discord.com/oauth2/authorize?client_id=${process.env.CLIENT_ID}&scope=bot+applications.commands&permissions=277025508352`
             : "#",
