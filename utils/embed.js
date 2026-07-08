@@ -59,8 +59,16 @@ function baseEmbed({ title, description, color } = {}) {
     const embed = new EmbedBuilder()
         .setColor(color ?? COLORS.PRIMARY ?? config.EMBED_COLOR)
         .setTimestamp()
-        .setAuthor({ name: config.BOT_NAME })
-        .setFooter({ text: config.FOOTER.TEXT });
+        .setAuthor(
+            config.LOGO_URL
+                ? { name: config.BOT_NAME, iconURL: config.LOGO_URL }
+                : { name: config.BOT_NAME }
+        )
+        .setFooter(
+            config.LOGO_URL
+                ? { text: config.FOOTER.TEXT, iconURL: config.LOGO_URL }
+                : { text: config.FOOTER.TEXT }
+        );
 
     if (title) embed.setTitle(title);
     if (description) embed.setDescription(description);
@@ -106,11 +114,20 @@ function brandedEmbed({ title, description, color } = {}) {
     const embed = new EmbedBuilder()
         .setColor(color ?? COLORS.PRIMARY ?? config.EMBED_COLOR)
         .setTimestamp()
-        .setAuthor({ name: config.BOT_NAME })
-        .setFooter({ text: config.FOOTER.TEXT });
+        .setAuthor(
+            config.LOGO_URL
+                ? { name: config.BOT_NAME, iconURL: config.LOGO_URL }
+                : { name: config.BOT_NAME }
+        )
+        .setFooter(
+            config.LOGO_URL
+                ? { text: config.FOOTER.TEXT, iconURL: config.LOGO_URL }
+                : { text: config.FOOTER.TEXT }
+        );
 
     if (title) embed.setTitle(title);
     if (description) embed.setDescription(description);
+    if (config.LOGO_URL) embed.setThumbnail(config.LOGO_URL);
     if (bannerRef) embed.setImage(bannerRef);
 
     return { embed, files };

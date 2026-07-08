@@ -5,6 +5,13 @@
  * Changing values here updates the behavior of the entire bot.
  */
 
+// Public logo URL — used as the embed author/thumbnail icon in Discord and
+// as the site logo. Defaults to the deployed site's /assets/logo.png so the
+// bot can show the logo by URL (no per-message file uploads).
+const _base = (process.env.WEB_BASE_URL || "").replace(/\/$/, "");
+const LOGO_URL =
+    process.env.LOGO_URL || (_base ? `${_base}/assets/logo.png` : "");
+
 module.exports = {
     // --- Identity ---
     BOT_NAME: "Orbit",
@@ -22,15 +29,12 @@ module.exports = {
     // --- Footer ---
     FOOTER: {
         TEXT: "Orbit • Connect · Discover · Grow",
-        ICON: process.env.LOGO_URL || "" // small footer icon (uses logo)
+        ICON: LOGO_URL // small footer icon (uses logo)
     },
 
     // --- Branding ---
-    // Public image URLs. On the website these fall back to /assets/logo.png
-    // and /assets/banner.png. For Discord embeds they must be publicly
-    // reachable URLs (set LOGO_URL / BANNER_URL in .env).
-    LOGO_URL: process.env.LOGO_URL || "", // square logo (thumbnail / author icon)
-    BANNER_URL: process.env.BANNER_URL || "", // wide banner (shown in embeds)
+    LOGO_URL, // square logo (author/thumbnail icon in embeds + site logo)
+    BANNER_URL: process.env.BANNER_URL || "", // optional wide banner
 
     // --- Links ---
     WEBSITE: process.env.WEBSITE_URL || process.env.WEB_BASE_URL || "https://example.com",

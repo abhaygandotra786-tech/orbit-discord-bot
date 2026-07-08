@@ -330,21 +330,8 @@ async function boot() {
 
     // logo (brand + hero)
     if (state.config.logo) {
-        const logo = $("brandLogo");
-        logo.onload = () => {
-            logo.classList.remove("hidden");
-            $("brandDot").classList.add("hidden");
-        };
-        logo.src = state.config.logo;
+        $("brandLogo").src = state.config.logo;
         $("pheroLogo").src = state.config.logo;
-    }
-
-    // bottom banner
-    if (state.config.banner) {
-        const banner = $("siteBanner");
-        banner.alt = state.config.botName;
-        banner.onload = () => $("siteBannerWrap").classList.add("show");
-        banner.src = state.config.banner;
     }
 
     renderAuth();
