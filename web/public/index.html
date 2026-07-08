@@ -7,30 +7,23 @@
     <meta name="description" content="Orbit — one community bot for everything." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/css/styles.css" />
 </head>
 <body>
-    <!-- Announcement bar -->
-    <div class="announce">
-        <span>🪐 Grow, connect and monetise your community with Orbit</span>
-        <a class="announce-btn" id="announceBtn" href="#">Get Premium →</a>
-    </div>
-
     <header class="topbar">
         <div class="topbar-inner">
-            <a class="brand" href="#" id="brandLink">
+            <a class="brand" href="/" data-link>
                 <img id="brandLogo" class="brand-logo" src="/assets/logo.png" alt="Orbit" />
                 <span id="brandName">Orbit</span>
             </a>
             <nav class="nav-center">
-                <a href="#" id="navHome" class="active">Home</a>
-                <a href="#" id="navCommunities">Communities</a>
-                <a href="#" id="navPremium">Premium</a>
-                <a href="#" id="navAdmirers" class="hidden">Interest</a>
+                <a href="/" data-link id="navHome">Home</a>
+                <a href="/" data-link id="navCommunities">Communities</a>
+                <a href="/premium" data-link id="navPremium">Premium</a>
+                <a href="/interest" data-link id="navAdmirers" class="hidden">Interest</a>
             </nav>
             <div class="nav-right">
-                <a class="pill" id="premiumPill" href="#">👑 Premium</a>
                 <span id="authArea"></span>
             </div>
         </div>
@@ -38,74 +31,52 @@
 
     <!-- HOME -->
     <section id="view-home">
-        <!-- MEE6-style hero -->
-        <div class="hero-wrap">
-            <div class="hero-stars" aria-hidden="true"></div>
-            <div class="hero-inner">
-                <div class="hero-left">
-                    <span class="verified">✓ Verified community bot</span>
-                    <h1>One community bot<br />for <span class="grad">everything</span></h1>
-                    <p class="hero-sub">
-                        Networking, founders, freelancing, friends, gaming and dating —
-                        Orbit helps your members connect, match and grow, right inside Discord.
-                    </p>
-                    <div class="hero-cta">
-                        <a class="btn lg" id="addBtn" href="#" target="_blank" rel="noopener">
-                            <span class="dsc">✦</span> Add to Discord
-                        </a>
-                        <button class="btn ghost lg" id="seeFeaturesBtn">See features</button>
-                    </div>
-                    <div class="trust" id="heroTrust">
-                        <span class="stars">★★★★★</span>
-                        <span id="trustText">Trusted by a growing community</span>
-                    </div>
-                </div>
-                <div class="hero-right">
-                    <div class="planet-glow"></div>
-                    <img id="pheroLogo" class="planet" alt="Orbit" />
-                </div>
+        <div class="hero">
+            <img id="heroLogo" class="hero-logo" src="/assets/logo.png" alt="" />
+            <h1>One community bot<br />for everything</h1>
+            <p class="hero-sub">
+                Networking, founders, freelancing, friends, gaming and dating —
+                connect, match and grow, right inside Discord.
+            </p>
+            <div class="hero-cta">
+                <a class="btn" id="addBtn" href="#" target="_blank" rel="noopener">Add to Discord</a>
+                <a class="btn ghost" href="/premium" data-link>View Premium</a>
             </div>
         </div>
 
-        <div class="view">
-            <!-- Pricing -->
-            <div class="block" id="pricingBlock">
-                <div class="pricing-head">
-                    <h2>Your community, your rules</h2>
-                    <p>Pick the plan that fits your needs best.</p>
-                </div>
-                <div class="pricing-grid" id="pricingGrid"></div>
-            </div>
-
-            <!-- Communities -->
-            <div class="block" id="communitiesBlock">
-                <div class="block-head">
-                    <span class="kicker">Communities</span>
-                    <h2>Find your people</h2>
-                </div>
-                <div class="category-grid" id="categoryGrid"></div>
-                <div class="hero-stats" id="heroStats"></div>
-            </div>
-        </div>
+        <section class="section">
+            <h2 class="section-title">Communities</h2>
+            <div class="category-grid" id="categoryGrid"></div>
+            <div class="stats" id="heroStats"></div>
+        </section>
     </section>
 
-    <!-- CATEGORY PROFILES -->
-    <section id="view-category" class="view hidden">
-        <div class="cat-header">
-            <button class="back-btn" id="backBtn">← All communities</button>
-            <h2 id="catTitle"></h2>
-            <p id="catSubtitle" class="cat-sub"></p>
+    <!-- COMMUNITY PAGE -->
+    <section id="view-category" class="page hidden">
+        <a class="back-btn" href="/" data-link>← Communities</a>
+        <div class="page-head">
+            <h1 id="catTitle"></h1>
+            <p id="catSubtitle"></p>
         </div>
         <div class="profile-grid" id="profileGrid"></div>
         <div id="emptyState" class="empty hidden"></div>
     </section>
 
-    <!-- ADMIRERS -->
-    <section id="view-admirers" class="view hidden">
-        <div class="cat-header">
-            <button class="back-btn" id="backBtn2">← Back</button>
-            <h2>Interest received</h2>
-            <p class="cat-sub" id="admirersSub"></p>
+    <!-- PREMIUM PAGE -->
+    <section id="view-premium" class="page hidden">
+        <div class="page-head center">
+            <h1>Membership</h1>
+            <p>Simple plans. Cancel anytime.</p>
+        </div>
+        <div class="pricing-grid" id="pricingGrid"></div>
+    </section>
+
+    <!-- INTEREST PAGE -->
+    <section id="view-admirers" class="page hidden">
+        <a class="back-btn" href="/" data-link>← Home</a>
+        <div class="page-head">
+            <h1>Interest received</h1>
+            <p id="admirersSub"></p>
         </div>
         <div class="profile-grid" id="admirersGrid"></div>
     </section>
@@ -113,9 +84,9 @@
     <div id="toast" class="toast hidden"></div>
 
     <footer class="footer">
-        <div><span id="footerName">Orbit</span> · Profiles managed via Discord</div>
+        <div><span id="footerName">Orbit</span> · Managed via Discord</div>
         <div class="footer-links">
-            <a href="#" id="upgradeLink">Premium</a>
+            <a href="/premium" data-link>Premium</a>
             <a href="#" id="manageLink" class="hidden" target="_blank" rel="noopener">Manage subscription</a>
             <a href="/terms.html">Terms</a>
             <a href="/privacy.html">Privacy</a>

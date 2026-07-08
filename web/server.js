@@ -369,6 +369,13 @@ app.get("/api/stats", (req, res) => {
 
 app.use(express.static(path.join(__dirname, "public")));
 
+// SPA fallback: client-side routes (e.g. /c/networking, /premium) return
+// index.html so they work on refresh and direct links.
+app.use((req, res, next) => {
+    if (req.method !== "GET" || req.path.startsWith("/api")) return next();
+    res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
 app.listen(config.WEB.PORT, () => {
     logger.info(`🌐 ${config.BOT_NAME} website running at ${config.WEB.BASE_URL}`);
     if (!oauthConfigured) {
