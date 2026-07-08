@@ -135,10 +135,11 @@ async function loadHome() {
         const card = document.createElement("div");
         card.className = `category-card cc-${themeKey(c.name)}`;
         card.innerHTML = `
-            <span class="cc-bar"></span>
+            <div class="cc-icon">${c.emoji}</div>
             <div class="cc-body">
                 <div class="cc-name">${escape(c.name)}</div>
-                <div class="cc-count">${c.count} member${c.count === 1 ? "" : "s"}</div>
+                <div class="cc-desc">${escape(SUBTITLES[c.name] || "")}</div>
+                <div class="cc-count"><b>${c.count}</b> member${c.count === 1 ? "" : "s"}</div>
             </div>
             <span class="cc-arrow">→</span>`;
         card.onclick = () => loadCategory(c.name);
@@ -147,9 +148,9 @@ async function loadHome() {
 
     const stats = (await api("/api/stats")).body;
     $("heroStats").innerHTML = `
-        <div><b>${stats.profiles}</b> Members</div>
-        <div><b>${stats.likes}</b> Connections</div>
-        <div><b>${cats.length}</b> Communities</div>`;
+        <div class="stat"><b>${stats.profiles}</b><span>Members</span></div>
+        <div class="stat"><b>${stats.likes}</b><span>Connections</span></div>
+        <div class="stat"><b>${cats.length}</b><span>Communities</span></div>`;
 
     const tt = document.getElementById("trustText");
     if (tt) {
