@@ -45,6 +45,12 @@ function setView(name) {
     for (const v of ["home", "category", "premium", "admirers", "dashboard"]) {
         $(`view-${v}`).classList.toggle("hidden", v !== name);
     }
+    const active = $(`view-${name}`);
+    if (active) {
+        active.classList.remove("reveal");
+        void active.offsetWidth; // reflow so the reveal animation replays
+        active.classList.add("reveal");
+    }
     window.scrollTo({ top: 0 });
 }
 function setTheme(theme) {

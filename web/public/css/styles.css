@@ -503,3 +503,102 @@ a { color: inherit; text-decoration: none; }
     .topbar-inner { padding: 0 16px; }
     #view-home, .page { padding-left: 16px; padding-right: 16px; }
 }
+
+/* ============================================================
+   Motion & animated background (minimal, smooth)
+   ============================================================ */
+
+html { scroll-behavior: smooth; }
+
+/* Drifting indigo aurora behind everything */
+body::before {
+    content: "";
+    position: fixed;
+    inset: -12%;
+    z-index: -2;
+    pointer-events: none;
+    background:
+        radial-gradient(38% 38% at 18% 22%, rgba(123, 116, 240, 0.16), transparent 60%),
+        radial-gradient(34% 34% at 82% 28%, rgba(148, 102, 255, 0.14), transparent 60%),
+        radial-gradient(46% 46% at 50% 92%, rgba(90, 141, 255, 0.10), transparent 62%);
+    filter: blur(28px);
+    animation: bgDrift 22s ease-in-out infinite alternate;
+}
+@keyframes bgDrift {
+    0%   { transform: translate3d(-2%, -1%, 0) scale(1); }
+    100% { transform: translate3d(2%, 2%, 0) scale(1.08); }
+}
+
+/* Faint drifting stars */
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+        radial-gradient(1px 1px at 15% 30%, rgba(255, 255, 255, 0.5), transparent),
+        radial-gradient(1px 1px at 70% 20%, rgba(255, 255, 255, 0.4), transparent),
+        radial-gradient(1px 1px at 40% 72%, rgba(255, 255, 255, 0.4), transparent),
+        radial-gradient(1px 1px at 88% 60%, rgba(200, 190, 255, 0.5), transparent),
+        radial-gradient(1px 1px at 55% 45%, rgba(255, 255, 255, 0.35), transparent);
+    animation: twinkle 8s ease-in-out infinite alternate;
+}
+@keyframes twinkle { from { opacity: 0.3; } to { opacity: 0.65; } }
+
+/* Page/view reveal */
+[id^="view-"].reveal { animation: fadeUp 0.42s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: none; }
+}
+
+/* Hero entrance (staggered) */
+.hero-logo { animation: rise 0.55s ease both; }
+.hero h1   { animation: rise 0.55s 0.07s ease both; }
+.hero-sub  { animation: rise 0.55s 0.14s ease both; }
+.search    { animation: rise 0.55s 0.21s ease both; }
+.hero-cta  { animation: rise 0.55s 0.28s ease both; }
+.stats     { animation: rise 0.55s 0.35s ease both; }
+@keyframes rise {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: none; }
+}
+
+/* Card entrance + stagger */
+.profile-grid > *, .pricing-grid > *, #dashStats > *, .dash-grid > * {
+    animation: rise 0.45s ease both;
+}
+.profile-grid > *:nth-child(2), .pricing-grid > *:nth-child(2), #dashStats > *:nth-child(2) { animation-delay: 0.06s; }
+.profile-grid > *:nth-child(3), .pricing-grid > *:nth-child(3), #dashStats > *:nth-child(3) { animation-delay: 0.12s; }
+.profile-grid > *:nth-child(4), #dashStats > *:nth-child(4) { animation-delay: 0.18s; }
+.profile-grid > *:nth-child(5) { animation-delay: 0.24s; }
+.profile-grid > *:nth-child(6) { animation-delay: 0.30s; }
+.profile-grid > *:nth-child(n+7) { animation-delay: 0.34s; }
+
+/* Nav underline */
+.nav-center > a, .dropdown-btn { position: relative; }
+.nav-center > a::after, .dropdown-btn::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: -7px;
+    height: 2px; border-radius: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.2s ease;
+}
+.nav-center > a:hover::after,
+.nav-center > a.active::after,
+.dropdown-btn:hover::after,
+.dropdown-btn.active::after { transform: scaleX(1); }
+
+/* Button lift + dropdown menu ease-in */
+.btn { transition: opacity 0.15s ease, transform 0.12s ease, border-color 0.15s ease; }
+.btn:hover { transform: translateY(-1px); }
+.dropdown.open .dropdown-menu { animation: rise 0.18s ease both; }
+
+/* Respect reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+    *, body::before, body::after { animation: none !important; transition: none !important; scroll-behavior: auto; }
+}
