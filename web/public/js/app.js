@@ -42,7 +42,7 @@ function escape(str) {
 
 // ---- routing -----------------------------------------------------
 function setView(name) {
-    for (const v of ["home", "category", "premium", "admirers"]) {
+    for (const v of ["home", "category", "premium", "admirers", "dashboard"]) {
         $(`view-${v}`).classList.toggle("hidden", v !== name);
     }
     window.scrollTo({ top: 0 });
@@ -69,6 +69,7 @@ function navigate(path, push = true) {
 function route(path) {
     const p = path || location.pathname;
     if (p === "/premium") return showPremium();
+    if (p === "/dashboard") return loadDashboard();
     if (p === "/interest") return loadAdmirers();
     const name = nameFromSlug(p.replace(/^\//, ""));
     if (name) return loadCategory(name);
@@ -97,12 +98,12 @@ function renderAuth() {
             renderAuth();
             toast("Logged out");
         };
-        $("navAdmirers").classList.remove("hidden");
+        $("navDashboard").classList.remove("hidden");
     } else {
         area.innerHTML = state.config.oauthConfigured
             ? `<a class="btn sm" href="/auth/login">Login with Discord</a>`
             : `<span class="user-chip">Login disabled</span>`;
-        $("navAdmirers").classList.add("hidden");
+        $("navDashboard").classList.add("hidden");
     }
 }
 
@@ -289,6 +290,98 @@ async function startCheckout(tier) {
     });
     if (status === 200 && body.url) window.location.href = body.url;
     else toast("Could not start checkout");
+}
+
+// ---- dashboard ---------------------------------------------------
+async function loadDashboard() {
+    if (!state.me) {
+        window.location.href = "/auth/login";
+        return;
+    }
+    setTheme("home");
+    setView("dashboard");
+    setActiveByPath("/dashboard");
+
+    const { status, body } = await api("/api/me/dashboard");
+    if (status !== 200) return;
+
+    $("dashGreeting").textContent = `Welcome back, ${escape(state.me.username)}`;
+    const renews = body.expiresAt
+        ? ` · renews ${new Date(body.expiresAt).toLocaleDateString()}`
+        : "";
+    $("dashPlan").innerHTML = `${body.badge ? escape(body.badge) : "Free member"}${renews}`;
+
+    // actions
+    if (body.tier === "free") {
+        $("dashActions").innerHTML = `<a class="btn" href="/premium" data-link>Upgrade</a>`;
+    } else {
+        $("dashActions").innerHTML =
+            (body.manageUrl
+                ? `<a class="btn ghost" href="${body.manageUrl}" target="_blank" rel="noopener">Manage</a>`
+                : "") + `<a class="btn ghost" href="/premium" data-link>Change plan</a>`;
+    }
+
+    // stat cards
+    const s = body.stats;
+    const stat = (label, val) =>
+        `<div class="stat-card"><b data-count="${val}">0</b><span>${label}</span></div>`;
+    $("dashStats").innerHTML =
+        stat("Likes received", s.likesReceived) +
+        stat("Matches", s.matches) +
+        stat("Profile views", s.views) +
+        stat("Search hits", s.searchAppearances);
+    animateCounts();
+
+    // profile card
+    if (body.profile) {
+        const meta = [body.profile.category, body.profile.profession, body.profile.location]
+            .filter(Boolean)
+            .join(" · ");
+        $("dashProfileCard").innerHTML = `
+            <h3>Your profile</h3>
+            <div class="dp-name">${escape(body.profile.name)} ${tierTag(body.tier)}${body.profile.featured ? '<span class="tag featured">Featured</span>' : ""}</div>
+            <div class="dp-meta">${escape(meta || "—")}</div>
+            ${body.profile.skills ? `<div class="dp-skills">${escape(body.profile.skills)}</div>` : ""}
+            <p class="dp-note">Edit your profile in Discord with <code>/profile edit</code>.</p>`;
+    } else {
+        $("dashProfileCard").innerHTML = `
+            <h3>Your profile</h3>
+            <p class="dp-note">You haven't created a profile yet. Run <code>/profile create</code> in Discord.</p>`;
+    }
+
+    // admirers card
+    const ad = body.admirers;
+    let html = `<h3>Who liked you</h3>`;
+    if (ad.locked) {
+        html += `<p class="big-num">${ad.count}</p>
+            <p class="dp-note">member(s) liked you. Unlock their names with Premium.</p>
+            <a class="btn" href="/premium" data-link>Unlock with Premium</a>`;
+    } else if (!ad.list.length) {
+        html += `<p class="dp-note">No interest yet — keep networking.</p>`;
+    } else {
+        html += ad.list
+            .slice(0, 8)
+            .map(
+                (a) =>
+                    `<div class="dp-row"><span>${escape(a.name)}${a.matched ? " · matched" : ""}</span><span class="muted">@${escape(a.discord)}</span></div>`
+            )
+            .join("");
+    }
+    $("dashAdmirersCard").innerHTML = html;
+}
+
+function animateCounts() {
+    document.querySelectorAll("#dashStats b[data-count]").forEach((el) => {
+        const target = Number(el.dataset.count) || 0;
+        const dur = 700;
+        const start = performance.now();
+        const step = (t) => {
+            const p = Math.min(1, (t - start) / dur);
+            el.textContent = Math.round(p * target);
+            if (p < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+    });
 }
 
 // ---- interest page -----------------------------------------------

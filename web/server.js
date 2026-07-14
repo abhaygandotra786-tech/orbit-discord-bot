@@ -36,6 +36,8 @@ const {
     hasLiked,
     countLikes
 } = require("../database/likesQueries");
+const { getMatches } = require("../database/matchQueries");
+const { countViews, countUniqueViewers } = require("../database/viewQueries");
 const discord = require("./lib/discord");
 const db = require("../database/database");
 
@@ -392,6 +394,59 @@ app.get("/api/stats", (req, res) => {
     res.json({
         profiles: getAllProfiles.all().length,
         likes: countLikes.get().count
+    });
+});
+
+// Member dashboard: everything about the logged-in user.
+app.get("/api/me/dashboard", requireAuth, async (req, res) => {
+    const uid = req.session.user.id;
+    const profile = getProfile.get(uid) || null;
+    const meta = premium.meta(uid);
+    const active = premium.getActive(uid);
+
+    const admirerRows = getReceivedLikes.all(uid);
+    const canSee = premium.has(uid, "seeWhoLiked");
+    const admirers = [];
+    if (canSee) {
+        for (const a of admirerRows) {
+            const p = getProfile.get(a.sender_id);
+            if (!p) continue;
+            admirers.push({
+                name: p.name,
+                discord: await discord.getUsername(p.user_id, p.discord_tag),
+                category: p.category,
+                matched: Boolean(hasLiked.get(uid, a.sender_id))
+            });
+        }
+    }
+
+    res.json({
+        user: req.session.user,
+        profile: profile
+            ? {
+                  name: profile.name,
+                  age: profile.age,
+                  category: profile.category,
+                  profession: profile.profession,
+                  location: profile.location,
+                  skills: profile.skills,
+                  featured: Boolean(profile.featured && profile.featured_until > Date.now())
+              }
+            : null,
+        tier: premium.tierKey(uid),
+        tierName: meta.name,
+        badge: meta.badge || "",
+        expiresAt: active ? active.expires_at : null,
+        stats: {
+            likesReceived: admirerRows.length,
+            matches: getMatches(uid).length,
+            views: countViews.get(uid).count,
+            uniqueViewers: countUniqueViewers.get(uid).count,
+            searchAppearances: profile ? profile.search_appearances || 0 : 0
+        },
+        admirers: { count: admirerRows.length, locked: !canSee, list: admirers },
+        upgradeUrl: config.PREMIUM.PAYMENT_URL,
+        manageUrl: process.env.DODO_PORTAL_URL || ""
     });
 });
 

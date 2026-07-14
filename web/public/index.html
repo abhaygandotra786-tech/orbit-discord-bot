@@ -32,7 +32,7 @@
                     </div>
                 </div>
                 <a href="/premium" data-link>Premium</a>
-                <a href="/interest" data-link id="navAdmirers" class="hidden">Interest</a>
+                <a href="/dashboard" data-link id="navDashboard" class="hidden">Dashboard</a>
             </nav>
             <div class="nav-right">
                 <span id="authArea"></span>
@@ -86,9 +86,27 @@
         <div class="pricing-grid" id="pricingGrid"></div>
     </section>
 
-    <!-- INTEREST PAGE -->
+    <!-- DASHBOARD PAGE -->
+    <section id="view-dashboard" class="page hidden">
+        <div class="dash-head">
+            <div>
+                <h1 id="dashGreeting">Dashboard</h1>
+                <p id="dashPlan" class="dash-plan"></p>
+            </div>
+            <div class="dash-actions" id="dashActions"></div>
+        </div>
+
+        <div class="stat-cards" id="dashStats"></div>
+
+        <div class="dash-grid">
+            <div class="dash-card reveal" id="dashProfileCard"></div>
+            <div class="dash-card reveal" id="dashAdmirersCard"></div>
+        </div>
+    </section>
+
+    <!-- INTEREST PAGE (kept for /interest links) -->
     <section id="view-admirers" class="page hidden">
-        <a class="back-btn" href="/" data-link>← Home</a>
+        <a class="back-btn" href="/dashboard" data-link>← Dashboard</a>
         <div class="page-head">
             <h1>Interest received</h1>
             <p id="admirersSub"></p>
