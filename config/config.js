@@ -38,7 +38,7 @@ module.exports = {
 
     // --- Links ---
     WEBSITE: process.env.WEBSITE_URL || process.env.WEB_BASE_URL || "https://example.com",
-    SUPPORT_SERVER: process.env.SUPPORT_SERVER || "https://discord.gg/your-invite",
+    SUPPORT_SERVER: process.env.SUPPORT_SERVER || "https://discord.gg/MBnqeusz92",
 
     // --- Website (public showcase) ---
     WEB: {
