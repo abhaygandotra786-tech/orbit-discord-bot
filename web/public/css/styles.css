@@ -352,3 +352,142 @@ a { color: inherit; text-decoration: none; }
     .topbar-inner { padding: 0 16px; }
     #view-home, .page { padding-left: 16px; padding-right: 16px; }
 }
+
+/* ============================================================
+   Cinematic hero (21hrs-inspired)
+   ============================================================ */
+#view-home { max-width: none; padding: 0; }
+
+.cinema {
+    position: relative;
+    min-height: calc(100vh - 62px);
+    display: grid;
+    place-items: center;
+    text-align: center;
+    overflow: hidden;
+    padding: 40px 20px;
+}
+.cinema-frame {
+    position: absolute;
+    inset: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 3px;
+    pointer-events: none;
+    z-index: 3;
+}
+
+/* the planet rising like a moon */
+.cinema-planet {
+    position: absolute;
+    left: 50%;
+    bottom: -34%;
+    width: min(150vh, 1100px);
+    max-width: 150%;
+    transform: translateX(-50%);
+    z-index: 0;
+    opacity: 0.95;
+    animation: moonRise 1.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+    pointer-events: none;
+}
+@keyframes moonRise {
+    from { transform: translateX(-50%) translateY(40px); opacity: 0; }
+    to   { transform: translateX(-50%) translateY(0); opacity: 0.95; }
+}
+
+.cinema-inner {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 860px;
+}
+.eyebrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--text-2);
+    margin-bottom: 6px;
+    animation: fadeUp 0.8s 0.1s ease both;
+}
+.eyebrow .rule { height: 1px; width: 90px; background: rgba(255, 255, 255, 0.2); }
+
+.mega {
+    font-size: clamp(84px, 21vw, 300px);
+    font-weight: 800;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    margin: 0;
+    background: linear-gradient(180deg, #ffffff 0%, #d3d6de 52%, #9aa0ac 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: fadeUp 0.9s 0.15s ease both;
+}
+.cinema-sub {
+    color: var(--text-2);
+    font-size: 15.5px;
+    max-width: 40ch;
+    margin: 18px auto 0;
+    line-height: 1.6;
+    animation: fadeUp 0.9s 0.25s ease both;
+}
+.cinema-meta {
+    display: flex;
+    justify-content: space-between;
+    max-width: 720px;
+    margin: 26px auto 0;
+    animation: fadeUp 0.9s 0.3s ease both;
+}
+.m-item span {
+    display: block;
+    font-size: 10.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+.m-item b { font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: 0.02em; }
+.m-right { text-align: right; }
+
+.scroll-cta {
+    margin-top: 34px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    padding: 13px 26px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+    animation: fadeUp 0.9s 0.4s ease both;
+}
+.scroll-cta:hover { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.5); }
+.cinema-hint {
+    margin-top: 22px;
+    font-size: 10.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+/* content below the fold */
+.landing { max-width: var(--maxw); margin: 0 auto; padding: 70px 22px 90px; text-align: center; }
+.landing-head h2 { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; margin: 0 0 6px; }
+.landing-head p { color: var(--text-2); margin: 0 0 22px; }
+.landing .search { margin: 0 auto 16px; }
+.landing-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 8px; }
+.landing .features { text-align: left; }
+.landing .stats { }
+
+@media (max-width: 560px) {
+    .cinema-meta { max-width: 100%; }
+    .eyebrow .rule { width: 40px; }
+    .landing { padding: 50px 16px 70px; }
+}

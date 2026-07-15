@@ -463,6 +463,10 @@ async function boot() {
     });
     document.addEventListener("click", () => dropdown.classList.remove("open"));
 
+    // Cinematic "scroll to explore"
+    const sc = $("scrollCta");
+    if (sc) sc.addEventListener("click", () => $("landing").scrollIntoView({ behavior: "smooth" }));
+
     // Search forms
     $("heroSearch").addEventListener("submit", (e) => {
         e.preventDefault();

@@ -42,52 +42,61 @@
 
     <!-- HOME -->
     <section id="view-home">
-        <div class="hero">
-            <div class="orbit-visual">
-                <span class="orbit-ring ring1"></span>
-                <span class="orbit-ring ring2"></span>
-                <img id="heroLogo" class="orbit-planet" src="/assets/logo.png" alt="" />
-                <span class="orbit-sat"></span>
+        <!-- Cinematic stage -->
+        <div class="cinema">
+            <div class="cinema-frame" aria-hidden="true"></div>
+            <img id="heroLogo" class="cinema-planet" src="/assets/logo.png" alt="" />
+            <div class="cinema-inner">
+                <div class="eyebrow"><span class="rule"></span>ORBIT ON DISCORD<span class="rule"></span></div>
+                <h1 class="mega">ORBIT</h1>
+                <p class="cinema-sub">
+                    Explore your community — networking, founders, freelancing,
+                    friends, gaming and dating, all in one place.
+                </p>
+                <div class="cinema-meta">
+                    <div class="m-item m-left"><span>Community</span><b>All-in-one</b></div>
+                    <div class="m-item m-right"><span>Since</span><b>2026</b></div>
+                </div>
+                <button class="scroll-cta" id="scrollCta">Scroll to explore</button>
+                <div class="cinema-hint">Best experienced on desktop</div>
             </div>
-            <div class="hero-badge">✦ Orbit is live</div>
-            <h1>Where your community<br /><span class="grad-anim">connects &amp; grows</span></h1>
-            <p class="hero-sub">
-                Networking, founders, freelancing, friends, gaming and dating —
-                one bot, endless connections.
-            </p>
-            <form class="search hero-search" id="heroSearch">
-                <input id="heroSearchInput" type="text" autocomplete="off"
-                    placeholder="Find people by skill, role, location…" />
-                <button class="btn glow" type="submit">Search</button>
-            </form>
-            <div class="hero-cta">
-                <a class="btn glow" id="addBtn" href="#" target="_blank" rel="noopener">✦ Add to Discord</a>
-                <a class="btn ghost" href="/premium" data-link>View Premium</a>
-            </div>
-            <div class="stats" id="heroStats"></div>
         </div>
 
-        <div class="features">
-            <div class="feature glass reveal-on-scroll">
-                <div class="f-ic">🚀</div>
-                <h3>Boosted visibility</h3>
-                <p>Premium members rank first across search and browsing.</p>
+        <!-- Content below the fold -->
+        <div class="landing" id="landing">
+            <div class="landing-head">
+                <h2>Find your people</h2>
+                <p>Search members or add Orbit to your server to get started.</p>
             </div>
-            <div class="feature glass reveal-on-scroll">
-                <div class="f-ic">🤖</div>
-                <h3>AI matchmaking</h3>
-                <p>Smart compatibility scored by skills, interests and goals.</p>
+            <form class="search" id="heroSearch">
+                <input id="heroSearchInput" type="text" autocomplete="off"
+                    placeholder="Find people by skill, role, location…" />
+                <button class="btn" type="submit">Search</button>
+            </form>
+            <div class="landing-cta">
+                <a class="btn" id="addBtn" href="#" target="_blank" rel="noopener">Add to Discord</a>
+                <a class="btn ghost" href="/premium" data-link>View Premium</a>
             </div>
-            <div class="feature glass reveal-on-scroll">
-                <div class="f-ic">💞</div>
-                <h3>Real connections</h3>
-                <p>Mutual likes instantly become matches you can act on.</p>
+
+            <div class="features">
+                <div class="feature reveal-on-scroll">
+                    <div class="f-ic">🚀</div>
+                    <h3>Boosted visibility</h3>
+                    <p>Premium members rank first across search and browsing.</p>
+                </div>
+                <div class="feature reveal-on-scroll">
+                    <div class="f-ic">🤝</div>
+                    <h3>Real connections</h3>
+                    <p>Mutual likes instantly become matches you can act on.</p>
+                </div>
+                <div class="feature reveal-on-scroll">
+                    <div class="f-ic">📊</div>
+                    <h3>Your dashboard</h3>
+                    <p>Track views, likes and matches live from the web.</p>
+                </div>
             </div>
-            <div class="feature glass reveal-on-scroll">
-                <div class="f-ic">📊</div>
-                <h3>Your dashboard</h3>
-                <p>Track views, likes and matches live from the web.</p>
-            </div>
+
+            <div class="stats" id="heroStats"></div>
         </div>
     </section>
 
