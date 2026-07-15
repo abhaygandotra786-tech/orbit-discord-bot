@@ -362,10 +362,11 @@ a { color: inherit; text-decoration: none; }
     position: relative;
     min-height: calc(100vh - 62px);
     display: grid;
-    place-items: center;
+    align-content: start;
+    justify-items: center;
     text-align: center;
     overflow: hidden;
-    padding: 40px 20px;
+    padding: clamp(44px, 9vh, 110px) 20px 40px;
 }
 .cinema-frame {
     position: absolute;
@@ -375,23 +376,38 @@ a { color: inherit; text-decoration: none; }
     pointer-events: none;
     z-index: 3;
 }
+/* contrast overlay so the wordmark stays crisp over the planet */
+.cinema::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(
+        180deg,
+        rgba(16, 17, 21, 0.75) 0%,
+        rgba(16, 17, 21, 0.25) 30%,
+        transparent 50%,
+        rgba(16, 17, 21, 0.55) 100%
+    );
+}
 
-/* the planet rising like a moon */
+/* the planet rising like a moon at the bottom (behind everything) */
 .cinema-planet {
     position: absolute;
     left: 50%;
-    bottom: -34%;
-    width: min(150vh, 1100px);
-    max-width: 150%;
+    bottom: -48%;
+    width: min(80vh, 640px);
+    max-width: 120%;
     transform: translateX(-50%);
     z-index: 0;
-    opacity: 0.95;
-    animation: moonRise 1.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+    opacity: 0.85;
+    animation: moonRise 1.5s cubic-bezier(0.16, 1, 0.3, 1) both;
     pointer-events: none;
 }
 @keyframes moonRise {
-    from { transform: translateX(-50%) translateY(40px); opacity: 0; }
-    to   { transform: translateX(-50%) translateY(0); opacity: 0.95; }
+    from { transform: translateX(-50%) translateY(50px); opacity: 0; }
+    to   { transform: translateX(-50%) translateY(0); opacity: 0.85; }
 }
 
 .cinema-inner {
@@ -416,10 +432,10 @@ a { color: inherit; text-decoration: none; }
 .eyebrow .rule { height: 1px; width: 90px; background: rgba(255, 255, 255, 0.2); }
 
 .mega {
-    font-size: clamp(84px, 21vw, 300px);
+    font-size: clamp(66px, 15vw, 210px);
     font-weight: 800;
-    line-height: 0.9;
-    letter-spacing: -0.04em;
+    line-height: 0.92;
+    letter-spacing: -0.03em;
     margin: 0;
     background: linear-gradient(180deg, #ffffff 0%, #d3d6de 52%, #9aa0ac 100%);
     -webkit-background-clip: text;
