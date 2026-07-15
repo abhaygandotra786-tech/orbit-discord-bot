@@ -392,23 +392,23 @@ a { color: inherit; text-decoration: none; }
     );
 }
 
-/* full logo, blurred + dim, centered as an ambient brand glow */
+/* full logo, softly visible behind the wordmark — present but not loud */
 .cinema-planet {
     position: absolute;
     left: 50%;
-    top: 46%;
-    width: min(70vh, 600px);
-    max-width: 120%;
+    top: 44%;
+    width: min(52vh, 440px);
+    max-width: 90%;
     transform: translate(-50%, -50%);
     z-index: 0;
-    opacity: 0.4;
-    filter: blur(46px) saturate(1.15);
-    animation: planetGlow 1.6s ease both;
+    opacity: 0.5;
+    filter: blur(1.5px) saturate(1.05) drop-shadow(0 0 60px rgba(123, 116, 232, 0.35));
+    animation: planetGlow 1.4s ease both;
     pointer-events: none;
 }
 @keyframes planetGlow {
-    from { opacity: 0; transform: translate(-50%, -50%) scale(0.94); }
-    to   { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
+    from { opacity: 0; transform: translate(-50%, -50%) scale(0.96); }
+    to   { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
 }
 
 .cinema-inner {
