@@ -324,7 +324,7 @@ async function loadDashboard() {
 
     // actions
     if (body.tier === "free") {
-        $("dashActions").innerHTML = `<a class="btn" href="/premium" data-link>Upgrade</a>`;
+        $("dashActions").innerHTML = `<a class="btn" href="/premium" data-link>Upgrade plan</a>`;
     } else {
         $("dashActions").innerHTML =
             (body.manageUrl
@@ -332,37 +332,110 @@ async function loadDashboard() {
                 : "") + `<a class="btn ghost" href="/premium" data-link>Change plan</a>`;
     }
 
-    // stat cards
+    // ---- stat cards (segmented bars + share pill) ----
     const s = body.stats;
-    const stat = (label, val) =>
-        `<div class="stat-card"><b data-count="${val}">0</b><span>${label}</span></div>`;
-    $("dashStats").innerHTML =
-        stat("Likes received", s.likesReceived) +
-        stat("Matches", s.matches) +
-        stat("Profile views", s.views) +
-        stat("Search hits", s.searchAppearances);
+    const metrics = [
+        { label: "Likes received", val: s.likesReceived, ic: "❤" },
+        { label: "Matches", val: s.matches, ic: "✦" },
+        { label: "Profile views", val: s.views, ic: "◉" },
+        { label: "Search hits", val: s.searchAppearances, ic: "⌕" }
+    ];
+    const maxVal = Math.max(1, ...metrics.map((m) => m.val));
+    const SEG = 8;
+    $("dashStats").innerHTML = metrics
+        .map((m) => {
+            const ratio = m.val / maxVal;
+            const filled = Math.max(m.val > 0 ? 1 : 0, Math.round(ratio * SEG));
+            const pct = Math.round(ratio * 100);
+            const segs = Array.from({ length: SEG }, (_, i) =>
+                `<i class="${i < filled ? "on" : ""}"></i>`
+            ).join("");
+            return `<div class="stat-card">
+                <div class="sc-top"><span class="sc-ic">${m.ic}</span><span class="sc-label">${m.label}</span>
+                    <span class="sc-pill">${pct}%</span></div>
+                <b data-count="${m.val}">0</b>
+                <div class="sc-bar">${segs}</div>
+            </div>`;
+        })
+        .join("");
     animateCounts();
 
-    // profile card
+    // ---- statistics chart (compare the four metrics) ----
+    const chartMax = Math.max(1, ...metrics.map((m) => m.val));
+    const bars = metrics
+        .map((m) => {
+            const h = Math.round((m.val / chartMax) * 100);
+            return `<div class="bar-col">
+                <div class="bar-track"><div class="bar-fill" style="--h:${h}%">
+                    <span class="bar-val">${m.val}</span></div></div>
+                <span class="bar-label">${m.label.split(" ")[0]}</span>
+            </div>`;
+        })
+        .join("");
+    $("dashChartCard").innerHTML = `
+        <div class="card-head"><h3>📊 Activity overview</h3>
+            <span class="card-hint">All-time</span></div>
+        <div class="bar-chart">${bars}</div>`;
+    requestAnimationFrame(() =>
+        document.querySelectorAll(".bar-fill").forEach((b) => (b.style.height = b.style.getPropertyValue("--h")))
+    );
+
+    // ---- plan / upgrade promo ----
+    if (body.tier === "free") {
+        $("dashPromoCard").innerHTML = `
+            <div class="promo-glow"></div>
+            <div class="promo-body">
+                <span class="promo-kicker">UPGRADE</span>
+                <h3>Get seen first</h3>
+                <p>Unlock who liked you, boosted visibility and AI matchmaking.</p>
+                <a class="btn light" href="/premium" data-link>View plans</a>
+            </div>`;
+    } else {
+        $("dashPromoCard").innerHTML = `
+            <div class="promo-glow"></div>
+            <div class="promo-body">
+                <span class="promo-kicker">${escape(body.tierName || "Member")}</span>
+                <h3>You're all set</h3>
+                <p>${body.expiresAt ? "Renews " + new Date(body.expiresAt).toLocaleDateString() : "Active membership"}.</p>
+                <a class="btn light" href="/premium" data-link>Manage plan</a>
+            </div>`;
+    }
+
+    // ---- resource links rail ----
+    const link = (ic, title, sub, href, ext) =>
+        `<a class="res-row" href="${href}" ${ext ? 'target="_blank" rel="noopener"' : 'data-link'}>
+            <span class="res-ic">${ic}</span>
+            <span class="res-txt"><b>${title}</b><small>${sub}</small></span>
+            <span class="res-arr">↗</span></a>`;
+    const addUrl = state.config.inviteUrl || "#";
+    const supportUrl = state.config.supportServer || "#";
+    $("dashLinksCard").innerHTML =
+        `<div class="card-head"><h3>Quick links</h3></div>` +
+        link("➕", "Add to Discord", "Bring Orbit to your server", addUrl, true) +
+        link("✦", "Premium", "Compare plans & perks", "/premium", false) +
+        link("💬", "Support server", "Get help from the team", supportUrl, true) +
+        link("👤", "Edit profile", "Use /profile edit in Discord", addUrl, true);
+
+    // ---- profile card ----
     if (body.profile) {
         const meta = [body.profile.category, body.profile.profession, body.profile.location]
             .filter(Boolean)
             .join(" · ");
         $("dashProfileCard").innerHTML = `
-            <h3>Your profile</h3>
+            <div class="card-head"><h3>👤 Your profile</h3></div>
             <div class="dp-name">${escape(body.profile.name)} ${tierTag(body.tier)}${body.profile.featured ? '<span class="tag featured">Featured</span>' : ""}</div>
             <div class="dp-meta">${escape(meta || "—")}</div>
             ${body.profile.skills ? `<div class="dp-skills">${escape(body.profile.skills)}</div>` : ""}
             <p class="dp-note">Edit your profile in Discord with <code>/profile edit</code>.</p>`;
     } else {
         $("dashProfileCard").innerHTML = `
-            <h3>Your profile</h3>
+            <div class="card-head"><h3>👤 Your profile</h3></div>
             <p class="dp-note">You haven't created a profile yet. Run <code>/profile create</code> in Discord.</p>`;
     }
 
-    // admirers card
+    // ---- admirers card ----
     const ad = body.admirers;
-    let html = `<h3>Who liked you</h3>`;
+    let html = `<div class="card-head"><h3>❤ Who liked you</h3></div>`;
     if (ad.locked) {
         html += `<p class="big-num">${ad.count}</p>
             <p class="dp-note">member(s) liked you. Unlock their names with Premium.</p>

@@ -133,6 +133,7 @@
     <section id="view-dashboard" class="page hidden">
         <div class="dash-head">
             <div>
+                <div class="eyebrow-sm">YOUR ORBIT</div>
                 <h1 id="dashGreeting">Dashboard</h1>
                 <p id="dashPlan" class="dash-plan"></p>
             </div>
@@ -142,8 +143,17 @@
         <div class="stat-cards" id="dashStats"></div>
 
         <div class="dash-grid">
-            <div class="dash-card reveal" id="dashProfileCard"></div>
-            <div class="dash-card reveal" id="dashAdmirersCard"></div>
+            <div class="dash-col-main">
+                <div class="dash-card chart-card reveal" id="dashChartCard"></div>
+                <div class="dash-grid-2">
+                    <div class="dash-card reveal" id="dashProfileCard"></div>
+                    <div class="dash-card reveal" id="dashAdmirersCard"></div>
+                </div>
+            </div>
+            <div class="dash-col-side">
+                <div class="dash-card promo-card reveal" id="dashPromoCard"></div>
+                <div class="dash-card links-card reveal" id="dashLinksCard"></div>
+            </div>
         </div>
     </section>
 
