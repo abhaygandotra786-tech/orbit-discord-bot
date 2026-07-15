@@ -124,6 +124,11 @@ async function loadHome() {
         <div class="stat"><b>${stats.profiles}</b><span>Members</span></div>
         <div class="stat"><b>${stats.likes}</b><span>Connections</span></div>
         <div class="stat"><b>${CATS.length}</b><span>Communities</span></div>`;
+
+    // reveal feature cards with a gentle stagger
+    document.querySelectorAll("#view-home .reveal-on-scroll").forEach((el, i) => {
+        setTimeout(() => el.classList.add("in"), 120 + i * 90);
+    });
 }
 
 // ---- community page ----------------------------------------------

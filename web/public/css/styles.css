@@ -602,3 +602,144 @@ body::after {
 @media (prefers-reduced-motion: reduce) {
     *, body::before, body::after { animation: none !important; transition: none !important; scroll-behavior: auto; }
 }
+
+/* ============================================================
+   Energetic hero + premium touches
+   ============================================================ */
+
+.hero { padding: 66px 0 64px; border-bottom: none; }
+
+/* Orbiting planet visual */
+.orbit-visual {
+    position: relative;
+    width: 170px;
+    height: 170px;
+    margin: 0 auto 28px;
+    display: grid;
+    place-items: center;
+}
+.orbit-planet {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    z-index: 2;
+    filter: drop-shadow(0 0 34px rgba(123, 116, 240, 0.65));
+    animation: planetFloat 5s ease-in-out infinite;
+}
+@keyframes planetFloat { 0%, 100% { transform: translateY(-8px); } 50% { transform: translateY(8px); } }
+.orbit-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(139, 128, 255, 0.35);
+}
+.orbit-ring.ring1 { width: 165px; height: 165px; animation: spin 16s linear infinite; }
+.orbit-ring.ring2 {
+    width: 128px; height: 128px;
+    border-color: rgba(90, 141, 255, 0.30);
+    border-style: dashed;
+    animation: spin 10s linear infinite reverse;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.orbit-sat {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 12px; height: 12px;
+    margin: -6px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 16px var(--accent);
+    animation: orbit 7s linear infinite;
+}
+@keyframes orbit {
+    from { transform: rotate(0) translateX(82px) rotate(0); }
+    to   { transform: rotate(360deg) translateX(82px) rotate(-360deg); }
+}
+
+/* Badge + animated gradient headline */
+.hero-badge {
+    display: inline-block;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #c9c2ff;
+    background: rgba(123, 116, 240, 0.12);
+    border: 1px solid rgba(123, 116, 240, 0.35);
+    padding: 5px 14px;
+    border-radius: 999px;
+    margin-bottom: 20px;
+}
+.hero h1 { font-size: clamp(34px, 6vw, 60px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; }
+.grad-anim {
+    background: linear-gradient(90deg, #8b80ff, #5a8dff, #9466ff, #8b80ff);
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradShift 6s ease infinite;
+}
+@keyframes gradShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Glow buttons with sheen */
+.btn.glow {
+    background: linear-gradient(135deg, #7b74f0, #9466ff);
+    border-color: transparent;
+    box-shadow: 0 10px 34px rgba(123, 116, 240, 0.5);
+    position: relative;
+    overflow: hidden;
+}
+.btn.glow::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent 30%, rgba(255, 255, 255, 0.35), transparent 70%);
+    transform: translateX(-130%);
+}
+.btn.glow:hover::after { animation: sheen 0.75s ease; }
+@keyframes sheen { to { transform: translateX(130%); } }
+
+/* Feature cards (glassmorphism) */
+.features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    padding: 40px 0 80px;
+}
+.glass {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 16px;
+    padding: 24px;
+    backdrop-filter: blur(8px);
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.glass:hover {
+    transform: translateY(-5px);
+    border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+    box-shadow: 0 18px 44px rgba(123, 116, 240, 0.22);
+}
+.f-ic {
+    width: 48px; height: 48px;
+    border-radius: 13px;
+    display: grid; place-items: center;
+    font-size: 23px;
+    margin-bottom: 14px;
+    background: linear-gradient(135deg, rgba(123, 116, 240, 0.28), rgba(148, 102, 255, 0.14));
+    border: 1px solid rgba(139, 128, 255, 0.32);
+}
+.feature h3 { margin: 0 0 6px; font-size: 16px; font-weight: 700; }
+.feature p { margin: 0; color: var(--text-2); font-size: 13.5px; line-height: 1.5; }
+
+/* Scroll reveal */
+.reveal-on-scroll { opacity: 0; transform: translateY(22px); transition: opacity 0.55s ease, transform 0.55s ease; }
+.reveal-on-scroll.in { opacity: 1; transform: none; }
+
+/* Stronger, more alive background */
+body::before { filter: blur(24px); animation-duration: 18s; }
+
+@media (prefers-reduced-motion: reduce) {
+    .orbit-planet, .orbit-ring, .orbit-sat, .grad-anim { animation: none !important; }
+    .reveal-on-scroll { opacity: 1; transform: none; }
+}
