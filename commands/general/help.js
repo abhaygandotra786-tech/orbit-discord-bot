@@ -87,7 +87,7 @@ module.exports = {
         }
         embed.addFields({
             name: "🔗 Links",
-            value: `[Website](${config.WEBSITE})  ·  [Premium](${config.PREMIUM.PAYMENT_URL})`
+            value: `[Website](${config.WEBSITE})  ·  [Premium](${config.PREMIUM.PAYMENT_URL})  ·  [Support](${config.SUPPORT_SERVER})`
         });
 
         return interaction.editReply({ embeds: [embed], files });
