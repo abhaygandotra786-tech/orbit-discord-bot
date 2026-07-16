@@ -573,10 +573,6 @@ async function boot() {
     if (sc) sc.addEventListener("click", () => $("landing").scrollIntoView({ behavior: "smooth" }));
 
     // Search forms
-    $("heroSearch").addEventListener("submit", (e) => {
-        e.preventDefault();
-        searchProfiles($("heroSearchInput").value, null);
-    });
     const navSearch = $("navSearch");
     if (navSearch) {
         navSearch.addEventListener("submit", (e) => {
