@@ -111,8 +111,8 @@ const DIVIDER = "─────────────────────
 function brandedEmbed({ title, description, color } = {}) {
     const { files, bannerRef } = brandKit();
 
-    // Text-only header/footer, and the banner shown as a thumbnail only —
-    // no logo icons, no large bottom image (by design).
+    // Text-only header/footer, and the banner shown as the large image at the
+    // bottom of the embed — no logo icons, no thumbnail (by design).
     const embed = new EmbedBuilder()
         .setColor(color ?? COLORS.PRIMARY ?? config.EMBED_COLOR)
         .setTimestamp()
@@ -121,7 +121,7 @@ function brandedEmbed({ title, description, color } = {}) {
 
     if (title) embed.setTitle(title);
     if (description) embed.setDescription(description);
-    if (bannerRef) embed.setThumbnail(bannerRef);
+    if (bannerRef) embed.setImage(bannerRef);
 
     return { embed, files };
 }
