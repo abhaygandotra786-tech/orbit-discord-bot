@@ -556,6 +556,14 @@ async function boot() {
         e.preventDefault();
         searchProfiles($("heroSearchInput").value, null);
     });
+    const navSearch = $("navSearch");
+    if (navSearch) {
+        navSearch.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const q = $("navSearchInput").value.trim();
+            if (q) searchProfiles(q, null);
+        });
+    }
     $("catSearch").addEventListener("submit", (e) => {
         e.preventDefault();
         const q = $("catSearchInput").value.trim();

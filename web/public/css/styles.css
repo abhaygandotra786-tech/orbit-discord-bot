@@ -59,8 +59,8 @@ a { color: inherit; text-decoration: none; }
     top: 0;
     z-index: 50;
     border-bottom: 1px solid var(--line);
-    background: rgba(16, 17, 21, 0.85);
-    backdrop-filter: blur(10px);
+    background: rgba(16, 13, 12, 0.82);
+    backdrop-filter: blur(12px);
 }
 .topbar-inner {
     max-width: var(--maxw);
@@ -86,6 +86,21 @@ a { color: inherit; text-decoration: none; }
 .nav-center a:hover, .nav-center a.active { color: var(--text); }
 .nav-right { display: flex; align-items: center; gap: 10px; }
 .user-chip { color: var(--text-2); font-size: 14px; font-weight: 500; }
+
+/* header search */
+.nav-search { position: relative; display: flex; align-items: center; }
+.nav-search .ns-ic { position: absolute; left: 12px; font-size: 12.5px; opacity: 0.5; pointer-events: none; }
+.nav-search input {
+    width: 190px; background: var(--surface); border: 1px solid var(--line); color: var(--text);
+    border-radius: 999px; padding: 8px 14px 8px 32px; font-family: inherit; font-size: 13px;
+    transition: width 0.22s ease, border-color 0.15s ease, box-shadow 0.2s ease;
+}
+.nav-search input::placeholder { color: var(--muted); }
+.nav-search input:focus {
+    outline: none; width: 230px;
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+    box-shadow: 0 0 0 3px var(--accent-soft);
+}
 
 /* dropdown */
 .dropdown { position: relative; }
@@ -129,12 +144,12 @@ a { color: inherit; text-decoration: none; }
     cursor: pointer;
     transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
-.btn:hover { background: #8a83ee; border-color: #8a83ee; }
+.btn:hover { background: var(--accent-2); border-color: var(--accent-2); }
 .btn.ghost { background: transparent; border-color: var(--line); color: var(--text); }
-.btn.ghost:hover { background: var(--surface-2); border-color: var(--line); }
+.btn.ghost:hover { background: var(--surface-2); border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); }
 .btn.sm { padding: 7px 14px; font-size: 13px; }
 .btn.lg { padding: 12px 22px; font-size: 15px; }
-.btn.light { background: #fff; color: #201d3a; border-color: #fff; }
+.btn.light { background: #fff; color: #2a1712; border-color: #fff; }
 .btn.glass { background: var(--surface-2); border-color: var(--line); color: var(--text); }
 
 /* ---- Layout ---- */
@@ -408,6 +423,7 @@ a { color: inherit; text-decoration: none; }
     .dash-grid-2 { grid-template-columns: 1fr 1fr; }
     .nav-center { margin: 0 10px; gap: 16px; font-size: 13px; flex: 1; min-width: 0; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
     .nav-center::-webkit-scrollbar { display: none; }
+    .nav-search { display: none; }
     .stats { gap: 28px; }
 }
 @media (max-width: 560px) {
@@ -618,16 +634,29 @@ a { color: inherit; text-decoration: none; }
     display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 600;
     color: var(--accent); background: var(--accent-soft);
     border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
-    padding: 6px 13px; border-radius: 999px; margin-bottom: 18px;
+    padding: 6px 14px; border-radius: 999px; margin-bottom: 20px;
 }
-.hero-title { font-size: clamp(38px, 5.4vw, 62px); font-weight: 800; line-height: 1.04; letter-spacing: -0.03em; margin: 0; }
+.hero-badge::before {
+    content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent);
+    box-shadow: 0 0 0 0 var(--accent); animation: pulseDot 2s ease-out infinite;
+}
+@keyframes pulseDot {
+    0% { box-shadow: 0 0 0 0 rgba(255, 95, 46, 0.5); }
+    70% { box-shadow: 0 0 0 7px rgba(255, 95, 46, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 95, 46, 0); }
+}
+.hero-title { font-size: clamp(40px, 5.6vw, 68px); font-weight: 800; line-height: 1.02; letter-spacing: -0.035em; margin: 0; }
 .grad-word {
     background: var(--grad-warm); -webkit-background-clip: text; background-clip: text;
     -webkit-text-fill-color: transparent;
 }
-.hero-sub { color: var(--text-2); font-size: 16px; line-height: 1.6; max-width: 46ch; margin: 20px 0 26px; }
+.hero-sub { color: var(--text-2); font-size: 16px; line-height: 1.6; max-width: 44ch; margin: 22px 0 28px; }
 .hero-cta { display: flex; gap: 12px; flex-wrap: wrap; }
-.hero-stats { display: flex; gap: 36px; margin-top: 36px; }
+.hero-note { color: var(--muted); font-size: 13px; margin: 16px 0 0; }
+.hero-stats { display: flex; margin-top: 34px; }
+.hero-stats .stat { padding: 0 24px; }
+.hero-stats .stat:first-child { padding-left: 0; }
+.hero-stats .stat:not(:first-child) { border-left: 1px solid var(--line); }
 .hero-stats .stat b { display: block; font-size: 26px; font-weight: 800; letter-spacing: -0.02em; }
 .hero-stats .stat span { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; }
 
@@ -639,16 +668,18 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* ---- Mascot ---- */
-.mascot-stage { position: relative; display: grid; place-items: center; min-height: 380px; }
+.mascot-stage { position: relative; display: grid; place-items: center; min-height: 400px; }
 .mascot-glow {
-    position: absolute; width: 340px; height: 340px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(255, 106, 61, 0.34), transparent 66%);
-    filter: blur(28px); pointer-events: none;
+    position: absolute; width: 420px; height: 420px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 106, 61, 0.38), transparent 64%);
+    filter: blur(30px); pointer-events: none;
+    animation: glowPulse 6s ease-in-out infinite;
 }
+@keyframes glowPulse { 0%, 100% { opacity: 0.85; } 50% { opacity: 1; } }
 .mascot {
-    position: relative; z-index: 1; width: min(90%, 400px); height: auto; overflow: visible;
+    position: relative; z-index: 1; width: min(94%, 430px); height: auto; overflow: visible;
     animation: floaty 5.5s ease-in-out infinite;
-    filter: drop-shadow(0 20px 40px rgba(231, 59, 39, 0.28));
+    filter: drop-shadow(0 24px 46px rgba(231, 59, 39, 0.32));
 }
 .m-eyes { transform-box: fill-box; transform-origin: center; animation: blink 5s infinite; }
 @keyframes blink { 0%, 92%, 100% { transform: scaleY(1); } 96% { transform: scaleY(0.12); } }
