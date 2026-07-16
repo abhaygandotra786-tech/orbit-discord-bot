@@ -561,13 +561,13 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* content below the fold */
-.landing { max-width: var(--maxw); margin: 0 auto; padding: 84px 22px 96px; text-align: center; }
+.landing { max-width: var(--maxw); margin: 0 auto; padding: 96px 22px 30px; text-align: center; }
 .eyebrow-sm {
     font-size: 11px; font-weight: 700; letter-spacing: 0.28em;
     color: var(--accent); margin-bottom: 12px;
 }
-.landing-head h2 { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; margin: 0 0 8px; }
-.landing-head p { color: var(--text-2); margin: 0 auto 26px; max-width: 46ch; }
+.landing-head h2 { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; margin: 0 0 8px; }
+.landing-head p { color: var(--text-2); margin: 0 auto 28px; max-width: 46ch; }
 
 /* prominent search with icon */
 .search.big { max-width: 520px; position: relative; margin: 0 auto 16px; }
@@ -582,10 +582,8 @@ a { color: inherit; text-decoration: none; }
 .search.big input:focus { box-shadow: 0 0 0 3px var(--accent-soft); }
 .search.big .btn { padding: 0 22px; }
 
-.landing-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 8px; }
-
-/* feature cards with quiet index numbers */
-.landing .features { text-align: left; }
+/* feature cards — minimal, quiet accent on hover */
+.landing .features { text-align: left; padding: 56px 0 0; }
 .feature { position: relative; overflow: hidden; }
 .feature::before {
     content: ""; position: absolute; left: 0; top: 0; height: 2px; width: 100%;
@@ -593,11 +591,6 @@ a { color: inherit; text-decoration: none; }
     transition: transform 0.28s ease;
 }
 .feature:hover::before { transform: scaleX(1); }
-.f-num {
-    position: absolute; top: 16px; right: 18px;
-    font-size: 12px; font-weight: 700; letter-spacing: 0.05em;
-    color: var(--muted); opacity: 0.5;
-}
 
 @media (max-width: 560px) {
     .cinema-meta { max-width: 100%; }
@@ -688,7 +681,7 @@ a { color: inherit; text-decoration: none; }
 .trust-chip:hover { color: var(--text); border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); background: var(--surface-2); }
 
 /* compare table */
-.compare { max-width: 760px; margin: 0 auto; padding: 44px 22px 96px; text-align: center; }
+.compare { max-width: 720px; margin: 0 auto; padding: 84px 22px 104px; text-align: center; }
 .compare-table { border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--surface); margin-top: 10px; text-align: left; }
 .ct-row { display: grid; grid-template-columns: 1.6fr 1fr 1fr; align-items: center; padding: 14px 20px; border-bottom: 1px solid var(--line); font-size: 14px; }
 .ct-row:last-child { border-bottom: none; }
