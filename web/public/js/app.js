@@ -125,6 +125,14 @@ async function loadHome() {
         <div class="stat"><b>${stats.likes}</b><span>Connections</span></div>
         <div class="stat"><b>${CATS.length}</b><span>Communities</span></div>`;
 
+    // trust strip: category chips (link to each community page)
+    const trust = $("trustRow");
+    if (trust) {
+        trust.innerHTML = CATS.map(
+            (c) => `<a class="trust-chip" href="/${slugOf(c)}" data-link>${c}</a>`
+        ).join("");
+    }
+
     // reveal feature cards with a gentle stagger
     document.querySelectorAll("#view-home .reveal-on-scroll").forEach((el, i) => {
         setTimeout(() => el.classList.add("in"), 120 + i * 90);
@@ -513,10 +521,13 @@ async function boot() {
     $("brandName").textContent = state.config.botName;
     $("footerName").textContent = state.config.botName;
     document.title = state.config.botName;
-    $("addBtn").href = state.config.inviteUrl;
+    document.querySelectorAll("#addBtn, #addBtn2").forEach((a) => (a.href = state.config.inviteUrl));
     if (state.config.logo) {
         $("brandLogo").src = state.config.logo;
-        $("heroLogo").src = state.config.logo;
+    }
+    if (state.config.banner) {
+        const hv = $("heroVisual");
+        if (hv) hv.src = state.config.banner;
     }
     if (state.config.manageUrl) {
         const m = $("manageLink");

@@ -42,24 +42,42 @@
 
     <!-- HOME -->
     <section id="view-home">
-        <!-- Cinematic stage -->
-        <div class="cinema">
-            <div class="cinema-frame" aria-hidden="true"></div>
-            <img id="heroLogo" class="cinema-planet" src="/assets/logo.png" alt="" />
-            <div class="cinema-inner">
-                <div class="eyebrow"><span class="rule"></span>ORBIT ON DISCORD<span class="rule"></span></div>
-                <h1 class="mega">ORBIT</h1>
-                <p class="cinema-sub">
-                    Explore your community — networking, founders, freelancing,
-                    friends, gaming and dating, all in one place.
-                </p>
-                <div class="cinema-meta">
-                    <div class="m-item m-left"><span>Community</span><b>All-in-one</b></div>
-                    <div class="m-item m-right"><span>Since</span><b>2026</b></div>
+        <!-- Split hero -->
+        <div class="hero">
+            <div class="hero-glow" aria-hidden="true"></div>
+            <div class="hero-inner">
+                <div class="hero-left">
+                    <div class="hero-badge">★ Orbit on Discord</div>
+                    <h1 class="hero-title">Find your <span class="grad-word">people</span>, all in one bot</h1>
+                    <p class="hero-sub">
+                        Networking, founders, freelancing, friends, gaming and dating —
+                        Orbit helps your community connect, match and grow.
+                    </p>
+                    <div class="hero-cta">
+                        <a class="btn lg" id="addBtn" href="#" target="_blank" rel="noopener">Add to Discord</a>
+                        <a class="btn ghost lg" href="/premium" data-link>View Premium</a>
+                    </div>
+                    <div class="hero-stats" id="heroStats"></div>
                 </div>
-                <button class="scroll-cta" id="scrollCta">Scroll to explore</button>
-                <div class="cinema-hint">Best experienced on desktop</div>
+                <div class="hero-right">
+                    <div class="hero-visual">
+                        <img id="heroVisual" class="hero-img" src="/assets/banner.png" alt="Orbit" />
+                        <div class="float-chip chip-tl">
+                            <span class="fc-ic">✦</span>
+                            <div><b>New match</b><small>just now</small></div>
+                        </div>
+                        <div class="float-chip chip-br">
+                            <div><b id="chipNum">98%</b><small>match rate</small></div>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </div>
+
+        <!-- Trust strip -->
+        <div class="trust">
+            <span class="trust-label">Built for every kind of community</span>
+            <div class="trust-row" id="trustRow"></div>
         </div>
 
         <!-- Content below the fold -->
@@ -76,7 +94,7 @@
                 <button class="btn" type="submit">Search</button>
             </form>
             <div class="landing-cta">
-                <a class="btn" id="addBtn" href="#" target="_blank" rel="noopener">Add to Discord</a>
+                <a class="btn" id="addBtn2" href="#" target="_blank" rel="noopener">Add to Discord</a>
                 <a class="btn ghost" href="/premium" data-link>View Premium</a>
             </div>
 
@@ -101,7 +119,31 @@
                 </div>
             </div>
 
-            <div class="stats" id="heroStats"></div>
+        </div>
+
+        <!-- Orbit vs a plain bot -->
+        <div class="compare">
+            <div class="landing-head reveal-on-scroll">
+                <div class="eyebrow-sm">WHY ORBIT</div>
+                <h2>More than a bot</h2>
+                <p>See how Orbit compares to a plain community server.</p>
+            </div>
+            <div class="compare-table reveal-on-scroll">
+                <div class="ct-row ct-head">
+                    <span></span>
+                    <span class="ct-orbit">Orbit</span>
+                    <span>Plain server</span>
+                </div>
+                <div class="ct-row"><span>Rich member profiles</span><span class="ct-y">✓</span><span class="ct-n">—</span></div>
+                <div class="ct-row"><span>Like &amp; match system</span><span class="ct-y">✓</span><span class="ct-n">—</span></div>
+                <div class="ct-row"><span>Search by skill &amp; location</span><span class="ct-y">✓</span><span class="ct-n">—</span></div>
+                <div class="ct-row"><span>AI matchmaking</span><span class="ct-y">✓</span><span class="ct-n">—</span></div>
+                <div class="ct-row"><span>Web dashboard &amp; analytics</span><span class="ct-y">✓</span><span class="ct-n">—</span></div>
+                <div class="ct-row"><span>Premium visibility boosts</span><span class="ct-y">✓</span><span class="ct-n">—</span></div>
+            </div>
+            <div class="compare-cta reveal-on-scroll">
+                <a class="btn lg" href="/premium" data-link>Explore plans</a>
+            </div>
         </div>
     </section>
 
