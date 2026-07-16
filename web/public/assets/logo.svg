@@ -1,0 +1,39 @@
+<svg width="512" height="512" viewBox="0 -8 260 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Orbit">
+  <defs>
+    <radialGradient id="mBody" cx="38%" cy="30%" r="78%">
+      <stop offset="0%" stop-color="#FFCC7A"/>
+      <stop offset="46%" stop-color="#FF7A3D"/>
+      <stop offset="100%" stop-color="#E73B27"/>
+    </radialGradient>
+    <linearGradient id="mRing" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFB648"/>
+      <stop offset="100%" stop-color="#FF4D2D"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ring (back) -->
+  <g transform="rotate(-18 130 150)">
+    <ellipse cx="130" cy="150" rx="118" ry="34" fill="none" stroke="url(#mRing)" stroke-width="9" opacity="0.85"/>
+  </g>
+
+  <!-- body -->
+  <circle cx="130" cy="132" r="74" fill="url(#mBody)"/>
+  <ellipse cx="106" cy="104" rx="26" ry="18" fill="#fff" opacity="0.16"/>
+  <circle cx="102" cy="156" r="10" fill="#E73B27" opacity="0.32"/>
+  <circle cx="162" cy="110" r="7" fill="#E73B27" opacity="0.28"/>
+  <circle cx="152" cy="164" r="5" fill="#E73B27" opacity="0.28"/>
+
+  <!-- face -->
+  <circle cx="96" cy="146" r="8" fill="#fff" opacity="0.22"/>
+  <circle cx="166" cy="146" r="8" fill="#fff" opacity="0.22"/>
+  <ellipse cx="111" cy="126" rx="11" ry="13" fill="#3a1f14"/>
+  <ellipse cx="151" cy="126" rx="11" ry="13" fill="#3a1f14"/>
+  <circle cx="115" cy="121" r="3.4" fill="#fff"/>
+  <circle cx="155" cy="121" r="3.4" fill="#fff"/>
+  <path d="M114 150 Q131 166 148 150" fill="none" stroke="#3a1f14" stroke-width="4.5" stroke-linecap="round"/>
+
+  <!-- ring (front) -->
+  <g transform="rotate(-18 130 150)">
+    <path d="M 12 150 A 118 34 0 0 0 248 150" fill="none" stroke="url(#mRing)" stroke-width="9" stroke-linecap="round"/>
+  </g>
+</svg>

@@ -111,24 +111,17 @@ const DIVIDER = "─────────────────────
 function brandedEmbed({ title, description, color } = {}) {
     const { files, bannerRef } = brandKit();
 
+    // Text-only header/footer, and the banner shown as a thumbnail only —
+    // no logo icons, no large bottom image (by design).
     const embed = new EmbedBuilder()
         .setColor(color ?? COLORS.PRIMARY ?? config.EMBED_COLOR)
         .setTimestamp()
-        .setAuthor(
-            config.LOGO_URL
-                ? { name: config.BOT_NAME, iconURL: config.LOGO_URL }
-                : { name: config.BOT_NAME }
-        )
-        .setFooter(
-            config.LOGO_URL
-                ? { text: config.FOOTER.TEXT, iconURL: config.LOGO_URL }
-                : { text: config.FOOTER.TEXT }
-        );
+        .setAuthor({ name: config.BOT_NAME })
+        .setFooter({ text: config.FOOTER.TEXT });
 
     if (title) embed.setTitle(title);
     if (description) embed.setDescription(description);
-    if (config.LOGO_URL) embed.setThumbnail(config.LOGO_URL);
-    if (bannerRef) embed.setImage(bannerRef);
+    if (bannerRef) embed.setThumbnail(bannerRef);
 
     return { embed, files };
 }

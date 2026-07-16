@@ -16,14 +16,14 @@ module.exports = {
     // --- Identity ---
     BOT_NAME: "Orbit",
 
-    // --- Embed theming (royal indigo) ---
-    EMBED_COLOR: 0x6d63f5, // royal indigo — primary brand color
+    // --- Embed theming (warm orange) ---
+    EMBED_COLOR: 0xff5f2e, // primary orange — brand color
     COLORS: {
-        PRIMARY: 0x6d63f5, // royal indigo
-        SUCCESS: 0x5b50e0, // indigo (positive)
-        ERROR: 0x7c3aed, // violet-indigo (errors)
-        INFO: 0x818cf8, // light indigo
-        PREMIUM: 0x9466ff // bright royal indigo (premium accents)
+        PRIMARY: 0xff5f2e, // primary orange
+        SUCCESS: 0xff6a3d, // warm orange (positive)
+        ERROR: 0xe73b27, // deep orange-red (errors)
+        INFO: 0xffb648, // gold (info)
+        PREMIUM: 0xffb648 // gold (premium accents)
     },
 
     // --- Footer ---
@@ -87,11 +87,11 @@ module.exports = {
 
         // Available profile themes (Premium+). Maps name -> embed color.
         THEMES: {
-            royal: 0x4f46e5,
-            indigo: 0x6d63f5,
-            violet: 0x9466ff,
-            periwinkle: 0x8b80ff,
-            midnight: 0x3730a3
+            royal: 0xe73b27,
+            indigo: 0xff5f2e,
+            violet: 0xff6a3d,
+            periwinkle: 0xffb648,
+            midnight: 0xb5321f
         },
 
         // Roles selectable in the Investor Network (Pro).
@@ -108,7 +108,7 @@ module.exports = {
                 price: 0,
                 durationDays: null,
                 rank: 0,
-                color: 0x6b6e8f,
+                color: 0x8a7d74,
                 limits: { views: 50, likes: 25, searches: 10 },
                 capabilities: [],
                 perks: [
@@ -125,7 +125,7 @@ module.exports = {
                 price: 4.99,
                 durationDays: 30,
                 rank: 1,
-                color: 0x8b80ff,
+                color: 0xff6a3d,
                 limits: { views: null, likes: null, searches: null },
                 capabilities: [
                     "advancedSearch",
@@ -156,7 +156,7 @@ module.exports = {
                 price: 14.99,
                 durationDays: 30,
                 rank: 2,
-                color: 0x4f46e5,
+                color: 0xe73b27,
                 limits: { views: null, likes: null, searches: null },
                 capabilities: [
                     // everything Premium has...
