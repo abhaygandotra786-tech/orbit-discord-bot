@@ -60,8 +60,55 @@
                     <div class="hero-stats" id="heroStats"></div>
                 </div>
                 <div class="hero-right">
-                    <div class="hero-visual">
-                        <img id="heroVisual" class="hero-img" src="/assets/banner.png" alt="Orbit" />
+                    <div class="mascot-stage">
+                        <div class="mascot-glow" aria-hidden="true"></div>
+                        <svg class="mascot" viewBox="0 0 260 270" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Orbit mascot">
+                            <defs>
+                                <radialGradient id="mBody" cx="38%" cy="30%" r="78%">
+                                    <stop offset="0%" stop-color="#FFCC7A"/>
+                                    <stop offset="46%" stop-color="#FF7A3D"/>
+                                    <stop offset="100%" stop-color="#E73B27"/>
+                                </radialGradient>
+                                <linearGradient id="mRing" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0%" stop-color="#FFB648"/>
+                                    <stop offset="100%" stop-color="#FF4D2D"/>
+                                </linearGradient>
+                            </defs>
+
+                            <!-- ring (back) -->
+                            <g transform="rotate(-18 130 150)">
+                                <ellipse cx="130" cy="150" rx="118" ry="34" fill="none" stroke="url(#mRing)" stroke-width="9" opacity="0.85"/>
+                            </g>
+
+                            <!-- body -->
+                            <circle cx="130" cy="132" r="74" fill="url(#mBody)"/>
+                            <ellipse cx="106" cy="104" rx="26" ry="18" fill="#fff" opacity="0.16"/>
+                            <circle cx="102" cy="156" r="10" fill="#E73B27" opacity="0.32"/>
+                            <circle cx="162" cy="110" r="7" fill="#E73B27" opacity="0.28"/>
+                            <circle cx="152" cy="164" r="5" fill="#E73B27" opacity="0.28"/>
+
+                            <!-- face -->
+                            <circle cx="96" cy="146" r="8" fill="#fff" opacity="0.22"/>
+                            <circle cx="166" cy="146" r="8" fill="#fff" opacity="0.22"/>
+                            <g class="m-eyes">
+                                <ellipse cx="111" cy="126" rx="11" ry="13" fill="#3a1f14"/>
+                                <ellipse cx="151" cy="126" rx="11" ry="13" fill="#3a1f14"/>
+                                <circle cx="115" cy="121" r="3.4" fill="#fff"/>
+                                <circle cx="155" cy="121" r="3.4" fill="#fff"/>
+                            </g>
+                            <path d="M114 150 Q131 166 148 150" fill="none" stroke="#3a1f14" stroke-width="4.5" stroke-linecap="round"/>
+
+                            <!-- ring (front) -->
+                            <g transform="rotate(-18 130 150)">
+                                <path d="M 12 150 A 118 34 0 0 0 248 150" fill="none" stroke="url(#mRing)" stroke-width="9" stroke-linecap="round"/>
+                            </g>
+
+                            <!-- sparkles -->
+                            <path class="m-spark s1" d="M228 60 l4 10 10 4 -10 4 -4 10 -4 -10 -10 -4 10 -4 z" fill="#FFB648"/>
+                            <path class="m-spark s2" d="M40 84 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3 z" fill="#FF6A3D"/>
+                            <path class="m-spark s3" d="M210 210 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3 z" fill="#FFCC7A"/>
+                        </svg>
+
                         <div class="float-chip chip-tl">
                             <span class="fc-ic">✦</span>
                             <div><b>New match</b><small>just now</small></div>
