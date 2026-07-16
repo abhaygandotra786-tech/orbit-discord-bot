@@ -40,6 +40,30 @@ function escape(str) {
     }[c]));
 }
 
+// Reveal elements as they scroll into view (with a graceful fallback).
+let _revealObserver;
+function observeReveals() {
+    const els = document.querySelectorAll(".reveal-on-scroll:not(.in)");
+    if (!("IntersectionObserver" in window)) {
+        els.forEach((el) => el.classList.add("in"));
+        return;
+    }
+    if (!_revealObserver) {
+        _revealObserver = new IntersectionObserver(
+            (entries, obs) => {
+                for (const e of entries) {
+                    if (e.isIntersecting) {
+                        e.target.classList.add("in");
+                        obs.unobserve(e.target);
+                    }
+                }
+            },
+            { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
+        );
+    }
+    els.forEach((el) => _revealObserver.observe(el));
+}
+
 // ---- routing -----------------------------------------------------
 function setView(name) {
     for (const v of ["home", "category", "premium", "admirers", "dashboard"]) {
@@ -133,10 +157,7 @@ async function loadHome() {
         ).join("");
     }
 
-    // reveal feature cards with a gentle stagger
-    document.querySelectorAll("#view-home .reveal-on-scroll").forEach((el, i) => {
-        setTimeout(() => el.classList.add("in"), 120 + i * 90);
-    });
+    observeReveals();
 }
 
 // ---- community page ----------------------------------------------
