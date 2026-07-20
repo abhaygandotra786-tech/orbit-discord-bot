@@ -391,10 +391,19 @@ app.get("/api/admirers", requireAuth, async (req, res) => {
 });
 
 app.get("/api/stats", (req, res) => {
-    res.json({
-        profiles: getAllProfiles.all().length,
-        likes: countLikes.get().count
-    });
+    try {
+        res.json({
+            profiles: getAllProfiles.all().length,
+            likes: countLikes.get().count
+        });
+    } catch (err) {
+        logger.error("/api/stats failed", err);
+        // Temporary: surface the real reason so we can diagnose the DB issue.
+        res.status(500).json({
+            error: err.message,
+            code: err.code || err.name || null
+        });
+    }
 });
 
 // Member dashboard: everything about the logged-in user.
