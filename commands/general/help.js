@@ -79,11 +79,12 @@ module.exports = {
 
         // (field emojis added below)
 
+        // Lay command groups out in tidy columns rather than a long stack.
         for (const section of SECTIONS) {
-            embed.addFields({ name: section.name, value: section.lines.join("\n") });
+            embed.addFields({ name: section.name, value: section.lines.join("\n"), inline: true });
         }
         if (isAdmin) {
-            embed.addFields({ name: ADMIN_SECTION.name, value: ADMIN_SECTION.lines.join("\n") });
+            embed.addFields({ name: ADMIN_SECTION.name, value: ADMIN_SECTION.lines.join("\n"), inline: true });
         }
         embed.addFields({
             name: "🔗 Links",

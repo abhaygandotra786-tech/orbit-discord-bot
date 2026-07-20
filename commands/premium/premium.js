@@ -36,31 +36,35 @@ module.exports = {
         if (sub === "plans") {
             const { embed, files } = brandedEmbed({
                 title: `✨ ${config.BOT_NAME} Membership`,
-                description: "Pick the plan that fits how you want to grow.",
-                color: config.COLORS.PREMIUM,
-                banner: true
+                description: "Three simple plans. Cancel anytime.",
+                color: config.COLORS.PREMIUM
             });
 
             const clean = (p) => p.replace(/^[^\w`]+/, "").trim();
+            const cur = config.PREMIUM.CURRENCY;
 
+            // Three tidy columns — a clean comparison, not a wall of text.
             for (const tier of Object.values(config.PREMIUM.TIERS)) {
                 const price =
                     tier.key === "free"
-                        ? "Free"
-                        : `${config.PREMIUM.CURRENCY}${tier.price.toFixed(2)}/mo`;
-                const star = tier.key === "premium" ? "  ·  Most popular" : "";
-                const top = tier.perks.slice(0, 4).map((p) => `• ${clean(p)}`);
-                if (tier.perks.length > 4) top.push(`• +${tier.perks.length - 4} more`);
+                        ? "**Free**"
+                        : `**${cur}${tier.price.toFixed(2)}**/mo`;
+                const label = tier.key === "premium" ? `${tier.name} ⭐` : tier.name;
+                const perks = tier.perks
+                    .slice(0, 3)
+                    .map((p) => clean(p))
+                    .join("\n");
 
                 embed.addFields({
-                    name: `${tier.emoji ? tier.emoji + " " : ""}${tier.name} — ${price}${star}`,
-                    value: top.join("\n")
+                    name: `${tier.emoji ? tier.emoji + " " : ""}${label}`,
+                    value: `${price}\n\n${perks}`,
+                    inline: true
                 });
             }
 
             const row = new ActionRowBuilder().addComponents(
                 new ButtonBuilder()
-                    .setLabel("Upgrade Now")
+                    .setLabel("Upgrade")
                     .setEmoji("💳")
                     .setStyle(ButtonStyle.Link)
                     .setURL(config.PREMIUM.PAYMENT_URL)
@@ -93,22 +97,22 @@ module.exports = {
             const expires = Math.floor(active.expires_at / 1000);
 
             const clean = (p) => p.replace(/^[^\w`]+/, "").trim();
-            const { embed, files } = brandedEmbed({
+            // Clean, compact status card — no oversized banner here.
+            const embed = baseEmbed({
                 title: `${tier.emoji} ${tier.name} Member`,
-                description: `Thanks for supporting ${config.BOT_NAME}.`,
-                color: tier.color,
-                banner: true
+                description: `Thanks for supporting ${config.BOT_NAME} 🧡`,
+                color: tier.color
             });
             embed.addFields(
                 { name: "Plan", value: tier.name, inline: true },
                 { name: "Renews", value: `<t:${expires}:R>`, inline: true },
                 {
-                    name: "Included",
+                    name: "Your perks",
                     value: tier.perks.slice(0, 4).map((p) => `• ${clean(p)}`).join("\n")
                 }
             );
 
-            return interaction.editReply({ embeds: [embed], files });
+            return interaction.editReply({ embeds: [embed] });
         }
     }
 };
