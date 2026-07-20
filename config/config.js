@@ -9,21 +9,24 @@
 // as the site logo. Defaults to the deployed site's /assets/logo.png so the
 // bot can show the logo by URL (no per-message file uploads).
 const _base = (process.env.WEB_BASE_URL || "").replace(/\/$/, "");
+// Bump ?v= whenever the logo art changes to bust Discord's image cache.
 const LOGO_URL =
-    process.env.LOGO_URL || (_base ? `${_base}/assets/logo.png` : "");
+    process.env.LOGO_URL || (_base ? `${_base}/assets/logo.png?v=3` : "");
 
 module.exports = {
     // --- Identity ---
     BOT_NAME: "Orbit",
 
     // --- Embed theming (warm orange) ---
+    // Everything is primary orange, except premium accents (gold) which stay
+    // distinct so premium features stand out.
     EMBED_COLOR: 0xff5f2e, // primary orange — brand color
     COLORS: {
         PRIMARY: 0xff5f2e, // primary orange
-        SUCCESS: 0xff6a3d, // warm orange (positive)
-        ERROR: 0xe73b27, // deep orange-red (errors)
-        INFO: 0xffb648, // gold (info)
-        PREMIUM: 0xffb648 // gold (premium accents)
+        SUCCESS: 0xff5f2e, // orange (positive)
+        ERROR: 0xe73b27, // deep orange-red (errors, still warm)
+        INFO: 0xff5f2e, // orange (info)
+        PREMIUM: 0xffb648 // gold (premium accents — kept distinct)
     },
 
     // --- Footer ---
@@ -108,7 +111,7 @@ module.exports = {
                 price: 0,
                 durationDays: null,
                 rank: 0,
-                color: 0x8a7d74,
+                color: 0xff5f2e,
                 limits: { views: 50, likes: 25, searches: 10 },
                 capabilities: [],
                 perks: [
@@ -125,7 +128,7 @@ module.exports = {
                 price: 4.99,
                 durationDays: 30,
                 rank: 1,
-                color: 0xff6a3d,
+                color: 0xffb648,
                 limits: { views: null, likes: null, searches: null },
                 capabilities: [
                     "advancedSearch",
@@ -156,7 +159,7 @@ module.exports = {
                 price: 14.99,
                 durationDays: 30,
                 rank: 2,
-                color: 0xe73b27,
+                color: 0xf59e0b,
                 limits: { views: null, likes: null, searches: null },
                 capabilities: [
                     // everything Premium has...
