@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pricing: Orbit is free, Pro is earnable</title>
+<meta name="description" content="Orbit never charges you to meet people. Perks reward the people who grow the community." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="icon" href="/logo.png" />
+<link rel="stylesheet" href="/css/site.css" />
+</head>
+<body>
+<!-- ===================== NAV ===================== -->
+<header class="nav">
+  <div class="nav-in">
+    <a class="brand" href="/"><img src="/logo.png" alt="Orbit" />Orbit</a>
+    <nav class="nav-links">
+      <a href="/#how">How it works</a>
+      <a href="/#perks">Perks</a>
+      <a href="/pricing.html">Pricing</a>
+      <a href="/#faq">FAQ</a>
+    </nav>
+    <a class="btn btn-primary" data-invite href="#">Add to Discord</a>
+  </div>
+</header>
+
+<!-- ===================== PRICING ===================== -->
+<section class="section">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="kicker">Pricing</div>
+      <h2>Free to use. Pro is earnable.</h2>
+      <p>Orbit never charges you to meet people. Perks reward the people who grow the community.</p>
+    </div>
+
+    <div class="price-grid">
+      <!-- FREE -->
+      <div class="tier reveal">
+        <span class="badge free-badge">Free</span>
+        <h3>Free</h3>
+        <div class="tag-line">Everything you need to meet people.</div>
+        <ul>
+          <li>Weekly curated matches</li>
+          <li>Full profile</li>
+          <li>Icebreaker questions</li>
+          <li class="free-note">Verification, reporting, blocking: always free for everyone</li>
+        </ul>
+        <a class="btn btn-ghost" data-invite href="#">Add Orbit</a>
+      </div>
+
+      <!-- PRO (recommended) -->
+      <div class="tier rec reveal d1">
+        <span class="badge">Recommended</span>
+        <h3>Pro</h3>
+        <div class="tag-line">For the regulars.</div>
+        <ul>
+          <li>Extra match credits</li>
+          <li>Early access to the weekly match drop</li>
+          <li>Profile highlight and streak badges</li>
+        </ul>
+        <div class="how"><b>How to get it:</b> vote on top.gg for 24 hours per vote, or 3 activated referrals for 1 month.</div>
+        <div class="price">Paid option: coming soon, <span data-price="pro">₹__</span></div>
+        <a class="btn btn-primary" data-invite href="#">Add Orbit and earn</a>
+      </div>
+
+      <!-- PREMIUM (rare) -->
+      <div class="tier rare reveal d2">
+        <span class="badge">Rare</span>
+        <h3>Premium</h3>
+        <div class="tag-line">For community builders.</div>
+        <ul>
+          <li>Everything in Pro</li>
+          <li>Priority in the match queue</li>
+          <li>Vouched badge and custom profile accent</li>
+        </ul>
+        <div class="how"><b>How to get it:</b> 10 activated referrals for 1 month.</div>
+        <div class="price">Paid option: coming soon, <span data-price="premium">₹__</span></div>
+        <a class="btn btn-ghost" data-community href="#">Start referring</a>
+      </div>
+    </div>
+
+    <!-- How earning works -->
+    <div class="earn">
+      <div class="sec-head reveal" style="margin:16px auto 4px"><h2 style="font-size:24px">How earning works</h2></div>
+      <div class="row reveal"><div class="k">Votes</div><p>Vote on top.gg every 12 hours. Streaks stack, so voting a few days in a row unlocks more.</p></div>
+      <div class="row reveal d1"><div class="k">Referrals</div><p>A referral counts only when your friend completes a profile and gets matched. Real members, not just clicks.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FAQ ===================== -->
+<section class="section" style="padding-top:0">
+  <div class="wrap">
+    <div class="faq">
+      <div class="qa"><button>Will free ever get worse?<span class="plus">+</span></button><div class="ans"><p>No. Matching and safety stay free forever. Perks only add on top, they never take away from free.</p></div></div>
+      <div class="qa"><button>Can I pay right now?<span class="plus">+</span></button><div class="ans"><p>Not yet. Earning is the only way in for now, which keeps Premium rare and the community real.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer>
+  <div class="wrap foot">
+    <div class="brand"><img src="/logo.png" alt="" />Orbit</div>
+    <div class="foot-links">
+      <a href="/">Home</a>
+      <a data-community href="#">Community</a>
+      <a data-topgg href="#">Vote on top.gg ✦</a>
+      <a data-community href="#">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/site-config.js"></script>
+<script src="/js/site.js"></script>
+<script>
+/* inject price placeholders from the shared config */
+document.querySelectorAll("[data-price]").forEach(el=>{
+  el.textContent = ((window.ORBIT||{}).price||{})[el.dataset.price] || "₹__";
+});
+</script>
+</body>
+</html>

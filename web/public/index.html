@@ -7,245 +7,19 @@
 <meta name="description" content="Orbit drops a few curated matches every week inside your Discord community. Real members, real conversations, zero swiping." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 <link rel="icon" href="/logo.png" />
-<style>
-/* ==================================================================
-   ORBIT: warm cosmic landing.  TUNE COLORS / TIMINGS HERE.
-   Links + counters are in the CONFIG block near the bottom.
-   ================================================================== */
-:root{
-  /* brand palette (from the mascot) */
-  --bg:#16110D;            /* warm near-black */
-  --bg-2:#1B140F;          /* slightly lighter warm panel */
-  --card:rgba(38,28,21,.55);
-  --coral-1:#FF8A5C;       /* planet light */
-  --coral-2:#F4502A;       /* planet deep  */
-  --gold:#F5B93F;          /* sparkles / highlights */
-  --text:#FFF6EF;          /* warm off-white headings */
-  --muted:#C3B2A4;         /* warm gray body */
-  --dim:#8C7A6C;
-  --line:rgba(255,180,120,.16);
-  --maxw:1100px;
-  --sans:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-  --display:"Fredoka","Inter",sans-serif;
-  --ease:cubic-bezier(.22,1,.36,1);           /* spring-ish */
-  --spring:cubic-bezier(.34,1.56,.64,1);      /* overshoot  */
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{
-  font-family:var(--sans);background:var(--bg);color:var(--text);
-  font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;
-}
-a{color:inherit;text-decoration:none}
-.wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
-h1,h2,h3,.display{font-family:var(--display);letter-spacing:-.01em}
-
-/* hue-shifting ambient glow layer that follows scroll (set via JS) */
-#aura{position:fixed;inset:0;z-index:-2;pointer-events:none;
-  background:
-    radial-gradient(60% 50% at 50% var(--auraY,15%), rgba(244,80,42,.18), transparent 60%),
-    radial-gradient(50% 40% at 80% 90%, rgba(245,185,63,.10), transparent 60%);
-  transition:background .4s linear}
-body{background:linear-gradient(180deg,var(--bg),var(--bg-2))}
-
-/* ---------- buttons ---------- */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;
-  font-family:inherit;font-weight:700;font-size:15px;border-radius:999px;padding:14px 24px;
-  cursor:pointer;border:1px solid transparent;position:relative;
-  transition:transform .16s var(--spring),box-shadow .25s var(--ease),background .2s ease}
-.btn:hover{transform:scale(1.03)}
-.btn:active{transform:scale(.98)}
-.btn-primary{background:linear-gradient(135deg,var(--coral-1),var(--coral-2));color:#fff;
-  box-shadow:0 8px 26px rgba(244,80,42,.4),0 0 0 rgba(244,80,42,.5);animation:pulseGlow 3s ease-in-out infinite}
-.btn-primary:hover{box-shadow:0 12px 34px rgba(244,80,42,.6),0 0 30px rgba(255,138,92,.5)}
-@keyframes pulseGlow{0%,100%{box-shadow:0 8px 26px rgba(244,80,42,.35),0 0 0 rgba(244,80,42,0)}
-  50%{box-shadow:0 10px 30px rgba(244,80,42,.5),0 0 26px rgba(255,138,92,.35)}}
-.btn-ghost{background:rgba(255,255,255,.03);color:var(--text);border-color:var(--line)}
-.btn-ghost:hover{background:rgba(255,255,255,.07);border-color:rgba(245,185,63,.4)}
-
-/* ---------- navbar ---------- */
-.nav{position:sticky;top:0;z-index:60;transition:background .3s ease,border-color .3s ease,backdrop-filter .3s ease;border-bottom:1px solid transparent}
-.nav.stuck{background:rgba(22,17,13,.72);backdrop-filter:blur(14px);border-bottom-color:var(--line)}
-.nav-in{max-width:var(--maxw);margin:0 auto;padding:13px 22px;display:flex;align-items:center;gap:18px}
-.brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:700;font-size:20px}
-.brand img{width:32px;height:32px;filter:drop-shadow(0 2px 8px rgba(244,80,42,.5))}
-.nav-links{display:flex;gap:26px;margin:0 auto;font-size:14.5px;font-weight:600;color:var(--muted)}
-.nav-links a{transition:color .15s ease}.nav-links a:hover{color:var(--text)}
-.nav .btn{padding:10px 20px;font-size:14px}
-
-/* ---------- hero ---------- */
-.hero{position:relative;overflow:hidden;padding:clamp(40px,7vh,84px) 0 clamp(50px,8vh,96px)}
-#stars{position:absolute;inset:0;z-index:0;pointer-events:none}
-.star{position:absolute;background:var(--gold);border-radius:50%;opacity:.7;
-  box-shadow:0 0 6px rgba(245,185,63,.8);animation:twinkle 4s ease-in-out infinite}
-@keyframes twinkle{0%,100%{opacity:.25}50%{opacity:.9}}
-.hero-in{position:relative;z-index:1;display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center}
-.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--gold);
-  background:rgba(245,185,63,.1);border:1px solid rgba(245,185,63,.28);padding:6px 14px;border-radius:999px;margin-bottom:20px}
-.eyebrow::before{content:"✦";font-size:12px}
-h1{font-size:clamp(40px,6vw,68px);line-height:1.03;font-weight:700;margin-bottom:18px}
-h1 .grad{background:linear-gradient(120deg,var(--coral-1),var(--gold));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.hero-sub{font-size:clamp(16px,2.2vw,19px);color:var(--muted);max-width:36ch;margin-bottom:30px}
-.hero-cta{display:flex;gap:13px;flex-wrap:wrap}
-.hero-note{margin-top:18px;font-size:13px;color:var(--dim)}
-
-/* mascot + orbital system */
-.stage{position:relative;display:grid;place-items:center;min-height:420px;perspective:900px}
-.halo{position:absolute;width:460px;height:460px;border-radius:50%;
-  background:radial-gradient(circle,rgba(255,138,92,.4),transparent 62%);filter:blur(24px);animation:breathe 6s ease-in-out infinite}
-@keyframes breathe{0%,100%{opacity:.75;transform:scale(1)}50%{opacity:1;transform:scale(1.06)}}
-.system{position:relative;width:min(80vw,360px);height:min(80vw,360px);transform-style:preserve-3d}
-.planet{position:absolute;inset:0;display:grid;place-items:center;animation:bob 4.5s ease-in-out infinite;z-index:3}
-.planet svg{width:66%;height:auto;filter:drop-shadow(0 16px 30px rgba(244,80,42,.4))}
-@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
-/* orbital plane tilted in 3D; satellites ride the ring */
-.orbit{position:absolute;inset:0;transform:rotateX(70deg);transform-style:preserve-3d;z-index:2}
-.orbit::before{content:"";position:absolute;inset:6%;border:2px dashed rgba(245,185,63,.35);border-radius:50%}
-.spin{position:absolute;inset:0;transform-style:preserve-3d;animation:orbitspin var(--dur,16s) linear infinite}
-.sat{position:absolute;top:50%;left:50%;width:34px;height:34px;margin:-17px;border-radius:50%;
-  display:grid;place-items:center;font-weight:800;font-size:14px;color:#fff;
-  transform:translateX(var(--r,150px)) rotateX(-70deg);
-  box-shadow:0 4px 14px rgba(0,0,0,.4);border:2px solid rgba(255,246,239,.85)}
-@keyframes orbitspin{to{transform:rotate(360deg)}}
-.sat.a{background:linear-gradient(135deg,#7aa5ff,#5b7cf0)}
-.sat.b{background:linear-gradient(135deg,var(--coral-1),var(--coral-2))}
-.sat.c{background:linear-gradient(135deg,var(--gold),#e88a2a)}
-/* heart spark that pops near the planet on a loop */
-.spark{position:absolute;top:26%;left:50%;transform:translate(-50%,-50%) scale(0);font-size:22px;z-index:4;opacity:0;animation:pop 8s ease-in-out infinite}
-@keyframes pop{0%,72%,100%{opacity:0;transform:translate(-50%,-50%) scale(.4)}
-  78%{opacity:1;transform:translate(-50%,-90%) scale(1.15)}88%{opacity:.9;transform:translate(-50%,-140%) scale(1)}94%{opacity:0;transform:translate(-50%,-170%) scale(.8)}}
-
-/* floating discord match-card mockup */
-.matchcard{position:absolute;bottom:2%;right:-4%;width:260px;background:#211a14;border:1px solid var(--line);
-  border-left:4px solid var(--coral-2);border-radius:12px;padding:14px 16px;z-index:5;
-  box-shadow:0 24px 50px rgba(0,0,0,.5);transform:rotateY(-16deg) rotateX(6deg);transform-style:preserve-3d;
-  animation:floatCard 5.5s ease-in-out infinite}
-@keyframes floatCard{0%,100%{transform:rotateY(-16deg) rotateX(6deg) translateY(0)}50%{transform:rotateY(-16deg) rotateX(6deg) translateY(-14px)}}
-.matchcard .mh{display:flex;align-items:center;gap:7px;font-weight:800;font-size:13px;color:var(--coral-1)}
-.matchcard .mt{font-weight:800;font-size:15px;margin:7px 0 2px}
-.matchcard .mm{font-size:12px;color:var(--dim)}
-.matchcard .mb{margin-top:9px;font-size:12px;font-weight:700;background:linear-gradient(135deg,var(--coral-1),var(--coral-2));color:#fff;padding:7px 10px;border-radius:8px;text-align:center}
-</style>
+<link rel="stylesheet" href="/css/site.css" />
 </head>
 <body>
-<div id="aura"></div>
-<style>
-/* ---------- section shell ---------- */
-.section{position:relative;padding:clamp(64px,10vh,120px) 0}
-.sec-head{text-align:center;max-width:660px;margin:0 auto clamp(38px,6vh,58px)}
-.kicker{font-size:12.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
-.sec-head h2{font-size:clamp(28px,4.4vw,44px);font-weight:700;line-height:1.08}
-.sec-head p{color:var(--muted);margin-top:12px;font-size:17px}
-
-/* ---------- counters ---------- */
-.counters{display:flex;justify-content:center;gap:clamp(28px,7vw,80px);flex-wrap:wrap}
-.counter{text-align:center}
-.counter b{display:block;font-family:var(--display);font-size:clamp(36px,7vw,58px);font-weight:700;
-  background:linear-gradient(120deg,var(--coral-1),var(--gold));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.counter span{color:var(--muted);font-size:14px;font-weight:600}
-.counter .spk{color:var(--gold)}
-
-/* ---------- how it works ---------- */
-.steps{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.pathline{position:absolute;top:44px;left:16%;right:16%;height:2px;z-index:0;
-  background:repeating-linear-gradient(90deg,rgba(245,185,63,.5) 0 8px,transparent 8px 16px);
-  transform:scaleX(0);transform-origin:left;transition:transform 1.2s var(--ease)}
-.pathline.in{transform:scaleX(1)}
-.step{position:relative;z-index:1;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:28px;backdrop-filter:blur(8px)}
-.step .ic{width:64px;height:64px;margin-bottom:16px}
-.step .n{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
-.step h3{font-size:19px;font-weight:700;margin:6px 0 6px}
-.step p{color:var(--muted);font-size:14.5px}
-
-/* ---------- why cards (glass, gradient border, tilt) ---------- */
-.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
-.gcard{position:relative;border-radius:20px;padding:28px;background:
-  linear-gradient(var(--card),var(--card)) padding-box,
-  linear-gradient(135deg,rgba(255,138,92,.55),rgba(245,185,63,.35)) border-box;
-  border:1px solid transparent;backdrop-filter:blur(10px);
-  transition:transform .2s var(--ease),box-shadow .25s var(--ease);transform-style:preserve-3d;will-change:transform}
-.gcard:hover{box-shadow:0 22px 50px rgba(244,80,42,.28)}
-.gcard .ic{font-size:28px;margin-bottom:14px}
-.gcard h3{font-size:19px;font-weight:700;margin-bottom:8px}
-.gcard p{color:var(--muted);font-size:15px}
-
-/* ---------- perks constellation ladder ---------- */
-.ladder{max-width:640px;margin:0 auto;position:relative;display:flex;flex-direction:column-reverse;gap:14px}
-.node{display:flex;align-items:center;gap:16px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 20px;
-  opacity:.5;transition:opacity .5s var(--ease),box-shadow .5s var(--ease),border-color .5s var(--ease)}
-.node.lit{opacity:1;border-color:rgba(245,185,63,.5);box-shadow:0 0 24px rgba(245,185,63,.22)}
-.node .dot{width:14px;height:14px;border-radius:50%;flex:none;background:#4a3a2c;box-shadow:0 0 0 4px rgba(245,185,63,0);transition:background .4s,box-shadow .4s}
-.node.lit .dot{background:var(--gold);box-shadow:0 0 14px var(--gold)}
-.node .t{font-size:15px}.node .t b{font-weight:800}
-.node .tag{margin-left:auto;font-size:11px;font-weight:800;letter-spacing:.05em;color:#fff;padding:5px 10px;border-radius:999px;flex:none}
-.tag.v{background:linear-gradient(135deg,var(--coral-1),var(--coral-2))}
-.tag.r{background:linear-gradient(135deg,var(--gold),#e08a25);color:#3a2410}
-
-/* ---------- testimonials marquee ---------- */
-.marquee{overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
-.track{display:flex;gap:16px;width:max-content;animation:scroll 34s linear infinite}
-.marquee:hover .track{animation-play-state:paused}
-@keyframes scroll{to{transform:translateX(-50%)}}
-.tcard{width:300px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;backdrop-filter:blur(8px)}
-.tcard .row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.tcard .av{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:#fff;font-size:14px}
-.tcard .nm{font-weight:700;font-size:14px}.tcard .hd{font-size:11px;color:var(--dim)}
-.tcard p{font-size:14px;color:var(--muted)}
-
-/* ---------- faq ---------- */
-.faq{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
-.qa{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;backdrop-filter:blur(8px)}
-.qa button{all:unset;display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;
-  padding:18px 20px;cursor:pointer;font-weight:700;font-size:16px;color:var(--text)}
-.qa .plus{font-size:24px;color:var(--gold);transition:transform .3s var(--ease)}
-.qa.open .plus{transform:rotate(45deg)}
-.qa .ans{max-height:0;overflow:hidden;transition:max-height .35s var(--ease)}
-.qa .ans p{padding:0 20px 18px;color:var(--muted);font-size:15px}
-
-/* ---------- final cta ---------- */
-.final{position:relative;text-align:center;overflow:hidden;
-  background:radial-gradient(60% 100% at 50% 0%,rgba(244,80,42,.2),transparent 60%);border-top:1px solid var(--line)}
-.final .mini{width:140px;margin:0 auto 8px;animation:bob 4.5s ease-in-out infinite}
-.final .hearts{position:absolute;inset:0;pointer-events:none}
-.final .hearts i{position:absolute;font-size:20px;opacity:0;animation:rise 5s ease-in infinite}
-@keyframes rise{0%{opacity:0;transform:translateY(20px) scale(.6)}20%{opacity:.9}100%{opacity:0;transform:translateY(-120px) scale(1)}}
-.final h2{font-size:clamp(30px,5vw,50px);font-weight:700;max-width:18ch;margin:6px auto 22px}
-
-/* ---------- footer ---------- */
-footer{border-top:1px solid var(--line);padding:32px 0;margin-top:60px}
-.foot{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;color:var(--dim);font-size:14px}
-.foot .brand{font-size:16px}.foot img{width:24px;height:24px}
-.foot-links{display:flex;gap:22px;flex-wrap:wrap}
-.foot-links a:hover{color:var(--gold)}
-
-/* ---------- reveal ---------- */
-.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
-.reveal.in{opacity:1;transform:none}
-.reveal.d1{transition-delay:.1s}.reveal.d2{transition-delay:.2s}.reveal.d3{transition-delay:.3s}
-
-/* ---------- responsive ---------- */
-@media (max-width:880px){
-  .hero-in{grid-template-columns:1fr;gap:20px;text-align:center}
-  .hero-sub{max-width:none;margin-inline:auto}.hero-cta{justify-content:center}
-  .nav-links{display:none}
-  .steps,.cards{grid-template-columns:1fr}.pathline{display:none}
-  .matchcard{right:auto;left:50%;transform:translateX(-50%) rotateY(-10deg);bottom:-6%}
-  @keyframes floatCard{0%,100%{transform:translateX(-50%) rotateY(-10deg) translateY(0)}50%{transform:translateX(-50%) rotateY(-10deg) translateY(-10px)}}
-}
-@media (prefers-reduced-motion:reduce){
-  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
-  .reveal{opacity:1;transform:none}.pathline{transform:scaleX(1)}.node{opacity:1}
-}
-</style>
 <!-- ===================== NAV ===================== -->
-<header class="nav" id="nav">
+<header class="nav">
   <div class="nav-in">
     <a class="brand" href="/"><img src="/logo.png" alt="Orbit" />Orbit</a>
     <nav class="nav-links">
       <a href="#how">How it works</a>
       <a href="#perks">Perks</a>
+      <a href="/pricing.html">Pricing</a>
       <a href="#faq">FAQ</a>
     </nav>
     <a class="btn btn-primary" data-invite href="#">Add to Discord</a>
@@ -254,56 +28,54 @@ footer{border-top:1px solid var(--line);padding:32px 0;margin-top:60px}
 
 <!-- ===================== HERO ===================== -->
 <section class="hero">
-  <div id="stars" aria-hidden="true"></div>
   <div class="wrap hero-in">
     <div class="hero-copy">
       <span class="eyebrow">Orbit on Discord</span>
-      <h1>Meet your people, <span class="grad">right inside Discord</span></h1>
+      <h1>Meet your people, <span class="soft">right inside Discord</span></h1>
       <p class="hero-sub">Orbit drops a few curated matches every week. Real members, real conversations, zero swiping.</p>
       <div class="hero-cta">
         <a class="btn btn-primary" data-invite href="#">Add Orbit to your server</a>
         <a class="btn btn-ghost" data-community href="#">Join our community</a>
       </div>
-      <p class="hero-note">Free to use. No new app. Everyone you meet is already in your orbit.</p>
+      <p class="hero-note">Free to use. No new app. Everyone is already on Discord.</p>
     </div>
 
-    <!-- animated planet + orbital avatars + floating match card -->
-    <div class="stage">
-      <div class="halo" aria-hidden="true"></div>
-      <div class="system">
-        <div class="spark" aria-hidden="true">💫</div>
-        <div class="planet">
-          <svg viewBox="0 0 260 270" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Orbit mascot">
-            <defs>
-              <radialGradient id="mBody" cx="38%" cy="30%" r="78%">
-                <stop offset="0%" stop-color="#FFCC7A"/><stop offset="46%" stop-color="#FF7A3D"/><stop offset="100%" stop-color="#E73B27"/>
-              </radialGradient>
-              <linearGradient id="mRing" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="#FFB648"/><stop offset="100%" stop-color="#FF4D2D"/>
-              </linearGradient>
-            </defs>
-            <g transform="rotate(-18 130 150)"><ellipse cx="130" cy="150" rx="118" ry="34" fill="none" stroke="url(#mRing)" stroke-width="9" opacity="0.85"/></g>
-            <circle cx="130" cy="132" r="74" fill="url(#mBody)"/>
-            <ellipse cx="106" cy="104" rx="26" ry="18" fill="#fff" opacity="0.16"/>
-            <circle cx="96" cy="146" r="8" fill="#fff" opacity="0.22"/><circle cx="166" cy="146" r="8" fill="#fff" opacity="0.22"/>
-            <ellipse cx="111" cy="126" rx="11" ry="13" fill="#3a1f14"/><ellipse cx="151" cy="126" rx="11" ry="13" fill="#3a1f14"/>
-            <circle cx="115" cy="121" r="3.4" fill="#fff"/><circle cx="155" cy="121" r="3.4" fill="#fff"/>
-            <path d="M114 150 Q131 166 148 150" fill="none" stroke="#3a1f14" stroke-width="4.5" stroke-linecap="round"/>
-            <g transform="rotate(-18 130 150)"><path d="M 12 150 A 118 34 0 0 0 248 150" fill="none" stroke="url(#mRing)" stroke-width="9" stroke-linecap="round"/></g>
-          </svg>
+    <!-- Discord chat mockup (animated by script below) -->
+    <div class="discord" id="chat">
+      <div class="dc-head"><span class="hash">#</span>matching-monday</div>
+      <div class="dc-msgs" id="chatMsgs">
+        <!-- Orbit bot: match card embed -->
+        <div class="dcmsg" data-step="1" hidden>
+          <div class="av"><img src="/logo.png" alt="Orbit" /></div>
+          <div class="mbody">
+            <div class="who">Orbit <span class="bot">BOT</span> <span class="time">Monday</span></div>
+            <div class="txt">Matches are in! 🎉</div>
+            <div class="embed">
+              <div class="etitle">You have a new match</div>
+              <div class="epair">
+                <span class="av aarav">A</span><span class="plus">+</span><span class="av sara">S</span>
+              </div>
+              <div class="efit"><b>Aarav</b> meet <b>Sara</b>. You both love late-night coding and lo-fi.</div>
+              <div class="efit" style="margin-top:4px">Compatibility: <b>94%</b></div>
+            </div>
+          </div>
         </div>
-        <div class="orbit" aria-hidden="true">
-          <div class="spin" style="--dur:15s"><div class="sat a" style="--r:150px">A</div></div>
-          <div class="spin" style="--dur:15s;animation-delay:-5s"><div class="sat b" style="--r:150px">R</div></div>
-          <div class="spin" style="--dur:15s;animation-delay:-10s"><div class="sat c" style="--r:150px">M</div></div>
+        <!-- user reply -->
+        <div class="dcmsg" data-step="2" hidden>
+          <div class="av aarav">A</div>
+          <div class="mbody"><div class="who">Aarav <span class="time">now</span></div><div class="txt">wait this is actually accurate lol</div></div>
+        </div>
+        <!-- another user -->
+        <div class="dcmsg" data-step="3" hidden>
+          <div class="av kai">K</div>
+          <div class="mbody"><div class="who">Kai <span class="time">now</span></div><div class="txt">how do I get in next Monday??</div></div>
         </div>
       </div>
-      <div class="matchcard" aria-hidden="true">
-        <div class="mh">✦ Orbit found you a match!</div>
-        <div class="mt">You matched with Rehan</div>
-        <div class="mm">Founder · 92% fit · in your orbit</div>
-        <div class="mb">Say hi 👋</div>
+      <div class="dc-typing" id="typing" hidden>
+        <div class="av"><img src="/logo.png" alt="" /></div>
+        <span>Orbit is typing</span><span class="dots"><i></i><i></i><i></i></span>
       </div>
+      <div class="dc-input" aria-disabled="true">Message #matching-monday</div>
     </div>
   </div>
 </section>
@@ -311,9 +83,9 @@ footer{border-top:1px solid var(--line);padding:32px 0;margin-top:60px}
 <!-- ===================== SOCIAL PROOF ===================== -->
 <section class="section">
   <div class="wrap counters">
-    <div class="counter reveal"><b><span data-count-to="servers">0</span><span class="spk">+</span></b><span>Servers in orbit</span></div>
-    <div class="counter reveal d1"><b><span data-count-to="matched">0</span><span class="spk">+</span></b><span>Members matched</span></div>
-    <div class="counter reveal d2"><b><span data-count-to="convos">0</span><span class="spk">+</span></b><span>Conversations started</span></div>
+    <div class="counter reveal"><b><span data-count-to="servers">0</span><span class="plus">+</span></b><span>Servers in orbit</span></div>
+    <div class="counter reveal d1"><b><span data-count-to="matched">0</span><span class="plus">+</span></b><span>Members matched</span></div>
+    <div class="counter reveal d2"><b><span data-count-to="convos">0</span><span class="plus">+</span></b><span>Conversations started</span></div>
   </div>
 </section>
 
@@ -321,18 +93,17 @@ footer{border-top:1px solid var(--line);padding:32px 0;margin-top:60px}
 <section class="section" id="how">
   <div class="wrap">
     <div class="sec-head reveal"><div class="kicker">How it works</div><h2>Matched in three easy steps</h2></div>
-    <div class="steps">
-      <div class="pathline" id="pathline"></div>
-      <div class="step reveal">
+    <div class="grid3">
+      <div class="card reveal">
         <svg class="ic" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="24" r="12" fill="#FF8A5C"/><path d="M12 54c0-11 9-18 20-18s20 7 20 18" stroke="#F5B93F" stroke-width="4" stroke-linecap="round"/></svg>
         <div class="n">Step 1</div><h3>Create your profile</h3><p>Answer a few questions. It takes about two minutes.</p>
       </div>
-      <div class="step reveal d1">
-        <svg class="ic" viewBox="0 0 64 64" fill="none"><path d="M32 8l5 14 14 5-14 5-5 14-5-14-14-5 14-5z" fill="#F5B93F"/><circle cx="50" cy="16" r="4" fill="#FF8A5C"/></svg>
+      <div class="card reveal d1">
+        <svg class="ic" viewBox="0 0 64 64" fill="none"><path d="M32 8l5 14 14 5-14 5-5 14-5-14-14-5 14-5z" fill="#F5B93F"/></svg>
         <div class="n">Step 2</div><h3>Get matched weekly</h3><p>Orbit drops curated matches with members who fit you.</p>
       </div>
-      <div class="step reveal d2">
-        <svg class="ic" viewBox="0 0 64 64" fill="none"><rect x="10" y="14" width="44" height="30" rx="10" fill="#FF8A5C"/><path d="M22 44l-4 10 14-10" fill="#FF8A5C"/><circle cx="24" cy="29" r="3.5" fill="#fff"/><circle cx="34" cy="29" r="3.5" fill="#fff"/><circle cx="44" cy="29" r="3.5" fill="#fff"/></svg>
+      <div class="card reveal d2">
+        <svg class="ic" viewBox="0 0 64 64" fill="none"><rect x="10" y="14" width="44" height="30" rx="10" fill="#FF8A5C"/><path d="M22 44l-4 10 14-10z" fill="#FF8A5C"/><circle cx="24" cy="29" r="3.5" fill="#fff"/><circle cx="34" cy="29" r="3.5" fill="#fff"/><circle cx="44" cy="29" r="3.5" fill="#fff"/></svg>
         <div class="n">Step 3</div><h3>Say hi</h3><p>Orbit breaks the ice with friendly starter questions.</p>
       </div>
     </div>
@@ -343,42 +114,48 @@ footer{border-top:1px solid var(--line);padding:32px 0;margin-top:60px}
 <section class="section" id="why">
   <div class="wrap">
     <div class="sec-head reveal"><div class="kicker">Why Orbit is different</div><h2>Quality matches you can trust</h2></div>
-    <div class="cards" id="tiltCards">
-      <div class="gcard reveal"><div class="ic">🎯</div><h3>Curated, not endless</h3><p>A few quality matches each week, not a swipe pile you scroll forever.</p></div>
-      <div class="gcard reveal d1"><div class="ic">🛡️</div><h3>Built on trust</h3><p>Referral vouched members and active moderation keep it real.</p></div>
-      <div class="gcard reveal d2"><div class="ic">🎁</div><h3>Rewards for supporters</h3><p>Voting and referrals unlock Pro perks and bonus matches.</p></div>
-      <div class="gcard reveal d3"><div class="ic">🏠</div><h3>Lives where you already are</h3><p>No new app to download. It all happens inside Discord.</p></div>
+    <div class="grid2">
+      <div class="card reveal"><div class="ic" style="font-size:26px">🎯</div><h3>Curated, not endless</h3><p>A few quality matches each week, not a swipe pile you scroll forever.</p></div>
+      <div class="card reveal d1"><div class="ic" style="font-size:26px">🛡️</div><h3>Built on trust</h3><p>Referral vouched members and active moderation keep it real.</p></div>
+      <div class="card reveal d2"><div class="ic" style="font-size:26px">🎁</div><h3>Rewards for supporters</h3><p>Voting and referrals unlock Pro perks and bonus matches.</p></div>
+      <div class="card reveal d3"><div class="ic" style="font-size:26px">🏠</div><h3>Lives where you already are</h3><p>No new app to download. It all happens inside Discord.</p></div>
     </div>
   </div>
 </section>
 
-<!-- ===================== PERKS CONSTELLATION ===================== -->
+<!-- ===================== PERKS ===================== -->
 <section class="section" id="perks">
   <div class="wrap">
-    <div class="sec-head reveal"><div class="kicker">Perks</div><h2>Light up the constellation</h2><p>Vote and refer to unlock more, one star at a time.</p></div>
-    <div class="ladder" id="ladder">
-      <div class="node"><span class="dot"></span><span class="t"><b>Premium</b>, the top tier, at 10 referrals.</span><span class="tag r">Top</span></div>
-      <div class="node"><span class="dot"></span><span class="t"><b>Vouched badge</b>, a trust marker on your matches.</span><span class="tag r">3 refs</span></div>
-      <div class="node"><span class="dot"></span><span class="t"><b>Pro time</b> for you and the friend you invite.</span><span class="tag r">1 ref</span></div>
-      <div class="node"><span class="dot"></span><span class="t"><b>Early match drops</b>, see your matches first.</span><span class="tag v">7 day streak</span></div>
-      <div class="node"><span class="dot"></span><span class="t"><b>Bonus matches</b> and 24h of Pro, every vote.</span><span class="tag v">Vote</span></div>
+    <div class="sec-head reveal"><div class="kicker">Perks</div><h2>Vote and refer to unlock more</h2><p>Support Orbit, get rewarded. <a href="/pricing.html" style="color:var(--coral-1);font-weight:700">See full pricing.</a></p></div>
+    <div class="perks">
+      <div class="perk reveal"><span class="tag v">Vote</span><span class="t"><b>Bonus matches</b> and 24h of Pro, every vote.</span></div>
+      <div class="perk reveal d1"><span class="tag v">7 day streak</span><span class="t"><b>Early match drops</b>, see your matches first.</span></div>
+      <div class="perk reveal d2"><span class="tag r">1 ref</span><span class="t"><b>Pro time</b> for you and the friend you invite.</span></div>
+      <div class="perk reveal d3"><span class="tag r">10 refs</span><span class="t"><b>Premium</b>, the top tier, plus a custom profile accent.</span></div>
     </div>
   </div>
 </section>
 
 <!-- ===================== TESTIMONIALS ===================== -->
-<section class="section">
-  <div class="sec-head reveal"><div class="kicker">Loved by members</div><h2>People are gravitating in</h2></div>
-  <div class="marquee"><div class="track" id="track"></div></div>
+<section class="section" id="proof">
+  <div class="wrap">
+    <div class="sec-head reveal"><div class="kicker">Loved by members</div><h2>People are gravitating in</h2></div>
+    <div class="tgrid">
+      <div class="tcard reveal"><div class="row"><span class="av aarav">A</span><div><div class="nm">Aarav</div><div class="hd">via Orbit</div></div></div><p>“Met two of my closest Discord friends through Orbit. Way better than random DMs.”</p></div>
+      <div class="tcard reveal d1"><div class="row"><span class="av sara">S</span><div><div class="nm">Sara</div><div class="hd">via Orbit</div></div></div><p>“The weekly match drop is the thing I look forward to now.”</p></div>
+      <div class="tcard reveal"><div class="row"><span class="av kai">K</span><div><div class="nm">Kai</div><div class="hd">via Orbit</div></div></div><p>“Finally a bot that feels human. No spam, no fake profiles.”</p></div>
+      <div class="tcard reveal d1"><div class="row"><span class="av aarav">D</span><div><div class="nm">Devon</div><div class="hd">via Orbit</div></div></div><p>“Found my co-founder here. Orbit just gets who fits.”</p></div>
+    </div>
+  </div>
 </section>
 
 <!-- ===================== FAQ ===================== -->
 <section class="section" id="faq">
   <div class="wrap">
     <div class="sec-head reveal"><div class="kicker">FAQ</div><h2>Good questions, quick answers</h2></div>
-    <div class="faq" id="faqList">
-      <div class="qa"><button>Is Orbit free?<span class="plus">+</span></button><div class="ans"><p>Yes. Orbit is free to use. Voting and referrals unlock extra perks, and optional paid tiers exist, but the core matching is always free.</p></div></div>
-      <div class="qa"><button>How does matching work?<span class="plus">+</span></button><div class="ans"><p>You fill out a short profile. Every week Orbit looks at interests, goals and activity, then drops a few curated matches. No endless swiping, just people worth talking to.</p></div></div>
+    <div class="faq">
+      <div class="qa"><button>Is Orbit free?<span class="plus">+</span></button><div class="ans"><p>Yes. Orbit is free to use. Voting and referrals unlock extra perks, but the core matching is always free.</p></div></div>
+      <div class="qa"><button>How does matching work?<span class="plus">+</span></button><div class="ans"><p>You fill out a short profile. Every week Orbit looks at interests, goals and activity, then drops a few curated matches. No endless swiping.</p></div></div>
       <div class="qa"><button>Is it safe?<span class="plus">+</span></button><div class="ans"><p>Yes. Verification, reporting and blocking are free for everyone, always. Orbit uses active moderation and referral vouching to keep the community real.</p></div></div>
       <div class="qa"><button>How do I add Orbit to my server?<span class="plus">+</span></button><div class="ans"><p>Tap "Add Orbit to your server", pick your server, and approve. You will be matching members within minutes.</p></div></div>
     </div>
@@ -387,9 +164,8 @@ footer{border-top:1px solid var(--line);padding:32px 0;margin-top:60px}
 
 <!-- ===================== FINAL CTA ===================== -->
 <section class="section final">
-  <div class="hearts" aria-hidden="true"><i style="left:20%;animation-delay:0s">🧡</i><i style="left:50%;animation-delay:1.6s">✨</i><i style="left:78%;animation-delay:3s">🧡</i></div>
   <div class="wrap reveal">
-    <img class="mini" src="/logo.png" alt="Orbit" />
+    <img src="/logo.png" alt="Orbit" />
     <h2>Your people are already out there</h2>
     <a class="btn btn-primary" data-invite href="#">Add Orbit to your server</a>
   </div>
@@ -400,134 +176,46 @@ footer{border-top:1px solid var(--line);padding:32px 0;margin-top:60px}
   <div class="wrap foot">
     <div class="brand"><img src="/logo.png" alt="" />Orbit</div>
     <div class="foot-links">
+      <a href="/pricing.html">Pricing</a>
       <a data-community href="#">Community</a>
       <a data-topgg href="#">Vote on top.gg ✦</a>
       <a data-community href="#">Contact</a>
     </div>
   </div>
 </footer>
+
+<script src="/js/site-config.js"></script>
+<script src="/js/site.js"></script>
 <script>
-/* =====================================================================
-   EDIT THESE:  the only things you need to change.
-   ===================================================================== */
-const CONFIG = {
-  inviteLink:    "https://discord.com/oauth2/authorize?client_id=YOUR_CLIENT_ID&scope=bot+applications.commands&permissions=277025508352",
-  communityLink: "https://discord.gg/MBnqeusz92",         // your support server
-  topggLink:     "https://top.gg/bot/YOUR_BOT_ID/vote",   // your top.gg vote link
-  counters:      { servers: 120, matched: 4800, convos: 15000 },
-  // testimonials (edit freely): name, initial, color, text
-  testimonials: [
-    { n:"Aanya",  i:"A", c:"#7aa5ff", t:"Met two of my closest Discord friends through Orbit. Way better than random DMs." },
-    { n:"Rehan",  i:"R", c:"#FF8A5C", t:"The weekly match drop is the thing I look forward to now." },
-    { n:"Mira",   i:"M", c:"#F5B93F", t:"Finally a bot that feels human. No spam, no fake profiles." },
-    { n:"Devon",  i:"D", c:"#9b8cf0", t:"Found my co-founder here. Orbit just gets who fits." }
-  ]
-};
-/* ===================================================================== */
+/* Hero chat: looping, animated conversation. Respects reduced motion. */
+(function(){
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const msgs = [...document.querySelectorAll("#chatMsgs .dcmsg")];
+  const typing = document.getElementById("typing");
+  if(!msgs.length) return;
 
-const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const show = el => { el.hidden = false; requestAnimationFrame(()=>el.classList.add("show")); };
+  const hide = el => { el.hidden = true; el.classList.remove("show"); };
 
-// wire links
-document.querySelectorAll("[data-invite]").forEach(a=>a.href=CONFIG.inviteLink);
-document.querySelectorAll("[data-community]").forEach(a=>a.href=CONFIG.communityLink);
-document.querySelectorAll("[data-topgg]").forEach(a=>a.href=CONFIG.topggLink);
-document.querySelectorAll("[data-invite],[data-topgg]").forEach(a=>{a.target="_blank";a.rel="noopener";});
+  if(reduce){ msgs.forEach(show); if(typing) typing.hidden = true; return; }
 
-// navbar glass on scroll
-const nav=document.getElementById("nav");
-addEventListener("scroll",()=>nav.classList.toggle("stuck",scrollY>10),{passive:true});
-
-// starfield
-(function stars(){
-  const box=document.getElementById("stars"); if(!box) return;
-  const n = innerWidth<640?26:46;
-  for(let i=0;i<n;i++){
-    const s=document.createElement("span"); s.className="star";
-    const sz=Math.random()*2.4+1;
-    s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;animation-delay:${Math.random()*4}s`;
-    s.dataset.depth=(Math.random()*2+1).toFixed(2);
-    box.appendChild(s);
+  let timers = [];
+  const wait = (fn,ms) => timers.push(setTimeout(fn,ms));
+  function play(){
+    timers.forEach(clearTimeout); timers = [];
+    msgs.forEach(hide); typing.hidden = true;
+    // 1) Orbit typing
+    wait(()=>{ typing.hidden = false; }, 500);
+    // 2) Orbit match card
+    wait(()=>{ typing.hidden = true; show(msgs[0]); }, 1900);
+    // 3) user reply
+    wait(()=> show(msgs[1]), 3000);
+    // 4) another user
+    wait(()=> show(msgs[2]), 4200);
+    // 5) pause, then loop
+    wait(play, 7800);
   }
-  if(reduce) return;
-  addEventListener("mousemove",e=>{
-    const dx=(e.clientX/innerWidth-.5), dy=(e.clientY/innerHeight-.5);
-    box.querySelectorAll(".star").forEach(s=>{
-      const d=+s.dataset.depth; s.style.transform=`translate(${dx*d*8}px,${dy*d*8}px)`;
-    });
-  },{passive:true});
-})();
-
-// scroll reveal (staggered)
-(function reveals(){
-  const els=document.querySelectorAll(".reveal");
-  if(reduce||!("IntersectionObserver"in window)){els.forEach(e=>e.classList.add("in"));return;}
-  const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);}}),{threshold:.14,rootMargin:"0px 0px -8% 0px"});
-  els.forEach(e=>io.observe(e));
-  const pl=document.getElementById("pathline");
-  if(pl){const p=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){pl.classList.add("in");p.disconnect();}}),{threshold:.4});p.observe(pl);}
-})();
-
-// count-up
-(function counters(){
-  const nums=document.querySelectorAll("[data-count-to]");
-  const fmt=n=>n>=1000?(Math.round(n/100)/10+"k"):String(n);
-  const run=el=>{const target=CONFIG.counters[el.dataset.countTo]||0;
-    if(reduce){el.textContent=fmt(target);return;}
-    const dur=1500,st=performance.now();
-    const step=t=>{const p=Math.min(1,(t-st)/dur),e=1-Math.pow(1-p,3);el.textContent=fmt(Math.round(e*target));if(p<1)requestAnimationFrame(step);};
-    requestAnimationFrame(step);};
-  if(!("IntersectionObserver"in window)){nums.forEach(run);return;}
-  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){run(e.target);io.unobserve(e.target);}}),{threshold:.6});
-  nums.forEach(n=>io.observe(n));
-})();
-
-// constellation ladder: light nodes bottom to top as they enter
-(function ladder(){
-  const nodes=[...document.querySelectorAll("#ladder .node")];
-  if(reduce||!("IntersectionObserver"in window)){nodes.forEach(n=>n.classList.add("lit"));return;}
-  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("lit");io.unobserve(e.target);}}),{threshold:.6});
-  nodes.forEach(n=>io.observe(n));
-})();
-
-// 3D tilt on "why" cards
-(function tilt(){
-  if(reduce) return;
-  document.querySelectorAll("#tiltCards .gcard").forEach(card=>{
-    card.addEventListener("mousemove",e=>{
-      const r=card.getBoundingClientRect();
-      const rx=((e.clientY-r.top)/r.height-.5)*-8, ry=((e.clientX-r.left)/r.width-.5)*8;
-      card.style.transform=`perspective(700px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px)`;
-    });
-    card.addEventListener("mouseleave",()=>card.style.transform="");
-  });
-})();
-
-// FAQ accordion (smooth height)
-document.querySelectorAll("#faqList .qa").forEach(qa=>{
-  const btn=qa.querySelector("button"), ans=qa.querySelector(".ans");
-  btn.addEventListener("click",()=>{
-    const open=qa.classList.toggle("open");
-    ans.style.maxHeight=open?ans.scrollHeight+"px":0;
-  });
-});
-
-// testimonials marquee (duplicated for seamless loop)
-(function marquee(){
-  const track=document.getElementById("track"); if(!track) return;
-  const card=t=>`<div class="tcard"><div class="row"><div class="av" style="background:${t.c}">${t.i}</div>
-    <div><div class="nm">${t.n}</div><div class="hd">via Orbit</div></div></div><p>${t.t}</p></div>`;
-  const html=CONFIG.testimonials.map(card).join("");
-  track.innerHTML=html+html; // two copies so the -50% loop is seamless
-  if(reduce) track.style.animation="none";
-})();
-
-// aura hue shift on scroll (coral near top, gold lower)
-(function aura(){
-  const aura=document.getElementById("aura"); if(!aura||reduce) return;
-  addEventListener("scroll",()=>{
-    const p=Math.min(1,scrollY/(document.body.scrollHeight-innerHeight||1));
-    aura.style.setProperty("--auraY",(12+p*20)+"%");
-  },{passive:true});
+  play();
 })();
 </script>
 </body>
