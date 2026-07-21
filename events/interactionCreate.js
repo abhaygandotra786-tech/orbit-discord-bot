@@ -101,7 +101,10 @@ async function handleCommand(interaction, client) {
         await command.execute(interaction);
     } catch (error) {
         logger.error(`Command /${interaction.commandName} failed`, error);
-        await safeError(interaction, "There was an error executing this command.");
+        await safeError(
+            interaction,
+            "Orbit hit a brief hiccup. Please try that again in a moment."
+        );
     }
 }
 

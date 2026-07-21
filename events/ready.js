@@ -6,7 +6,6 @@
 const { ActivityType } = require("discord.js");
 const config = require("../config/config");
 const logger = require("../utils/logger");
-const { countProfiles } = require("../database/profileQueries");
 
 module.exports = {
     name: "clientReady",
@@ -15,21 +14,13 @@ module.exports = {
     execute(client) {
         logger.info(`${client.user.tag} is online! Serving ${config.BOT_NAME}.`);
 
-        const statuses = () => {
-            let members = 0;
-            try {
-                members = countProfiles.get().count;
-            } catch {
-                /* db not ready yet */
-            }
-            return [
-                { name: `/help • ${config.BOT_NAME}`, type: ActivityType.Watching },
-                { name: `${members} members connect`, type: ActivityType.Watching },
-                { name: "networking, founders & more", type: ActivityType.Listening },
-                { name: `/profile create`, type: ActivityType.Playing },
-                { name: `${client.guilds.cache.size} servers`, type: ActivityType.Watching }
-            ];
-        };
+        const statuses = () => [
+            { name: `/help • ${config.BOT_NAME}`, type: ActivityType.Watching },
+            { name: "people connect & match", type: ActivityType.Watching },
+            { name: "networking, founders & more", type: ActivityType.Listening },
+            { name: "/profile create", type: ActivityType.Playing },
+            { name: "your community grow", type: ActivityType.Watching }
+        ];
 
         let i = 0;
         const rotate = () => {

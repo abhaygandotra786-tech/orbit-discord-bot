@@ -486,13 +486,15 @@ function startKeepAlive() {
     const base = (config.WEB.BASE_URL || "").replace(/\/$/, "");
     if (!/^https:\/\//i.test(base) || base.includes("localhost")) return;
 
-    const INTERVAL = 10 * 60 * 1000; // every 10 minutes (< Render's 15 min idle)
+    // Ping every 5 min — well under Render's ~15 min idle window, and because
+    // /api/stats runs a DB query it also keeps the Turso database awake.
+    const INTERVAL = 5 * 60 * 1000;
     const ping = () => {
         fetch(`${base}/api/stats`).catch(() => {
             /* transient network blips are fine */
         });
     };
     setInterval(ping, INTERVAL).unref();
-    logger.info("⏱️  Self keep-alive enabled (pings every 10 min).");
+    logger.info("⏱️  Self keep-alive enabled (pings every 5 min).");
 }
 
