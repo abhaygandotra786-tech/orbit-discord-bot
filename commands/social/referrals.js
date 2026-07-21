@@ -27,8 +27,8 @@ module.exports = {
             color: config.COLORS.PRIMARY
         });
         embed.addFields(
-            { name: "✅ Activated", value: String(s.activated), inline: true },
-            { name: "⏳ Pending", value: String(s.pending), inline: true }
+            { name: "Activated", value: String(s.activated), inline: true },
+            { name: "Pending", value: String(s.pending), inline: true }
         );
         if (s.next) {
             embed.addFields({

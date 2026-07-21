@@ -38,14 +38,14 @@ module.exports = {
             color: config.COLORS.PRIMARY
         });
         embed.addFields(
-            { name: "🔥 Current streak", value: st.streak ? `${st.streak} day${st.streak > 1 ? "s" : ""} (best ${st.best})` : "No streak yet", inline: true },
-            { name: "⏳ Next vote", value: left > 0 ? `in ${fmtLeft(left)}` : "available now", inline: true },
-            { name: "✨ Next unlock", value: nextUnlock }
+            { name: "Current streak", value: st.streak ? `${st.streak} day${st.streak > 1 ? "s" : ""} (best ${st.best})` : "No streak yet", inline: true },
+            { name: "Next vote", value: left > 0 ? `in ${fmtLeft(left)}` : "available now", inline: true },
+            { name: "Next unlock", value: nextUnlock }
         );
 
         const row = new ActionRowBuilder().addComponents(
-            new ButtonBuilder().setLabel("Vote on top.gg").setEmoji("🗳️").setStyle(ButtonStyle.Link).setURL(R.TOPGG.VOTE_URL),
-            new ButtonBuilder().setCustomId("vote_remind").setLabel(st.reminderOptIn ? "Reminders on ✓" : "Remind me").setStyle(ButtonStyle.Secondary)
+            new ButtonBuilder().setLabel("Vote on top.gg").setStyle(ButtonStyle.Link).setURL(R.TOPGG.VOTE_URL),
+            new ButtonBuilder().setCustomId("vote_remind").setLabel(st.reminderOptIn ? "Reminders on" : "Remind me").setStyle(ButtonStyle.Secondary)
         );
         return interaction.editReply({ embeds: [embed], components: [row] });
     }

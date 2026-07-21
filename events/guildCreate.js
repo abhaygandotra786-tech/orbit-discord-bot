@@ -11,7 +11,8 @@ const {
     ChannelType
 } = require("discord.js");
 
-const { brandedEmbed, DIVIDER } = require("../utils/embed");
+const { createOrbitEmbed } = require("../utils/embed");
+const S = require("../config/strings");
 const config = require("../config/config");
 const logger = require("../utils/logger");
 
@@ -24,55 +25,25 @@ module.exports = {
         const channel = findWelcomeChannel(guild);
         if (!channel) return;
 
-        const { embed, files } = brandedEmbed({
-            title: "👋 Thanks for adding Orbit!",
-            description:
-                "Your all-in-one community hub for **networking, founders, " +
-                "freelancing, friends, gaming & dating.** ✨\n" +
-                `${DIVIDER}\n` +
-                "Create a profile, get discovered, match with people who share " +
-                "your goals, and grow your network — right from Discord."
+        const embed = createOrbitEmbed({
+            title: S.welcome.title,
+            body: S.welcome.body,
+            footer: config.WEBSITE.replace(/^https?:\/\//, "")
         });
-
-        embed.addFields(
-            {
-                name: "🚀  Get started in 30 seconds",
-                value:
-                    "`/profile create` — build your profile\n" +
-                    "`/profile browse` — discover members\n" +
-                    "`/like` — connect (mutual likes = a match!)"
-            },
-            {
-                name: "🌟  Explore",
-                value:
-                    "🤝 Networking · 🚀 Co-Founders · 💼 Freelancing\n" +
-                    "👥 Friends · 🎮 Gaming · 💖 Dating"
-            },
-            {
-                name: "👑  Go further",
-                value:
-                    "Unlock priority visibility, AI matchmaking, analytics & more.\n" +
-                    "Type `/premium plans` or `/help` to see everything."
-            }
-        );
 
         const row = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
-                .setLabel("🌐 Website")
-                .setStyle(ButtonStyle.Link)
-                .setURL(config.WEBSITE),
+                .setCustomId("welcome_create")
+                .setLabel(S.welcome.createButton)
+                .setStyle(ButtonStyle.Primary),
             new ButtonBuilder()
-                .setLabel("👑 Premium")
+                .setLabel(S.welcome.helpButton)
                 .setStyle(ButtonStyle.Link)
-                .setURL(config.PREMIUM.PAYMENT_URL),
-            new ButtonBuilder()
-                .setLabel("💬 Support")
-                .setStyle(ButtonStyle.Link)
-                .setURL(config.SUPPORT_SERVER)
+                .setURL(config.WEBSITE)
         );
 
         try {
-            await channel.send({ embeds: [embed], files, components: [row] });
+            await channel.send({ embeds: [embed], components: [row] });
         } catch (err) {
             logger.error(`Could not send welcome message in ${guild.name}`, err);
         }

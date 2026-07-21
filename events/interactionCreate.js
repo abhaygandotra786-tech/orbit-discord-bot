@@ -15,6 +15,7 @@ const {
 
 const {
     IDS,
+    buildCoreModal,
     buildExtrasModal,
     buildSetupRows
 } = require("../utils/profileComponents");
@@ -28,6 +29,9 @@ const session = require("../utils/session");
 const { parseAge, clean } = require("../utils/validation");
 const {
     profileEmbed,
+    matchCardEmbed,
+    sayHiRow,
+    createOrbitEmbed,
     successEmbed,
     errorEmbed,
     baseEmbed
@@ -35,6 +39,7 @@ const {
 const { buildBrowseRow } = require("../utils/profileComponents");
 const referrals = require("../utils/referralService");
 const voteService = require("../utils/voteService");
+const S = require("../config/strings");
 const config = require("../config/config");
 const logger = require("../utils/logger");
 
@@ -155,7 +160,7 @@ async function handleModal(interaction) {
         const profile = getProfile.get(userId);
         return interaction.reply({
             content:
-                "✅ Profile created! Finish setting it up below — pick a category, gender and preference, then add your skills & links.",
+                "Profile created. Finish setup below: pick a category, gender and preference, then add your skills and links.",
             embeds: [profileEmbed(profile)],
             components: buildSetupRows(profile),
             ephemeral: true
@@ -283,6 +288,38 @@ async function handleSelect(interaction) {
 // ------------------------------------------------------------------
 async function handleButton(interaction) {
     const userId = interaction.user.id;
+
+    // Welcome message: open the create-profile modal.
+    if (interaction.customId === "welcome_create") {
+        if (getProfile.get(userId)) {
+            return interaction.reply({ embeds: [errorEmbed(S.errors.alreadyProfile)], ephemeral: true });
+        }
+        return interaction.showModal(buildCoreModal(false));
+    }
+
+    // Match card: Say hi.
+    if (interaction.customId.startsWith("sayhi:")) {
+        const targetId = interaction.customId.split(":")[1];
+        const ib = S.match.icebreakers[Math.floor(Math.random() * S.match.icebreakers.length)];
+        return interaction.reply({
+            embeds: [
+                createOrbitEmbed({
+                    title: "Say hi",
+                    body: `Go start a chat with <@${targetId}>.`,
+                    fields: [{ name: "Try opening with", value: ib }]
+                })
+            ],
+            ephemeral: true
+        });
+    }
+
+    // Match card: View profile.
+    if (interaction.customId.startsWith("viewprofile:")) {
+        const targetId = interaction.customId.split(":")[1];
+        const p = getProfile.get(targetId);
+        if (!p) return interaction.reply({ embeds: [errorEmbed("That profile is not available.")], ephemeral: true });
+        return interaction.reply({ embeds: [profileEmbed(p)], ephemeral: true });
+    }
 
     // Toggle the opt-in vote reminder.
     if (interaction.customId === "vote_remind") {
@@ -421,13 +458,10 @@ async function handleButton(interaction) {
         if (result.matched) {
             referrals.handleActivation(userId, interaction.client);
             referrals.handleActivation(target.user_id, interaction.client);
+            const me = getProfile.get(userId);
             return interaction.reply({
-                embeds: [
-                    baseEmbed({
-                        title: "✨ It's a Match!",
-                        description: `You and **${target.name}** liked each other! Use \`/matches\` to view it.`
-                    })
-                ],
+                embeds: [matchCardEmbed({ nameA: me ? me.name : "You", nameB: target.name })],
+                components: [sayHiRow(target.user_id, { withProfile: true })],
                 ephemeral: true
             });
         }

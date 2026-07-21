@@ -6,7 +6,7 @@ const { SlashCommandBuilder } = require("discord.js");
 
 const { getProfile } = require("../../database/profileQueries");
 const { like, canLike } = require("../../utils/likeService");
-const { successEmbed, errorEmbed, baseEmbed } = require("../../utils/embed");
+const { successEmbed, errorEmbed, matchCardEmbed, sayHiRow } = require("../../utils/embed");
 const referrals = require("../../utils/referralService");
 
 module.exports = {
@@ -43,13 +43,11 @@ module.exports = {
             // A match may activate a pending referral for either user.
             referrals.handleActivation(interaction.user.id, interaction.client);
             referrals.handleActivation(target.id, interaction.client);
+            const me = getProfile.get(interaction.user.id);
+            const them = getProfile.get(target.id);
             return interaction.reply({
-                embeds: [
-                    baseEmbed({
-                        title: "✨ It's a Match!",
-                        description: `You and <@${target.id}> liked each other. Use \`/matches\` to see all your matches!`
-                    })
-                ]
+                embeds: [matchCardEmbed({ nameA: me ? me.name : interaction.user.username, nameB: them ? them.name : target.username })],
+                components: [sayHiRow(target.id, { withProfile: true })]
             });
         }
 

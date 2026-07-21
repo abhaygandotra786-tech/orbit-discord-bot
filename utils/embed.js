@@ -1,213 +1,173 @@
 /**
- * Community Hub - Embed factory
+ * Orbit - the ONE embed factory.
  * ------------------------------------------------------------------
- * Produces consistently themed, polished embeds (orange theme, author
- * header, footer, timestamp) so every response looks the same.
+ * Every embed in the codebase goes through createOrbitEmbed(). It enforces
+ * the design system: one coral brand color (soft red for errors, muted green
+ * for confirmations), an "Orbit" author line with the logo icon, tidy
+ * spacing, and a quiet plain-text footer.
+ *
+ * Design rules (do not break):
+ *  - One color per kind. Nothing else, ever.
+ *  - At most one emoji per embed, only in the title.
+ *  - No emoji in body, field names, or footers.
+ *  - Short lines, bold only for the one thing that matters.
  */
-
-const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
-const fs = require("fs");
-const path = require("path");
+const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
 const config = require("../config/config");
-const { CATEGORY_EMOJI } = require("./constants");
+const S = require("../config/strings");
 const premium = require("./premiumService");
+const { badges } = require("./rewardsStore");
 
-const COLORS = config.COLORS || {};
-
-// The banner is the only brand image used in embeds (no logo, by design).
-// It can come from a public URL (config/.env) or a local file dropped into
-// web/public/assets/banner.* — local files are attached and referenced via
-// attachment:// so they work in Discord without hosting.
-const ASSET_DIR = path.join(__dirname, "../web/public/assets");
-
-function findAsset(base) {
-    for (const ext of ["png", "jpg", "jpeg", "webp", "gif"]) {
-        const p = path.join(ASSET_DIR, `${base}.${ext}`);
-        if (fs.existsSync(p)) return { path: p, name: `orbit-${base}.${ext}` };
-    }
-    return null;
-}
+// The only colors Orbit ever uses.
+const COLOR = {
+    brand: 0xf4502a,   // coral, the default for everything
+    error: 0xed4245,   // soft red
+    confirm: 0x57f287  // muted green
+};
 
 /**
- * Resolve the banner image reference + the file to attach (if local).
- * @returns {{ files: AttachmentBuilder[], bannerRef: string|null }}
- */
-function brandKit() {
-    let bannerRef = config.BANNER_URL || null;
-    const files = [];
-
-    if (!bannerRef) {
-        const b = findAsset("banner");
-        if (b) {
-            files.push(new AttachmentBuilder(b.path, { name: b.name }));
-            bannerRef = `attachment://${b.name}`;
-        }
-    }
-    return { files, bannerRef };
-}
-
-/**
- * Create a base embed pre-filled with the bot theme.
- * Text-only header/footer — no logo image, by design.
- * @param {object} [opts]
- * @param {string} [opts.title]
- * @param {string} [opts.description]
- * @param {number} [opts.color]
+ * The single embed builder.
+ * @param {object} o
+ * @param {string} [o.title]   short, 2 to 5 words
+ * @param {string} [o.body]    1 to 3 short lines (use \n\n between ideas)
+ * @param {Array}  [o.fields]  [{name, value, inline}] empty values are skipped
+ * @param {string} [o.footer]  one quiet plain line
+ * @param {"brand"|"error"|"confirm"} [o.kind]
+ * @param {boolean} [o.timestamp]
  * @returns {EmbedBuilder}
  */
-function baseEmbed({ title, description, color } = {}) {
+function createOrbitEmbed({ title, body, fields, footer, kind = "brand", timestamp } = {}) {
     const embed = new EmbedBuilder()
-        .setColor(color ?? COLORS.PRIMARY ?? config.EMBED_COLOR)
-        .setTimestamp()
+        .setColor(COLOR[kind] || COLOR.brand)
         .setAuthor(
             config.LOGO_URL
                 ? { name: config.BOT_NAME, iconURL: config.LOGO_URL }
                 : { name: config.BOT_NAME }
-        )
-        .setFooter(
-            config.LOGO_URL
-                ? { text: config.FOOTER.TEXT, iconURL: config.LOGO_URL }
-                : { text: config.FOOTER.TEXT }
         );
 
     if (title) embed.setTitle(title);
-    if (description) embed.setDescription(description);
-
+    if (body) embed.setDescription(body);
+    if (Array.isArray(fields)) {
+        for (const f of fields) {
+            if (f && f.value != null && String(f.value).trim() !== "") {
+                embed.addFields({ name: f.name, value: String(f.value).trim(), inline: Boolean(f.inline) });
+            }
+        }
+    }
+    if (footer) embed.setFooter({ text: footer });
+    if (timestamp) embed.setTimestamp();
     return embed;
 }
 
-function successEmbed(message, title = "Success") {
-    return baseEmbed({
-        title: `✅ ${title}`,
-        description: message,
-        color: COLORS.SUCCESS
-    });
+/* ==================================================================
+   Back-compat wrappers: existing call sites keep working, but every
+   embed now conforms to the design system automatically.
+   ================================================================== */
+function baseEmbed({ title, description } = {}) {
+    return createOrbitEmbed({ title, body: description, footer: S.brand.footer });
 }
-
-function errorEmbed(message, title = "Error") {
-    return baseEmbed({
-        title: `❌ ${title}`,
-        description: message,
-        color: COLORS.ERROR
-    });
+/** Returns { embed, files } for callers that still destructure it. No banner. */
+function brandedEmbed({ title, description } = {}) {
+    return { embed: createOrbitEmbed({ title, body: description, footer: S.brand.footer }), files: [] };
 }
-
+function successEmbed(message, title = S.confirm.default) {
+    return createOrbitEmbed({ title, body: message, kind: "confirm" });
+}
+function errorEmbed(message, title = "Heads up") {
+    return createOrbitEmbed({ title, body: message, kind: "error" });
+}
 function infoEmbed(message, title) {
-    return baseEmbed({
-        title: title || undefined,
-        description: message,
-        color: COLORS.INFO
-    });
+    return createOrbitEmbed({ title, body: message, footer: S.brand.footer });
+}
+// no-op kept for old imports; the design system has no dividers
+const DIVIDER = "";
+function brandKit() {
+    return { files: [], bannerRef: null };
 }
 
-// Thin separator, used sparingly.
-const DIVIDER = "─────────────────────";
-
-/**
- * Like baseEmbed, but adds the banner at the bottom and returns the files
- * that must accompany the message. No logo — banner only, by design.
- * @returns {{ embed: EmbedBuilder, files: AttachmentBuilder[] }}
- */
-function brandedEmbed({ title, description, color } = {}) {
-    const { files, bannerRef } = brandKit();
-
-    // Text-only header/footer, and the banner shown as the large image at the
-    // bottom of the embed — no logo icons, no thumbnail (by design).
-    const embed = new EmbedBuilder()
-        .setColor(color ?? COLORS.PRIMARY ?? config.EMBED_COLOR)
-        .setTimestamp()
-        .setAuthor({ name: config.BOT_NAME })
-        .setFooter({ text: config.FOOTER.TEXT });
-
-    if (title) embed.setTitle(title);
-    if (description) embed.setDescription(description);
-    if (bannerRef) embed.setImage(bannerRef);
-
-    return { embed, files };
-}
-
-/**
- * Render a full, polished profile embed.
- * @param {object} profile  row from the profiles table
- * @param {object} [opts]
- * @param {string} [opts.headerNote] extra line shown under the title
- */
+/* ==================================================================
+   Profile card: name, a short context line, 3 to 4 fields max.
+   ================================================================== */
 function profileEmbed(profile, { headerNote } = {}) {
-    const tier = premium.meta(profile.user_id);
-    const badge = tier.emoji ? ` ${tier.emoji}` : "";
     const isFeatured = profile.featured && profile.featured_until > Date.now();
+    const tierName = premium.meta(profile.user_id).name; // "Free" | "Pro" | "Premium"
+    const vouched = safeHasBadge(profile.user_id, "Vouched");
 
-    // Theme color (Premium+), else tier color, else brand default.
-    let color = tier.color;
-    if (
-        profile.theme &&
-        premium.has(profile.user_id, "profileThemes") &&
-        config.PREMIUM.THEMES[profile.theme] !== undefined
-    ) {
-        color = config.PREMIUM.THEMES[profile.theme];
-    }
+    const line1 = [profile.age, profile.gender, profile.location].filter(Boolean).join("  ·  ");
+    const line2 = [profile.category, profile.profession].filter(Boolean).join("  ·  ");
+    const status = [];
+    if (tierName && tierName !== "Free") status.push(tierName);
+    if (vouched) status.push("Vouched");
+    if (isFeatured) status.push("Featured");
+    if (headerNote) status.push(headerNote);
 
-    const embed = baseEmbed({
-        title: `${isFeatured ? "🌟 " : "👤 "}${profile.name}${badge}`,
-        color
+    const body = [line1, line2, status.length ? `**${status.join("  ·  ")}**` : ""]
+        .filter(Boolean)
+        .join("\n");
+
+    const fields = [
+        { name: "About", value: profile.bio },
+        { name: "Skills", value: profile.skills },
+        { name: "Interests", value: profile.interests },
+        { name: "Links", value: buildLinks(profile) }
+    ].filter((f) => f.value);
+
+    return createOrbitEmbed({
+        title: profile.name,
+        body,
+        fields: fields.slice(0, 4),
+        footer: S.brand.footer
     });
+}
 
-    // Compact subtitle: only the meaningful bits.
-    const sub = [];
-    if (premium.badgeLabel(profile.user_id))
-        sub.push(`**${premium.badgeLabel(profile.user_id)}**`);
-    if (isFeatured) sub.push("Featured");
-    if (profile.investor_role) sub.push(profile.investor_role);
-    if (headerNote) sub.push(`*${headerNote}*`);
-    if (sub.length) embed.setDescription(sub.join("  ·  "));
+/* ==================================================================
+   Match card: the hero embed. Two names, one reason, one icebreaker.
+   ================================================================== */
+function matchCardEmbed({ nameA, nameB, reason, icebreaker } = {}) {
+    const ib = icebreaker || S.match.icebreakers[Math.floor(Math.random() * S.match.icebreakers.length)];
+    return createOrbitEmbed({
+        title: S.match.title,
+        body: `**${nameA}** and **${nameB}**\n\n${reason || S.match.reasonFallback}`,
+        fields: [{ name: "Icebreaker", value: ib }],
+        footer: S.brand.footer
+    });
+}
 
-    // Only show fields that actually have a value — keeps it clean.
-    const add = (name, value, inline = false) => {
-        if (value !== null && value !== undefined && String(value).trim() !== "") {
-            embed.addFields({ name, value: String(value).trim(), inline });
-        }
-    };
-
-    add("🎂 Age", profile.age, true);
-    add("📍 Location", profile.location, true);
-    if (profile.category) {
-        const e = CATEGORY_EMOJI[profile.category] || "🏷️";
-        embed.addFields({
-            name: "🏷️ Community",
-            value: `${e} ${profile.category}`.trim(),
-            inline: true
-        });
+/** A single [Say hi] primary button (optionally with [View profile]). */
+function sayHiRow(targetId, { withProfile = false } = {}) {
+    const row = new ActionRowBuilder().addComponents(
+        new ButtonBuilder().setCustomId(`sayhi:${targetId}`).setLabel(S.match.sayHi).setStyle(ButtonStyle.Primary)
+    );
+    if (withProfile) {
+        row.addComponents(
+            new ButtonBuilder().setCustomId(`viewprofile:${targetId}`).setLabel(S.match.viewProfile).setStyle(ButtonStyle.Secondary)
+        );
     }
-    add("🚻 Gender", profile.gender, true);
-    add("💘 Interested in", profile.interested_in, true);
-    add("💼 Profession", profile.profession, true);
-    add("🛠️ Skills", profile.skills);
-    add("🎯 Interests", profile.interests);
-    add("📝 About", profile.bio);
-    add("📂 Portfolio", profile.portfolio_projects);
+    return row;
+}
 
+/* ---- small helpers ---- */
+function safeUrl(v) {
+    return /^https?:\/\//i.test(v) ? v : `https://${v}`;
+}
+function buildLinks(profile) {
     const links = [];
     if (profile.linkedin) links.push(`[LinkedIn](${safeUrl(profile.linkedin)})`);
     if (profile.github) links.push(`[GitHub](${safeUrl(profile.github)})`);
     if (profile.portfolio) links.push(`[Portfolio](${safeUrl(profile.portfolio)})`);
-    if (links.length) embed.addFields({ name: "🔗 Links", value: links.join("  ·  ") });
-
-    return embed;
+    return links.join("  ·  ");
 }
-
-// --- formatting helpers -------------------------------------------
-
-function safeUrl(value) {
-    if (/^https?:\/\//i.test(value)) return value;
-    return `https://${value}`;
+function safeHasBadge(userId, badge) {
+    try { return badges.has(userId, badge); } catch { return false; }
 }
-
-/** Compact "Name 👑" label for list items, with tier badge. */
+/** Plain name for list items (no emoji, per the design system). */
 function nameWithBadge(profile) {
-    return `${profile.name}${premium.badge(profile.user_id)}`;
+    return profile.name;
 }
 
 module.exports = {
+    createOrbitEmbed,
+    COLOR,
     baseEmbed,
     brandedEmbed,
     brandKit,
@@ -215,6 +175,8 @@ module.exports = {
     errorEmbed,
     infoEmbed,
     profileEmbed,
+    matchCardEmbed,
+    sayHiRow,
     nameWithBadge,
     DIVIDER
 };

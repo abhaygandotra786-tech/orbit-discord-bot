@@ -130,26 +130,26 @@ function dueForReminder(windowMs) {
     return dueReminders.all(hi, lo).map((r) => r.user_id);
 }
 
-/** DM a voter a celebratory summary of what they just earned. */
+/** DM a voter a quiet, satisfying summary of what they earned. */
 async function dmReward(client, userId, earned) {
     if (!client || !earned) return;
     try {
-        const { EmbedBuilder } = require("discord.js");
-        const config = require("../config/config");
+        const { createOrbitEmbed } = require("./embed");
+        const S = require("../config/strings");
         const lines = [
-            `• +${earned.credits} bonus match credit${earned.credits > 1 ? "s" : ""}`,
-            `• ${earned.tierHours}h of ${earned.tierName}`
+            `**+${earned.credits}** bonus match credit${earned.credits > 1 ? "s" : ""}`,
+            `${earned.tierHours}h of ${earned.tierName}`
         ];
-        earned.milestones.forEach((m) => lines.push(`• ${m}`));
-        earned.badges.forEach((b) => lines.push(`• 🏅 ${b} badge`));
-        if (earned.earlyDrop) lines.push("• 🌅 Early access to the weekly match drop");
-        const embed = new EmbedBuilder()
-            .setColor(config.COLORS.PRIMARY)
-            .setTitle("🗳️ Thanks for voting!")
-            .setDescription(`${earned.weekend ? "Weekend bonus applied. " : ""}Your streak is now **${earned.streak}** day${earned.streak > 1 ? "s" : ""}.`)
-            .addFields({ name: "You earned", value: lines.join("\n") })
-            .setFooter({ text: "Vote again in 12 hours to keep your streak alive." })
-            .setTimestamp();
+        earned.milestones.forEach((m) => lines.push(m));
+        earned.badges.forEach((b) => lines.push(`${b} badge`));
+        if (earned.earlyDrop) lines.push("Early access to the weekly drop");
+
+        const embed = createOrbitEmbed({
+            title: S.vote.title,
+            body: `Your streak is now **${earned.streak}** day${earned.streak > 1 ? "s" : ""}.${earned.weekend ? " Weekend bonus applied." : ""}`,
+            fields: [{ name: "You earned", value: lines.join("\n") }],
+            footer: "You can vote again in 12 hours"
+        });
         const user = await client.users.fetch(userId);
         await user.send({ embeds: [embed] });
     } catch {

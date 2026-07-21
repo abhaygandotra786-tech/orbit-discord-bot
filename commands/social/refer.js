@@ -24,15 +24,15 @@ module.exports = {
         });
         embed.addFields(
             {
-                name: "📨 Message to share",
-                value: `Come meet people on Orbit! Run \`/redeem ${code}\` after you join to get a head start. ${config.SUPPORT_SERVER}`
+                name: "Message to share",
+                value: `Come meet people on Orbit. Run \`/redeem ${code}\` after you join to get a head start. ${config.SUPPORT_SERVER}`
             },
             {
-                name: "🏆 What you earn",
+                name: "What you earn",
                 value:
-                    "1 friend: match credits + Pro time\n" +
-                    "3 friends: a month of Pro + Vouched badge\n" +
-                    "10 friends: a month of Premium + custom accent"
+                    "1 friend: match credits and Pro time\n" +
+                    "3 friends: a month of Pro and the Vouched badge\n" +
+                    "10 friends: a month of Premium and a custom accent"
             }
         );
         return interaction.editReply({ embeds: [embed] });
