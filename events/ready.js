@@ -6,6 +6,7 @@
 const { ActivityType } = require("discord.js");
 const config = require("../config/config");
 const logger = require("../utils/logger");
+const voteService = require("../utils/voteService");
 
 module.exports = {
     name: "clientReady",
@@ -35,5 +36,25 @@ module.exports = {
 
         rotate(); // set immediately
         setInterval(rotate, 20 * 1000); // change every 20 seconds
+
+        // Opt-in vote reminders: every 15 min, DM users whose 12h cooldown just
+        // reset (one ping per reset, never repeated nagging).
+        const REMIND_EVERY = 15 * 60 * 1000;
+        setInterval(async () => {
+            try {
+                const due = voteService.dueForReminder(REMIND_EVERY);
+                for (const uid of due) {
+                    try {
+                        const u = await client.users.fetch(uid);
+                        await u.send("🗳️ Your Orbit vote is ready. Vote again to keep your streak alive: run `/vote`.");
+                    } catch {
+                        /* DMs closed */
+                    }
+                }
+            } catch (err) {
+                logger.error("vote reminder sweep failed", err);
+            }
+        }, REMIND_EVERY);
     }
 };
+

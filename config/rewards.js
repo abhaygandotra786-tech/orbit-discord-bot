@@ -13,9 +13,9 @@
 
 const TIER = {
     // Common reward, given often (votes + small referral milestones).
-    common: "premium", // -> your cheaper paid tier
+    common: "pro", // -> Pro, your $4.99 tier
     // Top reward, given rarely (only the biggest referral milestone).
-    top: "pro" // -> your most expensive paid tier
+    top: "premium" // -> Premium, your $14.99 top tier
 };
 
 // --- duration helpers (everything internally is milliseconds) ---

@@ -120,11 +120,12 @@ module.exports = {
                     "Friend & networking discovery"
                 ]
             },
-            premium: {
-                key: "premium",
-                name: "Premium",
-                emoji: "👑",
-                badge: "👑 Premium Member",
+            // Pro: the mid tier ($4.99). The common reward tier (votes, small referrals).
+            pro: {
+                key: "pro",
+                name: "Pro",
+                emoji: "🔹",
+                badge: "🔹 Pro Member",
                 price: 4.99,
                 durationDays: 30,
                 rank: 1,
@@ -141,28 +142,29 @@ module.exports = {
                     "priorityDiscovery"
                 ],
                 perks: [
-                    "👑 Premium badge everywhere",
+                    "🔹 Pro badge everywhere",
                     "Unlimited views, likes & searches",
                     "See who liked you (`/admirers`)",
                     "Profile boost & featured placement",
                     "Advanced multi-filter search",
-                    "Premium Networking Hub",
                     "Custom profile themes",
                     "Early access to new features"
                 ]
             },
-            pro: {
-                key: "pro",
-                name: "Pro",
-                emoji: "✅",
-                badge: "✅ Verified Pro",
+            // Premium: the top tier ($14.99). Rare. Only the biggest referral
+            // milestone (and future payment) grants it. Ranks above Pro.
+            premium: {
+                key: "premium",
+                name: "Premium",
+                emoji: "👑",
+                badge: "👑 Premium Member",
                 price: 14.99,
                 durationDays: 30,
                 rank: 2,
                 color: 0xf59e0b,
                 limits: { views: null, likes: null, searches: null },
                 capabilities: [
-                    // everything Premium has...
+                    // everything Pro has...
                     "advancedSearch",
                     "seeWhoLiked",
                     "featuredProfile",
@@ -171,7 +173,7 @@ module.exports = {
                     "profileThemes",
                     "earlyAccess",
                     "priorityDiscovery",
-                    // ...plus Pro-exclusive
+                    // ...plus Premium-exclusive
                     "verifiedBadge",
                     "aiMatch",
                     "profileVisitors",
@@ -186,8 +188,8 @@ module.exports = {
                     "vipDiscovery"
                 ],
                 perks: [
-                    "✅ Verified Pro badge (ranks above Premium)",
-                    "Everything in Premium",
+                    "👑 Premium badge (top tier, ranks above Pro)",
+                    "Everything in Pro",
                     "AI matchmaking (`/match-ai`)",
                     "Profile visitors (`/profile visitors`)",
                     "Analytics dashboard (`/profile analytics`)",

@@ -9,9 +9,9 @@ window.ORBIT = {
   // social proof counters
   counters: { servers: 120, matched: 4800, convos: 15000 },
 
-  // pricing placeholders (fill the ₹ amounts when you turn paid on)
+  // pricing (paid option opens later; earning is live now)
   price: {
-    pro:     "₹__ / mo",     // Pro paid option, coming soon
-    premium: "₹__ / mo"      // Premium paid option, coming soon
+    pro:     "$4.99 / mo",   // Pro paid option
+    premium: "$14.99 / mo"   // Premium paid option
   }
 };

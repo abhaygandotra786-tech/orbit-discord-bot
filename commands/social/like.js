@@ -7,6 +7,7 @@ const { SlashCommandBuilder } = require("discord.js");
 const { getProfile } = require("../../database/profileQueries");
 const { like, canLike } = require("../../utils/likeService");
 const { successEmbed, errorEmbed, baseEmbed } = require("../../utils/embed");
+const referrals = require("../../utils/referralService");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -39,6 +40,9 @@ module.exports = {
         }
 
         if (result.matched) {
+            // A match may activate a pending referral for either user.
+            referrals.handleActivation(interaction.user.id, interaction.client);
+            referrals.handleActivation(target.id, interaction.client);
             return interaction.reply({
                 embeds: [
                     baseEmbed({

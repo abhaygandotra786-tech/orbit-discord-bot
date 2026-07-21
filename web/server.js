@@ -25,6 +25,8 @@ const config = require("../config/config");
 const logger = require("../utils/logger");
 const { CATEGORIES, CATEGORY_EMOJI } = require("../utils/constants");
 const premium = require("../utils/premiumService");
+const R = require("../config/rewards");
+const voteService = require("../utils/voteService");
 const { like } = require("../utils/likeService");
 const {
     getAllProfiles,
@@ -126,6 +128,33 @@ app.post(
 );
 
 app.use(express.json({ limit: "64kb" }));
+
+// --- top.gg vote webhook (registered before the rate limiter so top.gg is
+// never throttled). Verify the Authorization header, then record the vote
+// idempotently and DM the voter their rewards. ---
+app.post("/api/topgg/webhook", (req, res) => {
+    const auth = req.get("Authorization") || "";
+    if (!R.TOPGG.WEBHOOK_AUTH || auth !== R.TOPGG.WEBHOOK_AUTH) {
+        return res.status(401).json({ error: "unauthorized" });
+    }
+    const { user, isWeekend, type } = req.body || {};
+    if (type === "test") return res.status(200).json({ ok: true, test: true });
+    if (!user) return res.status(400).json({ error: "missing user" });
+
+    try {
+        const earned = voteService.recordVote(String(user), {
+            weekend: Boolean(isWeekend),
+            source: "webhook"
+        });
+        if (earned && global.orbitClient) {
+            voteService.dmReward(global.orbitClient, String(user), earned);
+        }
+        return res.status(200).json({ ok: true, counted: Boolean(earned) });
+    } catch (err) {
+        logger.error("top.gg webhook failed", err);
+        return res.status(200).json({ ok: false }); // 200 so top.gg does not retry-storm
+    }
+});
 app.use(
     session({
         name: "ch.sid",

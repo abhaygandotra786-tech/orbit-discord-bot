@@ -33,6 +33,8 @@ const {
     baseEmbed
 } = require("../utils/embed");
 const { buildBrowseRow } = require("../utils/profileComponents");
+const referrals = require("../utils/referralService");
+const voteService = require("../utils/voteService");
 const config = require("../config/config");
 const logger = require("../utils/logger");
 
@@ -268,6 +270,8 @@ async function handleSelect(interaction) {
     }
 
     const profile = getProfile.get(userId);
+    // Completing profile setup may activate a pending referral.
+    referrals.handleActivation(userId, interaction.client);
     return interaction.update({
         embeds: [profileEmbed(profile)],
         components: buildSetupRows(profile)
@@ -279,6 +283,22 @@ async function handleSelect(interaction) {
 // ------------------------------------------------------------------
 async function handleButton(interaction) {
     const userId = interaction.user.id;
+
+    // Toggle the opt-in vote reminder.
+    if (interaction.customId === "vote_remind") {
+        const on = !voteService.state(userId).reminderOptIn;
+        voteService.toggleReminder(userId, on);
+        return interaction.reply({
+            embeds: [
+                successEmbed(
+                    on
+                        ? "Reminders on. I'll DM you when your next vote is ready."
+                        : "Reminders off."
+                )
+            ],
+            ephemeral: true
+        });
+    }
 
     // Connection request accept / decline.
     if (
@@ -399,6 +419,8 @@ async function handleButton(interaction) {
         }
 
         if (result.matched) {
+            referrals.handleActivation(userId, interaction.client);
+            referrals.handleActivation(target.user_id, interaction.client);
             return interaction.reply({
                 embeds: [
                     baseEmbed({

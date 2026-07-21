@@ -33,6 +33,15 @@ const SECTIONS = [
         ]
     },
     {
+        name: "🎁 Earn",
+        lines: [
+            "`/vote` — vote on top.gg for perks & streaks",
+            "`/refer` — get your invite code",
+            "`/redeem` — redeem a friend's code",
+            "`/referrals` — your referral progress"
+        ]
+    },
+    {
         name: "👑 Premium",
         lines: [
             "`/premium plans` — membership tiers",

@@ -22,6 +22,9 @@ const client = new Client({
 
 client.commands = new Collection();
 
+// Expose the client so the web process (top.gg webhook) can DM voters.
+global.orbitClient = client;
+
 loadCommands(client);
 loadEvents(client);
 
