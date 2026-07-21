@@ -459,11 +459,12 @@ app.get("/api/me/dashboard", requireAuth, async (req, res) => {
 
 app.use(express.static(path.join(__dirname, "public")));
 
-// SPA fallback: client-side routes (e.g. /c/networking, /premium) return
-// index.html so they work on refresh and direct links.
+// "/" serves the new marketing landing (index.html, handled by express.static).
+// All other client-side routes (/premium, /dashboard, /dating, /interest, ...)
+// are the app SPA, served from app.html so login, dashboard and checkout work.
 app.use((req, res, next) => {
     if (req.method !== "GET" || req.path.startsWith("/api")) return next();
-    res.sendFile(path.join(__dirname, "public", "index.html"));
+    res.sendFile(path.join(__dirname, "public", "app.html"));
 });
 
 app.listen(config.WEB.PORT, () => {

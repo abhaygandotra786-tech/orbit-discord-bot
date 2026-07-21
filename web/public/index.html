@@ -1,250 +1,444 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="home">
+<html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Orbit</title>
-    <meta name="description" content="Orbit — one community bot for everything." />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/css/styles.css" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Orbit: Meet your people, right inside Discord</title>
+<meta name="description" content="Orbit drops a few curated matches every week inside your Discord community. Real members, real conversations, zero swiping." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="icon" href="/assets/logo.png" />
+<style>
+/* ============================================================
+   EDIT ME: links + counters live in the <script> CONFIG block
+   near the bottom of this file. Everything else is styling.
+   ============================================================ */
+:root{
+  --bg:#0a0a0f; --bg-2:#0f1018; --card:#14151d; --card-2:#181a23;
+  --line:rgba(255,255,255,.08); --line-2:rgba(255,255,255,.14);
+  --blurple:#5865F2; --blurple-2:#6f79f6; --coral:#ff7a59; --amber:#ffb648;
+  --text:#e9eaf1; --text-2:#aab0bd; --muted:#767c8a;
+  --maxw:1080px; --r:16px;
+  --sans:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--sans);background:var(--bg);color:var(--text);
+  font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+a{color:inherit;text-decoration:none}
+img{max-width:100%}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+
+/* ---- buttons ---- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  font-family:inherit;font-weight:700;font-size:15px;border-radius:12px;
+  padding:14px 22px;cursor:pointer;border:1px solid transparent;
+  transition:transform .15s ease,background .15s ease,border-color .15s ease,box-shadow .2s ease;
+  white-space:nowrap;
+}
+.btn:hover{transform:translateY(-2px) scale(1.02)}
+.btn:active{transform:translateY(0) scale(1)}
+.btn-primary{background:var(--blurple);color:#fff;box-shadow:0 8px 24px rgba(88,101,242,.35)}
+.btn-primary:hover{background:var(--blurple-2);box-shadow:0 12px 30px rgba(88,101,242,.45)}
+.btn-ghost{background:rgba(255,255,255,.04);color:var(--text);border-color:var(--line-2)}
+.btn-ghost:hover{background:rgba(255,255,255,.08)}
+
+/* ---- nav ---- */
+.nav{position:sticky;top:0;z-index:50;background:rgba(10,10,15,.72);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav-inner{max-width:var(--maxw);margin:0 auto;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px;letter-spacing:-.02em}
+.brand img{width:30px;height:30px;border-radius:8px}
+.nav .btn{padding:10px 18px;font-size:14px}
+
+/* ---- hero ---- */
+.hero{position:relative;overflow:hidden;padding:clamp(48px,9vh,110px) 0 clamp(50px,8vh,90px)}
+.hero-bg{position:absolute;inset:0;z-index:0;pointer-events:none}
+.ring{position:absolute;border:1px solid rgba(88,101,242,.16);border-radius:50%;left:50%;top:38%;transform:translate(-50%,-50%);animation:spin linear infinite}
+.ring.r1{width:520px;height:520px;animation-duration:60s}
+.ring.r2{width:820px;height:820px;border-color:rgba(88,101,242,.10);animation-duration:90s;animation-direction:reverse}
+.ring.r3{width:1160px;height:1160px;border-color:rgba(255,122,89,.07);animation-duration:120s}
+.glow{position:absolute;width:640px;height:640px;left:50%;top:20%;transform:translate(-50%,-50%);border-radius:50%;
+  background:radial-gradient(circle,rgba(88,101,242,.22),transparent 62%);filter:blur(20px)}
+.dot{position:absolute;width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.5);animation:floaty 7s ease-in-out infinite}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes floaty{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(-16px);opacity:.9}}
+
+.hero-inner{position:relative;z-index:1;display:grid;grid-template-columns:1.02fr .98fr;gap:48px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--blurple-2);
+  background:rgba(88,101,242,.12);border:1px solid rgba(88,101,242,.3);padding:6px 13px;border-radius:999px;margin-bottom:20px}
+.eyebrow::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--blurple);animation:pulse 2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(88,101,242,.5)}70%{box-shadow:0 0 0 7px transparent}100%{box-shadow:0 0 0 0 transparent}}
+h1{font-size:clamp(38px,5.4vw,60px);line-height:1.05;letter-spacing:-.035em;font-weight:900;margin-bottom:18px}
+h1 .accent{color:var(--blurple-2)}
+.hero-sub{font-size:clamp(16px,2.2vw,19px);color:var(--text-2);max-width:34ch;margin-bottom:30px}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap}
+.hero-note{margin-top:18px;font-size:13px;color:var(--muted)}
+
+/* ---- discord mockup ---- */
+.mock{position:relative}
+.discord{background:#1e1f26;border:1px solid var(--line-2);border-radius:18px;overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,.5)}
+.dc-head{display:flex;align-items:center;gap:10px;padding:14px 16px;background:#17181e;border-bottom:1px solid var(--line)}
+.dc-hash{color:var(--muted);font-weight:700;font-size:18px}
+.dc-chan{font-weight:700;font-size:14px}
+.dc-dots{margin-left:auto;display:flex;gap:5px}
+.dc-dots span{width:9px;height:9px;border-radius:50%;background:#3a3c46}
+.dc-body{padding:16px;min-height:290px;display:flex;flex-direction:column;gap:14px}
+.msg{display:flex;gap:11px;align-items:flex-start}
+.av{width:38px;height:38px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:800;font-size:15px;color:#fff}
+.av.bot{background:linear-gradient(135deg,var(--blurple),var(--blurple-2))}
+.av.u{background:linear-gradient(135deg,var(--coral),var(--amber))}
+.msg-b .who{font-weight:700;font-size:13.5px}
+.msg-b .who .tag{font-size:10px;font-weight:700;background:var(--blurple);color:#fff;border-radius:4px;padding:1px 5px;margin-left:6px;vertical-align:middle}
+.msg-b .txt{font-size:13.5px;color:var(--text-2);margin-top:2px}
+/* typing indicator */
+.typing{display:inline-flex;gap:4px;padding:9px 12px;background:#26272f;border-radius:12px;margin-top:4px}
+.typing i{width:7px;height:7px;border-radius:50%;background:#8a8f9c;animation:blink 1.3s infinite}
+.typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+/* match card embed */
+.embed{border-left:4px solid var(--coral);background:#26272f;border-radius:6px;padding:14px 16px;max-width:340px;
+  opacity:0;transform:translateY(14px);}
+.embed.show{animation:cardIn .55s cubic-bezier(.22,.9,.3,1) forwards}
+@keyframes cardIn{to{opacity:1;transform:none}}
+.embed .ehead{display:flex;align-items:center;gap:8px;font-weight:800;font-size:14px;color:var(--coral)}
+.embed .etitle{font-weight:800;font-size:16px;margin:8px 0 2px}
+.embed .emeta{font-size:12.5px;color:var(--muted)}
+.embed .efield{margin-top:10px;font-size:13px}
+.embed .efield b{color:var(--text)}
+.embed .ebtns{display:flex;gap:8px;margin-top:12px}
+.ebtn{font-size:12.5px;font-weight:700;padding:8px 12px;border-radius:8px;background:var(--blurple);color:#fff}
+.ebtn.sec{background:#3a3c46}
+
+/* ---- section shell ---- */
+.section{padding:clamp(60px,10vh,110px) 0}
+.sec-head{text-align:center;max-width:640px;margin:0 auto clamp(36px,6vh,56px)}
+.sec-head h2{font-size:clamp(28px,4vw,40px);font-weight:900;letter-spacing:-.03em;line-height:1.1}
+.sec-head p{color:var(--text-2);margin-top:12px;font-size:17px}
+.kicker{font-size:13px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--blurple-2);margin-bottom:12px}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.step{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px}
+.step .ic{width:50px;height:50px;border-radius:14px;display:grid;place-items:center;font-size:24px;
+  background:rgba(88,101,242,.14);border:1px solid rgba(88,101,242,.3);margin-bottom:16px}
+.step .n{font-size:12px;font-weight:800;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+.step h3{font-size:18px;font-weight:800;margin:6px 0 6px}
+.step p{color:var(--text-2);font-size:14.5px}
+
+/* why cards */
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+.card:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(0,0,0,.4);border-color:var(--line-2)}
+.card .ic{font-size:26px;margin-bottom:14px}
+.card h3{font-size:19px;font-weight:800;margin-bottom:8px}
+.card p{color:var(--text-2);font-size:15px}
+
+/* proof */
+.counters{display:flex;justify-content:center;gap:60px;flex-wrap:wrap;margin-bottom:48px}
+.counter b{display:block;font-size:clamp(34px,6vw,52px);font-weight:900;letter-spacing:-.03em;background:linear-gradient(120deg,var(--blurple-2),var(--coral));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.counter span{color:var(--muted);font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:.08em}
+.quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.quote{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px}
+.quote p{font-size:15px;color:var(--text)}
+.quote .by{margin-top:14px;font-size:13px;color:var(--muted);font-weight:600}
+
+/* perks ladder */
+.perks{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
+.perk{display:flex;align-items:center;gap:16px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 20px}
+.perk .lvl{font-size:12px;font-weight:800;letter-spacing:.06em;color:#fff;background:var(--blurple);border-radius:8px;padding:6px 10px;flex:none;min-width:96px;text-align:center}
+.perk .lvl.warm{background:var(--coral)}
+.perk .txt{font-size:15px}
+.perk .txt b{font-weight:800}
+
+/* faq */
+.faq{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
+details{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+summary{list-style:none;cursor:pointer;padding:18px 20px;font-weight:700;font-size:16px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:22px;color:var(--blurple-2);transition:transform .2s ease}
+details[open] summary::after{transform:rotate(45deg)}
+details .a{padding:0 20px 18px;color:var(--text-2);font-size:15px}
+
+/* final cta */
+.final{text-align:center;background:linear-gradient(160deg,rgba(88,101,242,.16),rgba(255,122,89,.08));border:1px solid var(--line-2);border-radius:24px;padding:clamp(40px,7vh,72px) 28px;margin:0 22px}
+.final h2{font-size:clamp(28px,4.5vw,44px);font-weight:900;letter-spacing:-.03em;max-width:16ch;margin:0 auto 22px}
+
+/* footer */
+footer{border-top:1px solid var(--line);margin-top:80px;padding:34px 0}
+.foot{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;color:var(--muted);font-size:14px}
+.foot-links{display:flex;gap:22px;flex-wrap:wrap}
+.foot-links a:hover{color:var(--text)}
+
+/* scroll reveal */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
+.reveal.in{opacity:1;transform:none}
+.reveal.d1{transition-delay:.08s}.reveal.d2{transition-delay:.16s}.reveal.d3{transition-delay:.24s}
+
+/* responsive */
+@media (max-width:860px){
+  .hero-inner{grid-template-columns:1fr;gap:34px}
+  .hero-sub{max-width:none}
+  .steps,.cards,.quotes{grid-template-columns:1fr}
+  .mock{max-width:420px;margin:0 auto}
+}
+@media (max-width:560px){
+  .counters{gap:32px}
+  .perk{flex-direction:column;align-items:flex-start;gap:8px}
+  .nav .btn.hide-sm{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .reveal{opacity:1;transform:none}
+  .embed{opacity:1;transform:none}
+}
+</style>
 </head>
 <body>
-    <header class="topbar">
-        <div class="topbar-inner">
-            <a class="brand" href="/" data-link>
-                <img id="brandLogo" class="brand-logo" src="/assets/logo.png" alt="Orbit" />
-                <span id="brandName">Orbit</span>
-            </a>
-            <nav class="nav-center">
-                <div class="dropdown" id="catDropdown">
-                    <button class="dropdown-btn" id="catBtn" aria-haspopup="true" aria-expanded="false">
-                        Categories <span class="caret">▾</span>
-                    </button>
-                    <div class="dropdown-menu">
-                        <a href="/networking" data-link>🤝 Networking</a>
-                        <a href="/friends" data-link>👥 Friends</a>
-                        <a href="/gaming" data-link>🎮 Gaming</a>
-                        <a href="/freelancing" data-link>💼 Freelancing</a>
-                        <a href="/co-founder" data-link>🚀 Co-Founder</a>
-                        <a href="/dating" data-link>💖 Dating</a>
-                    </div>
-                </div>
-                <a href="/premium" data-link>Premium</a>
-                <a href="/dashboard" data-link id="navDashboard" class="hidden">Dashboard</a>
-            </nav>
-            <form class="nav-search" id="navSearch" role="search">
-                <span class="ns-ic" aria-hidden="true">🔍</span>
-                <input id="navSearchInput" type="text" autocomplete="off" placeholder="Search members…" aria-label="Search members" />
-            </form>
-            <div class="nav-right">
-                <span id="authArea"></span>
+<!-- ===================== NAV ===================== -->
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/"><img src="/assets/logo.png" alt="Orbit" /> Orbit</a>
+    <a class="btn btn-primary" data-invite href="#">Add Orbit</a>
+  </div>
+</header>
+
+<!-- ===================== HERO ===================== -->
+<section class="hero">
+  <div class="hero-bg" aria-hidden="true">
+    <div class="glow"></div>
+    <div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div>
+    <span class="dot" style="left:16%;top:30%"></span>
+    <span class="dot" style="left:82%;top:22%;animation-delay:1.4s"></span>
+    <span class="dot" style="left:70%;top:64%;animation-delay:2.6s"></span>
+    <span class="dot" style="left:26%;top:70%;animation-delay:.8s"></span>
+    <span class="dot" style="left:50%;top:12%;animation-delay:3.2s"></span>
+  </div>
+  <div class="wrap hero-inner">
+    <div class="hero-copy">
+      <span class="eyebrow">Orbit on Discord</span>
+      <h1>Meet your people, <span class="accent">right inside Discord</span></h1>
+      <p class="hero-sub">Orbit drops a few curated matches every week. Real members, real conversations, zero swiping.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" data-invite href="#">Add Orbit to your server</a>
+        <a class="btn btn-ghost" data-community href="#">Join our community</a>
+      </div>
+      <p class="hero-note">Free to use. Works in any server. No new app to download.</p>
+    </div>
+
+    <!-- animated discord mockup -->
+    <div class="mock">
+      <div class="discord">
+        <div class="dc-head"><span class="dc-hash">#</span><span class="dc-chan">weekly-matches</span>
+          <span class="dc-dots"><span></span><span></span><span></span></span></div>
+        <div class="dc-body">
+          <div class="msg">
+            <div class="av u">A</div>
+            <div class="msg-b"><div class="who">Aanya</div><div class="txt">is it match day yet? 👀</div></div>
+          </div>
+          <div class="msg" id="botRow">
+            <div class="av bot">O</div>
+            <div class="msg-b">
+              <div class="who">Orbit <span class="tag">APP</span></div>
+              <div id="typing" class="typing"><i></i><i></i><i></i></div>
+              <div id="embed" class="embed" hidden>
+                <div class="ehead">✦ New weekly match</div>
+                <div class="etitle">You matched with Rehan</div>
+                <div class="emeta">Founder · Bangalore · 92% fit</div>
+                <div class="efield"><b>Shared interests:</b> startups, design, chai</div>
+                <div class="efield"><b>Ice breaker:</b> what are you building right now?</div>
+                <div class="ebtns"><span class="ebtn">Say hi 👋</span><span class="ebtn sec">View profile</span></div>
+              </div>
             </div>
+          </div>
         </div>
-    </header>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <!-- HOME -->
-    <section id="view-home">
-        <!-- Split hero -->
-        <div class="hero">
-            <div class="hero-glow" aria-hidden="true"></div>
-            <div class="hero-inner">
-                <div class="hero-left">
-                    <div class="hero-badge">Orbit on Discord</div>
-                    <h1 class="hero-title">Find your <span class="grad-word">people</span>, all in one bot</h1>
-                    <p class="hero-sub">
-                        Networking, founders, freelancing, friends, gaming and dating —
-                        Orbit helps your community connect, match and grow.
-                    </p>
-                    <div class="hero-cta">
-                        <a class="btn lg" id="addBtn" href="#" target="_blank" rel="noopener">Add to Discord</a>
-                        <a class="btn ghost lg" href="/premium" data-link>View Premium</a>
-                    </div>
-                    <p class="hero-note">Free to add · Works in any server · No card required</p>
-                    <div class="hero-stats" id="heroStats"></div>
-                </div>
-                <div class="hero-right">
-                    <div class="mascot-stage">
-                        <div class="mascot-glow" aria-hidden="true"></div>
-                        <svg class="mascot" viewBox="0 0 260 270" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Orbit mascot">
-                            <defs>
-                                <radialGradient id="mBody" cx="38%" cy="30%" r="78%">
-                                    <stop offset="0%" stop-color="#FFCC7A"/>
-                                    <stop offset="46%" stop-color="#FF7A3D"/>
-                                    <stop offset="100%" stop-color="#E73B27"/>
-                                </radialGradient>
-                                <linearGradient id="mRing" x1="0" y1="0" x2="1" y2="1">
-                                    <stop offset="0%" stop-color="#FFB648"/>
-                                    <stop offset="100%" stop-color="#FF4D2D"/>
-                                </linearGradient>
-                            </defs>
+<!-- ===================== HOW IT WORKS ===================== -->
+<section class="section" id="how">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="kicker">How it works</div>
+      <h2>Matched in three easy steps</h2>
+    </div>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="ic">📝</div><div class="n">Step 1</div>
+        <h3>Create your profile</h3>
+        <p>Answer a few questions. It takes about two minutes.</p>
+      </div>
+      <div class="step reveal d1">
+        <div class="ic">✨</div><div class="n">Step 2</div>
+        <h3>Get matched every week</h3>
+        <p>Orbit drops curated matches with members who fit you.</p>
+      </div>
+      <div class="step reveal d2">
+        <div class="ic">💬</div><div class="n">Step 3</div>
+        <h3>Say hi</h3>
+        <p>Orbit breaks the ice with friendly starter questions.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-                            <!-- ring (back) -->
-                            <g transform="rotate(-18 130 150)">
-                                <ellipse cx="130" cy="150" rx="118" ry="34" fill="none" stroke="url(#mRing)" stroke-width="9" opacity="0.85"/>
-                            </g>
+<!-- ===================== WHY DIFFERENT ===================== -->
+<section class="section" id="why" style="background:var(--bg-2)">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="kicker">Why Orbit is different</div>
+      <h2>Quality matches, built on trust</h2>
+    </div>
+    <div class="cards">
+      <div class="card reveal"><div class="ic">🎯</div><h3>Curated, not endless</h3><p>A few quality matches each week, not a swipe pile you scroll forever.</p></div>
+      <div class="card reveal d1"><div class="ic">🛡️</div><h3>Built on trust</h3><p>Referral vouched members and active moderation keep it real.</p></div>
+      <div class="card reveal d2"><div class="ic">🎁</div><h3>Rewards for supporters</h3><p>Voting and referrals unlock Pro perks and bonus matches.</p></div>
+      <div class="card reveal d3"><div class="ic">🏠</div><h3>Lives where you already are</h3><p>No new app to download. It all happens inside Discord.</p></div>
+    </div>
+  </div>
+</section>
 
-                            <!-- body -->
-                            <circle cx="130" cy="132" r="74" fill="url(#mBody)"/>
-                            <ellipse cx="106" cy="104" rx="26" ry="18" fill="#fff" opacity="0.16"/>
-                            <circle cx="102" cy="156" r="10" fill="#E73B27" opacity="0.32"/>
-                            <circle cx="162" cy="110" r="7" fill="#E73B27" opacity="0.28"/>
-                            <circle cx="152" cy="164" r="5" fill="#E73B27" opacity="0.28"/>
+<!-- ===================== SOCIAL PROOF ===================== -->
+<section class="section" id="proof">
+  <div class="wrap">
+    <div class="counters">
+      <div class="counter reveal"><b data-count-to="servers">0</b><span>Servers</span></div>
+      <div class="counter reveal d1"><b data-count-to="matched">0</b><span>Members matched</span></div>
+    </div>
+    <div class="quotes">
+      <div class="quote reveal"><p>“Met two of my closest Discord friends through Orbit. Way better than random DMs.”</p><div class="by">Placeholder, edit me later</div></div>
+      <div class="quote reveal d1"><p>“The weekly match drop is the thing I look forward to now.”</p><div class="by">Placeholder, edit me later</div></div>
+      <div class="quote reveal d2"><p>“Finally a bot that feels human. No spam, no fake profiles.”</p><div class="by">Placeholder, edit me later</div></div>
+    </div>
+  </div>
+</section>
 
-                            <!-- face -->
-                            <circle cx="96" cy="146" r="8" fill="#fff" opacity="0.22"/>
-                            <circle cx="166" cy="146" r="8" fill="#fff" opacity="0.22"/>
-                            <g class="m-eyes">
-                                <ellipse cx="111" cy="126" rx="11" ry="13" fill="#3a1f14"/>
-                                <ellipse cx="151" cy="126" rx="11" ry="13" fill="#3a1f14"/>
-                                <circle cx="115" cy="121" r="3.4" fill="#fff"/>
-                                <circle cx="155" cy="121" r="3.4" fill="#fff"/>
-                            </g>
-                            <path d="M114 150 Q131 166 148 150" fill="none" stroke="#3a1f14" stroke-width="4.5" stroke-linecap="round"/>
+<!-- ===================== PERKS ===================== -->
+<section class="section" id="perks" style="background:var(--bg-2)">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="kicker">Perks</div>
+      <h2>Voting and referrals unlock more</h2>
+      <p>Support Orbit, get rewarded. Simple as that.</p>
+    </div>
+    <div class="perks">
+      <div class="perk reveal"><span class="lvl">Vote</span><span class="txt"><b>+1 bonus match</b> and 24 hours of Pro, every single vote.</span></div>
+      <div class="perk reveal d1"><span class="lvl">3 day streak</span><span class="txt"><b>Rising Supporter</b> role and a highlighted profile for the week.</span></div>
+      <div class="perk reveal d2"><span class="lvl">7 day streak</span><span class="txt"><b>Early match drops</b> plus seven bonus days of Pro.</span></div>
+      <div class="perk reveal"><span class="lvl warm">1 referral</span><span class="txt"><b>Extra match credits</b> and free Pro time for you and your friend.</span></div>
+      <div class="perk reveal d1"><span class="lvl warm">3 referrals</span><span class="txt"><b>Vouched badge</b>, a trust marker shown on your match cards.</span></div>
+      <div class="perk reveal d2"><span class="lvl warm">10 referrals</span><span class="txt"><b>A month of the top tier</b> and a custom profile accent.</span></div>
+    </div>
+  </div>
+</section>
 
-                            <!-- ring (front) -->
-                            <g transform="rotate(-18 130 150)">
-                                <path d="M 12 150 A 118 34 0 0 0 248 150" fill="none" stroke="url(#mRing)" stroke-width="9" stroke-linecap="round"/>
-                            </g>
+<!-- ===================== FAQ ===================== -->
+<section class="section" id="faq">
+  <div class="wrap">
+    <div class="sec-head reveal"><div class="kicker">FAQ</div><h2>Good questions, quick answers</h2></div>
+    <div class="faq">
+      <details class="reveal" open><summary>Is Orbit free?</summary><div class="a">Yes. Orbit is free to use. You can unlock extra perks by voting or referring friends, and optional paid tiers exist, but the core matching is free.</div></details>
+      <details class="reveal d1"><summary>How does matching work?</summary><div class="a">You fill out a short profile. Every week Orbit looks at interests, goals and activity, then drops a few curated matches. No endless swiping, just a handful of people worth talking to.</div></details>
+      <details class="reveal d2"><summary>Is it safe?</summary><div class="a">Yes. Verification, reporting and blocking are free for everyone, always. Orbit uses active moderation and referral vouching to keep the community real.</div></details>
+      <details class="reveal d3"><summary>How do I add Orbit to my server?</summary><div class="a">Click "Add Orbit to your server", pick your server, and approve. You will be matching members within minutes.</div></details>
+    </div>
+  </div>
+</section>
 
-                            <!-- sparkles -->
-                            <path class="m-spark s1" d="M228 60 l4 10 10 4 -10 4 -4 10 -4 -10 -10 -4 10 -4 z" fill="#FFB648"/>
-                            <path class="m-spark s2" d="M40 84 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3 z" fill="#FF6A3D"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        </div>
+<!-- ===================== FINAL CTA ===================== -->
+<section class="section">
+  <div class="final reveal">
+    <h2>Meet your people, right inside Discord</h2>
+    <a class="btn btn-primary" data-invite href="#">Add Orbit to your server</a>
+  </div>
+</section>
 
-        <!-- Trust strip -->
-        <div class="trust">
-            <span class="trust-label">Built for every kind of community</span>
-            <div class="trust-row" id="trustRow"></div>
-        </div>
+<!-- ===================== FOOTER ===================== -->
+<footer>
+  <div class="wrap foot">
+    <div class="brand" style="font-size:16px"><img src="/assets/logo.png" alt="" style="width:24px;height:24px" /> Orbit</div>
+    <div class="foot-links">
+      <a data-community href="#">Community</a>
+      <a data-topgg href="#">Vote on top.gg</a>
+      <a data-community href="#">Contact</a>
+    </div>
+  </div>
+</footer>
+<script>
+/* =====================================================================
+   EDIT THESE:  the only things you need to change.
+   ===================================================================== */
+const CONFIG = {
+  // Discord "Add Bot" invite link (replace YOUR_CLIENT_ID):
+  inviteLink: "https://discord.com/oauth2/authorize?client_id=YOUR_CLIENT_ID&scope=bot+applications.commands&permissions=277025508352",
+  // Your community / support server invite:
+  communityLink: "https://discord.gg/MBnqeusz92",
+  // Your top.gg vote link (replace YOUR_BOT_ID):
+  topggLink: "https://top.gg/bot/YOUR_BOT_ID/vote",
+  // Social proof counters (edit freely):
+  counters: { servers: 120, matched: 4800 }
+};
+/* ===================================================================== */
 
-        <!-- Content below the fold -->
-        <div class="landing" id="landing">
-            <div class="features">
-                <div class="feature reveal-on-scroll">
-                    <div class="f-ic">🚀</div>
-                    <h3>Boosted visibility</h3>
-                    <p>Premium members rank first across search and browsing.</p>
-                </div>
-                <div class="feature reveal-on-scroll">
-                    <div class="f-ic">🤝</div>
-                    <h3>Real connections</h3>
-                    <p>Mutual likes instantly become matches you can act on.</p>
-                </div>
-                <div class="feature reveal-on-scroll">
-                    <div class="f-ic">📊</div>
-                    <h3>Your dashboard</h3>
-                    <p>Track views, likes and matches live from the web.</p>
-                </div>
-            </div>
+// wire links
+document.querySelectorAll("[data-invite]").forEach(a => a.href = CONFIG.inviteLink);
+document.querySelectorAll("[data-community]").forEach(a => a.href = CONFIG.communityLink);
+document.querySelectorAll("[data-topgg]").forEach(a => a.href = CONFIG.topggLink);
+document.querySelectorAll("[data-invite],[data-topgg]").forEach(a => { a.target = "_blank"; a.rel = "noopener"; });
 
-        </div>
+const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-        <!-- Orbit vs a plain bot -->
-        <div class="compare">
-            <div class="landing-head reveal-on-scroll">
-                <div class="eyebrow-sm">WHY ORBIT</div>
-                <h2>More than a bot</h2>
-                <p>See how Orbit compares to a plain community server.</p>
-            </div>
-            <div class="compare-table reveal-on-scroll">
-                <div class="ct-row ct-head">
-                    <span></span>
-                    <span class="ct-orbit">Orbit</span>
-                    <span>Plain server</span>
-                </div>
-                <div class="ct-row"><span>Rich member profiles</span><span class="ct-y">✓</span><span class="ct-n">—</span></div>
-                <div class="ct-row"><span>Like &amp; match system</span><span class="ct-y">✓</span><span class="ct-n">—</span></div>
-                <div class="ct-row"><span>Search by skill &amp; location</span><span class="ct-y">✓</span><span class="ct-n">—</span></div>
-                <div class="ct-row"><span>AI matchmaking</span><span class="ct-y">✓</span><span class="ct-n">—</span></div>
-                <div class="ct-row"><span>Web dashboard &amp; analytics</span><span class="ct-y">✓</span><span class="ct-n">—</span></div>
-                <div class="ct-row"><span>Premium visibility boosts</span><span class="ct-y">✓</span><span class="ct-n">—</span></div>
-            </div>
-            <div class="compare-cta reveal-on-scroll">
-                <a class="btn lg" href="/premium" data-link>Explore plans</a>
-            </div>
-        </div>
-    </section>
+// hero: typing indicator, then the match card slides in (loops gently)
+(function heroAnim(){
+  const typing = document.getElementById("typing");
+  const embed = document.getElementById("embed");
+  if(!typing || !embed) return;
+  if(reduce){ typing.hidden = true; embed.hidden = false; embed.classList.add("show"); return; }
+  function run(){
+    typing.hidden = false; embed.hidden = true; embed.classList.remove("show");
+    setTimeout(() => { typing.hidden = true; embed.hidden = false; embed.classList.add("show"); }, 2200);
+  }
+  run();
+  setInterval(run, 8000); // replay so the page always feels alive
+})();
 
-    <!-- COMMUNITY PAGE -->
-    <section id="view-category" class="page hidden">
-        <a class="back-btn" href="/" data-link>← Communities</a>
-        <div class="page-head">
-            <h1 id="catTitle"></h1>
-            <p id="catSubtitle"></p>
-        </div>
-        <form class="search left" id="catSearch">
-            <input id="catSearchInput" type="text" autocomplete="off" placeholder="Search…" />
-            <button class="btn ghost" type="submit">Search</button>
-        </form>
-        <div class="profile-grid" id="profileGrid"></div>
-        <div id="emptyState" class="empty hidden"></div>
-    </section>
+// scroll reveal
+(function reveals(){
+  const els = document.querySelectorAll(".reveal");
+  if(reduce || !("IntersectionObserver" in window)){ els.forEach(e=>e.classList.add("in")); return; }
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); } });
+  }, { threshold:.14, rootMargin:"0px 0px -8% 0px" });
+  els.forEach(e=>io.observe(e));
+})();
 
-    <!-- PREMIUM PAGE -->
-    <section id="view-premium" class="page hidden">
-        <div class="page-head center">
-            <h1>Membership</h1>
-            <p>Simple plans. Cancel anytime.</p>
-        </div>
-        <div class="pricing-grid" id="pricingGrid"></div>
-    </section>
-
-    <!-- DASHBOARD PAGE -->
-    <section id="view-dashboard" class="page hidden">
-        <div class="dash-head">
-            <div>
-                <div class="eyebrow-sm">YOUR ORBIT</div>
-                <h1 id="dashGreeting">Dashboard</h1>
-                <p id="dashPlan" class="dash-plan"></p>
-            </div>
-            <div class="dash-actions" id="dashActions"></div>
-        </div>
-
-        <div class="stat-cards" id="dashStats"></div>
-
-        <div class="dash-grid">
-            <div class="dash-col-main">
-                <div class="dash-card chart-card reveal" id="dashChartCard"></div>
-                <div class="dash-grid-2">
-                    <div class="dash-card reveal" id="dashProfileCard"></div>
-                    <div class="dash-card reveal" id="dashAdmirersCard"></div>
-                </div>
-            </div>
-            <div class="dash-col-side">
-                <div class="dash-card promo-card reveal" id="dashPromoCard"></div>
-                <div class="dash-card links-card reveal" id="dashLinksCard"></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- INTEREST PAGE (kept for /interest links) -->
-    <section id="view-admirers" class="page hidden">
-        <a class="back-btn" href="/dashboard" data-link>← Dashboard</a>
-        <div class="page-head">
-            <h1>Interest received</h1>
-            <p id="admirersSub"></p>
-        </div>
-        <div class="profile-grid" id="admirersGrid"></div>
-    </section>
-
-    <div id="toast" class="toast hidden"></div>
-
-    <footer class="footer">
-        <div><span id="footerName">Orbit</span> · Managed via Discord</div>
-        <div class="footer-links">
-            <a href="/premium" data-link>Premium</a>
-            <a href="#" id="manageLink" class="hidden" target="_blank" rel="noopener">Manage subscription</a>
-            <a href="/terms.html">Terms</a>
-            <a href="/privacy.html">Privacy</a>
-        </div>
-    </footer>
-
-    <script src="/js/app.js"></script>
+// count-up counters (trigger when the proof section scrolls in)
+(function counters(){
+  const nums = document.querySelectorAll("[data-count-to]");
+  const fmt = n => n >= 1000 ? Math.round(n/100)/10 + "k" : String(n);
+  function animate(el){
+    const target = CONFIG.counters[el.dataset.countTo] || 0;
+    if(reduce){ el.textContent = fmt(target); return; }
+    const dur = 1400, start = performance.now();
+    const step = t => {
+      const p = Math.min(1,(t-start)/dur);
+      const eased = 1 - Math.pow(1-p,3);
+      el.textContent = fmt(Math.round(eased*target));
+      if(p<1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+  if(!("IntersectionObserver" in window)){ nums.forEach(animate); return; }
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ animate(e.target); io.unobserve(e.target); } });
+  }, { threshold:.5 });
+  nums.forEach(n=>io.observe(n));
+})();
+</script>
 </body>
 </html>

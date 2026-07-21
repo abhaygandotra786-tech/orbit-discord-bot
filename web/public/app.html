@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="home">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Orbit</title>
+    <meta name="description" content="Orbit — one community bot for everything." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a class="brand" href="/" data-link>
+                <img id="brandLogo" class="brand-logo" src="/assets/logo.png" alt="Orbit" />
+                <span id="brandName">Orbit</span>
+            </a>
+            <nav class="nav-center">
+                <div class="dropdown" id="catDropdown">
+                    <button class="dropdown-btn" id="catBtn" aria-haspopup="true" aria-expanded="false">
+                        Categories <span class="caret">▾</span>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a href="/networking" data-link>🤝 Networking</a>
+                        <a href="/friends" data-link>👥 Friends</a>
+                        <a href="/gaming" data-link>🎮 Gaming</a>
+                        <a href="/freelancing" data-link>💼 Freelancing</a>
+                        <a href="/co-founder" data-link>🚀 Co-Founder</a>
+                        <a href="/dating" data-link>💖 Dating</a>
+                    </div>
+                </div>
+                <a href="/premium" data-link>Premium</a>
+                <a href="/dashboard" data-link id="navDashboard" class="hidden">Dashboard</a>
+            </nav>
+            <form class="nav-search" id="navSearch" role="search">
+                <span class="ns-ic" aria-hidden="true">🔍</span>
+                <input id="navSearchInput" type="text" autocomplete="off" placeholder="Search members…" aria-label="Search members" />
+            </form>
+            <div class="nav-right">
+                <span id="authArea"></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- HOME -->
+    <section id="view-home">
+        <!-- Split hero -->
+        <div class="hero">
+            <div class="hero-glow" aria-hidden="true"></div>
+            <div class="hero-inner">
+                <div class="hero-left">
+                    <div class="hero-badge">Orbit on Discord</div>
+                    <h1 class="hero-title">Find your <span class="grad-word">people</span>, all in one bot</h1>
+                    <p class="hero-sub">
+                        Networking, founders, freelancing, friends, gaming and dating —
+                        Orbit helps your community connect, match and grow.
+                    </p>
+                    <div class="hero-cta">
+                        <a class="btn lg" id="addBtn" href="#" target="_blank" rel="noopener">Add to Discord</a>
+                        <a class="btn ghost lg" href="/premium" data-link>View Premium</a>
+                    </div>
+                    <p class="hero-note">Free to add · Works in any server · No card required</p>
+                    <div class="hero-stats" id="heroStats"></div>
+                </div>
+                <div class="hero-right">
+                    <div class="mascot-stage">
+                        <div class="mascot-glow" aria-hidden="true"></div>
+                        <svg class="mascot" viewBox="0 0 260 270" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Orbit mascot">
+                            <defs>
+                                <radialGradient id="mBody" cx="38%" cy="30%" r="78%">
+                                    <stop offset="0%" stop-color="#FFCC7A"/>
+                                    <stop offset="46%" stop-color="#FF7A3D"/>
+                                    <stop offset="100%" stop-color="#E73B27"/>
+                                </radialGradient>
+                                <linearGradient id="mRing" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0%" stop-color="#FFB648"/>
+                                    <stop offset="100%" stop-color="#FF4D2D"/>
+                                </linearGradient>
+                            </defs>
+
+                            <!-- ring (back) -->
+                            <g transform="rotate(-18 130 150)">
+                                <ellipse cx="130" cy="150" rx="118" ry="34" fill="none" stroke="url(#mRing)" stroke-width="9" opacity="0.85"/>
+                            </g>
+
+                            <!-- body -->
+                            <circle cx="130" cy="132" r="74" fill="url(#mBody)"/>
+                            <ellipse cx="106" cy="104" rx="26" ry="18" fill="#fff" opacity="0.16"/>
+                            <circle cx="102" cy="156" r="10" fill="#E73B27" opacity="0.32"/>
+                            <circle cx="162" cy="110" r="7" fill="#E73B27" opacity="0.28"/>
+                            <circle cx="152" cy="164" r="5" fill="#E73B27" opacity="0.28"/>
+
+                            <!-- face -->
+                            <circle cx="96" cy="146" r="8" fill="#fff" opacity="0.22"/>
+                            <circle cx="166" cy="146" r="8" fill="#fff" opacity="0.22"/>
+                            <g class="m-eyes">
+                                <ellipse cx="111" cy="126" rx="11" ry="13" fill="#3a1f14"/>
+                                <ellipse cx="151" cy="126" rx="11" ry="13" fill="#3a1f14"/>
+                                <circle cx="115" cy="121" r="3.4" fill="#fff"/>
+                                <circle cx="155" cy="121" r="3.4" fill="#fff"/>
+                            </g>
+                            <path d="M114 150 Q131 166 148 150" fill="none" stroke="#3a1f14" stroke-width="4.5" stroke-linecap="round"/>
+
+                            <!-- ring (front) -->
+                            <g transform="rotate(-18 130 150)">
+                                <path d="M 12 150 A 118 34 0 0 0 248 150" fill="none" stroke="url(#mRing)" stroke-width="9" stroke-linecap="round"/>
+                            </g>
+
+                            <!-- sparkles -->
+                            <path class="m-spark s1" d="M228 60 l4 10 10 4 -10 4 -4 10 -4 -10 -10 -4 10 -4 z" fill="#FFB648"/>
+                            <path class="m-spark s2" d="M40 84 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3 z" fill="#FF6A3D"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trust strip -->
+        <div class="trust">
+            <span class="trust-label">Built for every kind of community</span>
+            <div class="trust-row" id="trustRow"></div>
+        </div>
+
+        <!-- Content below the fold -->
+        <div class="landing" id="landing">
+            <div class="features">
+                <div class="feature reveal-on-scroll">
+                    <div class="f-ic">🚀</div>
+                    <h3>Boosted visibility</h3>
+                    <p>Premium members rank first across search and browsing.</p>
+                </div>
+                <div class="feature reveal-on-scroll">
+                    <div class="f-ic">🤝</div>
+                    <h3>Real connections</h3>
+                    <p>Mutual likes instantly become matches you can act on.</p>
+                </div>
+                <div class="feature reveal-on-scroll">
+                    <div class="f-ic">📊</div>
+                    <h3>Your dashboard</h3>
+                    <p>Track views, likes and matches live from the web.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Orbit vs a plain bot -->
+        <div class="compare">
+            <div class="landing-head reveal-on-scroll">
+                <div class="eyebrow-sm">WHY ORBIT</div>
+                <h2>More than a bot</h2>
+                <p>See how Orbit compares to a plain community server.</p>
+            </div>
+            <div class="compare-table reveal-on-scroll">
+                <div class="ct-row ct-head">
+                    <span></span>
+                    <span class="ct-orbit">Orbit</span>
+                    <span>Plain server</span>
+                </div>
+                <div class="ct-row"><span>Rich member profiles</span><span class="ct-y">✓</span><span class="ct-n">—</span></div>
+                <div class="ct-row"><span>Like &amp; match system</span><span class="ct-y">✓</span><span class="ct-n">—</span></div>
+                <div class="ct-row"><span>Search by skill &amp; location</span><span class="ct-y">✓</span><span class="ct-n">—</span></div>
+                <div class="ct-row"><span>AI matchmaking</span><span class="ct-y">✓</span><span class="ct-n">—</span></div>
+                <div class="ct-row"><span>Web dashboard &amp; analytics</span><span class="ct-y">✓</span><span class="ct-n">—</span></div>
+                <div class="ct-row"><span>Premium visibility boosts</span><span class="ct-y">✓</span><span class="ct-n">—</span></div>
+            </div>
+            <div class="compare-cta reveal-on-scroll">
+                <a class="btn lg" href="/premium" data-link>Explore plans</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- COMMUNITY PAGE -->
+    <section id="view-category" class="page hidden">
+        <a class="back-btn" href="/" data-link>← Communities</a>
+        <div class="page-head">
+            <h1 id="catTitle"></h1>
+            <p id="catSubtitle"></p>
+        </div>
+        <form class="search left" id="catSearch">
+            <input id="catSearchInput" type="text" autocomplete="off" placeholder="Search…" />
+            <button class="btn ghost" type="submit">Search</button>
+        </form>
+        <div class="profile-grid" id="profileGrid"></div>
+        <div id="emptyState" class="empty hidden"></div>
+    </section>
+
+    <!-- PREMIUM PAGE -->
+    <section id="view-premium" class="page hidden">
+        <div class="page-head center">
+            <h1>Membership</h1>
+            <p>Simple plans. Cancel anytime.</p>
+        </div>
+        <div class="pricing-grid" id="pricingGrid"></div>
+    </section>
+
+    <!-- DASHBOARD PAGE -->
+    <section id="view-dashboard" class="page hidden">
+        <div class="dash-head">
+            <div>
+                <div class="eyebrow-sm">YOUR ORBIT</div>
+                <h1 id="dashGreeting">Dashboard</h1>
+                <p id="dashPlan" class="dash-plan"></p>
+            </div>
+            <div class="dash-actions" id="dashActions"></div>
+        </div>
+
+        <div class="stat-cards" id="dashStats"></div>
+
+        <div class="dash-grid">
+            <div class="dash-col-main">
+                <div class="dash-card chart-card reveal" id="dashChartCard"></div>
+                <div class="dash-grid-2">
+                    <div class="dash-card reveal" id="dashProfileCard"></div>
+                    <div class="dash-card reveal" id="dashAdmirersCard"></div>
+                </div>
+            </div>
+            <div class="dash-col-side">
+                <div class="dash-card promo-card reveal" id="dashPromoCard"></div>
+                <div class="dash-card links-card reveal" id="dashLinksCard"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- INTEREST PAGE (kept for /interest links) -->
+    <section id="view-admirers" class="page hidden">
+        <a class="back-btn" href="/dashboard" data-link>← Dashboard</a>
+        <div class="page-head">
+            <h1>Interest received</h1>
+            <p id="admirersSub"></p>
+        </div>
+        <div class="profile-grid" id="admirersGrid"></div>
+    </section>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <footer class="footer">
+        <div><span id="footerName">Orbit</span> · Managed via Discord</div>
+        <div class="footer-links">
+            <a href="/premium" data-link>Premium</a>
+            <a href="#" id="manageLink" class="hidden" target="_blank" rel="noopener">Manage subscription</a>
+            <a href="/terms.html">Terms</a>
+            <a href="/privacy.html">Privacy</a>
+        </div>
+    </footer>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>
