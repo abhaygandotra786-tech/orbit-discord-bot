@@ -398,35 +398,8 @@ app.get("/api/stats", (req, res) => {
         });
     } catch (err) {
         logger.error("/api/stats failed", err);
-        // Temporary: surface the real reason so we can diagnose the DB issue.
-        res.status(500).json({
-            error: err.message,
-            code: err.code || err.name || null
-        });
+        res.status(500).json({ error: "Stats temporarily unavailable" });
     }
-});
-
-// TEMP diagnostic: report DB connectivity as 200 so it's readable.
-app.get("/api/dbcheck", (req, res) => {
-    const info = {
-        hasUrl: Boolean(process.env.LIBSQL_URL || process.env.TURSO_DATABASE_URL),
-        hasToken: Boolean(process.env.LIBSQL_AUTH_TOKEN || process.env.TURSO_AUTH_TOKEN),
-        urlHost: null,
-        ok: false,
-        error: null,
-        code: null
-    };
-    try {
-        const raw = process.env.LIBSQL_URL || process.env.TURSO_DATABASE_URL || "";
-        info.urlHost = raw ? raw.replace(/^\w+:\/\//, "").split(/[/?]/)[0] : null;
-        const n = getAllProfiles.all().length;
-        info.ok = true;
-        info.profiles = n;
-    } catch (err) {
-        info.error = err.message;
-        info.code = err.code || err.name || null;
-    }
-    res.json(info);
 });
 
 // Member dashboard: everything about the logged-in user.
